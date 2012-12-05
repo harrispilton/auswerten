@@ -43,7 +43,7 @@ delta_sigma_CSA(omega) = 3./2./omega * delta_CSA
 #T_1_HP(omega,tau_c) = 1./(3./10. * (mu_0 / (4. * pi) * gamma_H * gamma_P * h_quer/r_IS) ** 2 * (1./3. * J(omega_H - omega_P,tau_c) + J(omega_P,tau_c) + 2*J(omega_H + omega_P,tau_c)))
 T_1_HP(tau_c) =  J(0.1,tau_c) + J(2,tau_c) + J(4,tau_c)
 ## Die gewuenschte Funktion
-T_1(omega,tau_c) = 1./(1./T_1_CSA + 1./T_1_HP)
+T_1(omega,tau_c) = 1./(1./T_1_CSA(omega,tau_c) + 1./T_1_HP(tau_c))
 set autoscale
 set log
 set xrange [0.001:100]
