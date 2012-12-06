@@ -7,7 +7,7 @@
 set terminal x11 persist
 #set log
 set title "chi for different tau_c (using a.u.)"
-K_CSA(omega) = 91.3
+K_CSA(omega) = 191.3
 tau_c = 103.3
 delta_CSA = 123.3
 delta_sigma_CSA = 12
@@ -36,7 +36,7 @@ plot tau_c=0.5, Chi(x), tau_c=1, Chi(x), tau_c=2, Chi(x)
 set terminal x11 persist
 set title "T_1 for different omega_L (using a.u.)"
 delta_sigma_CSA(omega) = 1.#/2./omega * delta_CSA
-K_CSA(omega) =omega**2#2./15. * (delta_sigma_CSA(omega) * omega)**2
+K_CSA(omega) =10*omega**2#2./15. * (delta_sigma_CSA(omega) * omega)**2
 T_2_CSA(omega,tau_c) = 6./(K_CSA(omega) * (3.*J(omega,tau_c) +4.* J(0,tau_c)))
 T_1_CSA(omega,tau_c) = 1./(K_CSA(omega) * J(omega,tau_c))
 delta_sigma_CSA(omega) = 3./2./omega * delta_CSA
