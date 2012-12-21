@@ -14,7 +14,7 @@ delta_CSA = 123.3
 delta_sigma_CSA = 12
 omega_H(omega) = 18*omega
 omega_P(omega) = 1.3*omega
-beta=.9
+beta=.75
 h_quer = 10.3
 mu_0 = 12.3
 gamma_H = 11.3 
@@ -38,7 +38,7 @@ plot tau_c=0.5, Chi(x), tau_c=1, Chi(x), tau_c=2, Chi(x)
 set terminal x11 persist
 set title "T_1 for different omega_L (using a.u.)"
 delta_sigma_CSA(omega) = 1.#/2./omega * delta_CSA
-K_CSA(omega) =10*omega**2#2./15. * (delta_sigma_CSA(omega) * omega)**2
+K_CSA(omega) =2./15. * (delta_sigma_CSA(omega) * omega)**2
 T_2_CSA(omega,tau_c) = 6./(K_CSA(omega) * (3.*J(omega,tau_c) +4.* J(0,tau_c)))
 T_1_CSA(omega,tau_c) = 1./(K_CSA(omega) * J(omega,tau_c))
 delta_sigma_CSA(omega) = 3./2./omega * delta_CSA
@@ -47,7 +47,7 @@ T_1_HP(omega,tau_c) =  1/(1./3.*J(omega_H(omega) - omega_P(omega),tau_c) + J(ome
 ## Die gewuenschte Funktion
 T_1(omega,tau_c) = 1./(1./T_1_HP(omega,tau_c)+1./T_1_CSA(omega,tau_c))
 set autoscale
-set title 'CSA und DD controlled'
+set title 'DD and CSA controlled with beta_CD =0.75 (CSA dominates)'
 set log
 set xrange [0.001:100]
 set xlabel "log tau_c"
@@ -55,6 +55,12 @@ set ylabel "log (T_1)"
 plot T_1(1,x), T_1(4,x), T_1(10,x)
 set terminal svg
 
-set output "T1 gesamt.svg"
+set output "T1 gesamt.svg" 
 replot
 #plot 1/T_1_CSA(1,x), 1/T_1_CSA(2,x), 1/T_1_CSA(5,x)
+set terminal x11 persist
+set log
+set title 'J(tau) mit CSA'
+set xrange [0.01:1000]
+Chi_ges(omega,tau_c) = 1./(K_CSA(omega)*T_1(omega,tau_c))
+plot Chi_ges(1,x), Chi_ges(4,x)
