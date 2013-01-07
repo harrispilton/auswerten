@@ -60,7 +60,11 @@ replot
 #plot 1/T_1_CSA(1,x), 1/T_1_CSA(2,x), 1/T_1_CSA(5,x)
 set terminal x11 persist
 set log
-set title 'J(tau) mit CSA'
-set xrange [0.01:1000]
+set title 'J(omega) mit CSA'
+set ylabel 'J(omega)'
+set xlabel 'omega'
+set xrange [0.001:10]
 Chi_ges(omega,tau_c) = 1./(K_CSA(omega)*T_1(omega,tau_c))
-plot Chi_ges(1,x), Chi_ges(4,x)
+J1(omega,tau_c)=K_CSA(omega)* tau_c/(1+omega**2. * tau_c**2.)**beta
+print beta
+plot J1(x,1), J1(x,4)
