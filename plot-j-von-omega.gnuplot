@@ -63,8 +63,8 @@ set log
 set title 'J(omega) mit CSA'
 set ylabel 'J(omega)'
 set xlabel 'omega'
-set xrange [0.001:10]
+set xrange [0.01:100]
 Chi_ges(omega,tau_c) = 1./(K_CSA(omega)*T_1(omega,tau_c))
-J1(omega,tau_c)=K_CSA(omega)* tau_c/(1+omega**2. * tau_c**2.)**beta
+J1(omega,tau_c)=K_CSA(omega) * tau_c/(1.+omega**2. * tau_c**2.)
 print beta
 plot J1(x,1), J1(x,4)
