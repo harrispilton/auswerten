@@ -65,8 +65,8 @@ replot
 ###
 set terminal x11 persist
 set log
-set title 'J(omega) mit CSA'
-set ylabel 'J(omega)'
+set title '1/T_1 mit CSA'
+set ylabel '1/T_1'
 set xlabel 'omega'
 set xrange [0.01:10]
 K_DD=1.0
@@ -79,3 +79,6 @@ J(omega,tau_c)=tau_c/(1.+omega**2. * tau_c**2.)**beta
 R_1(omega,tau_c) = 1./(K_CSA(omega)*J(omega,tau_c)+K_DD*(1./3. * J(omega_P(omega),tau_c)+J(omega_P(omega),tau_c)+2.*J(omega_P(omega),tau_c)))
 print beta
 plot K_DD=0.1 R_1(x,1), R_1(x,4), R_1(x,10), K_DD=1.0 R_1(x,1), R_1(x,4), K_DD=10.0 R_1(x,1), R_1(x,4)
+set terminal svg
+set output "Rate mit CSA.svg"
+replot
