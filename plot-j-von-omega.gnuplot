@@ -14,7 +14,7 @@ delta_CSA = 123.3
 delta_sigma_CSA = 12
 omega_H(omega) = 18*omega
 omega_P(omega) = 1.3*omega
-beta=.75
+beta=1.
 h_quer = 10.3
 mu_0 = 12.3
 gamma_H = 11.3 
@@ -23,7 +23,7 @@ r_IS = 1.1
 J(omega,tau_c)=tau_c/(1. + omega **2 * tau_c **2)**beta
 Chi(omega)=omega*J(omega,tau_c)
 set autoscale
-set xrange [0.01:100]
+set xrange [1000:86200000]
 set log
 set xlabel "\omega _L"
 set ylabel "\\omega _L * J(\omega _L)"
@@ -59,26 +59,52 @@ set output "T1 gesamt.svg"
 replot
 #plot 1/T_1_CSA(1,x), 1/T_1_CSA(2,x), 1/T_1_CSA(5,x)
 ###
-### Wir wollen J(omega) und betrachten den Fall, dass die
-### Kopplungskonstante abhaengt von omega quadrat.
-### tatsaechlich wollen wir die rate (eins durch T_1)
+### Wir wollen 1/T_1 und betrachten den Fall, dass die
+### Kopplungskonstante abhaengt von omega quadrat.(chemical shift anisotropy)
+### wir betrachten hier den fall von phosphor nmr und gehen nach dem adishchev paper vor das ergebnis laesst sich leicht auf c13 uebertragen
 ###
+
+## ohne werte alt:
 set terminal x11 persist
 set log
 set title '1/T_1 mit CSA'
 set ylabel '1/T_1'
 set xlabel 'omega'
-set xrange [0.01:10]
-K_DD=1.0
-omega_L=1.0
-omega_P(omega_L)=2.0*omega_L
+set xrange [.01:10]
+delta_dd =1.
+delta_sigma_CSA=1
+K_DD=8./3.*pi**2*delta_dd**2
+omega_L=8620000.
 K_CSA(omega) = 2./15. * (omega * delta_sigma_CSA)**2
-delta_sigma_CSA(omega)=1.
-Chi_ges(omega,tau_c) = 1./(K_CSA(omega)*T_1(omega,tau_c))
 J(omega,tau_c)=tau_c/(1.+omega**2. * tau_c**2.)**beta
-R_1(omega,tau_c) = 1./(K_CSA(omega)*J(omega,tau_c)+K_DD*(1./3. * J(omega_P(omega),tau_c)+J(omega_P(omega),tau_c)+2.*J(omega_P(omega),tau_c)))
-print beta
-plot K_DD=0.1 R_1(x,1), R_1(x,4), R_1(x,10), K_DD=1.0 R_1(x,1), R_1(x,4), K_DD=10.0 R_1(x,1), R_1(x,4)
+R_1(omega,tau_c) = (K_CSA(omega)*J(omega,tau_c)+K_DD*J(omega,tau_c))
+# Chi_ges(omega,tau_c) = 1./(K_CSA(omega)*T_1(omega,tau_c))
+
+print beta, delta_sigma_CSA(omega)
+plot R_1(x,.001), R_1(x,4), R_1(x,10), delta_sigma_CSA=.0006 R_1(x,1)#, K_DD=1.0 R_1(x,1), R_1(x,4), K_DD=10.0 R_1(x,1), R_1(x,4)
 set terminal svg
 set output "Rate mit CSA.svg"
 replot
+pause -1
+##neu
+set terminal x11 persist
+set log
+set title '1/T_1 mit CSA'
+set ylabel '1/T_1'
+set xlabel 'omega'
+set xrange [1000:8620]
+delta_dd =3650.*2.*pi
+delta_sigma_CSA=226.E-06 *100
+K_DD=8./3.*pi**2*delta_dd**2
+omega_L=8620000
+K_CSA(omega) = 2./15. * (omega * delta_sigma_CSA)**2
+J(omega,tau_c)=tau_c/(1.+omega**2. * tau_c**2.)**beta
+R_1(omega,tau_c) = (K_CSA(omega)*J(omega,tau_c)+K_DD*J(omega,tau_c))
+# Chi_ges(omega,tau_c) = 1./(K_CSA(omega)*T_1(omega,tau_c))
+
+print beta, delta_sigma_CSA(omega)
+plot R_1(x,.001), R_1(x,4), R_1(x,10), delta_sigma_CSA=.0006 R_1(x,1)#, K_DD=1.0 R_1(x,1), R_1(x,4), K_DD=10.0 R_1(x,1), R_1(x,4)
+set terminal svg
+set output "Rate mit CSA.svg"
+replot
+
