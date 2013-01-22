@@ -86,7 +86,13 @@ set terminal svg
 set output "Rate mit CSA.svg"
 replot
 pause -1
-##neu
+
+##neu mit werten
+## die werte fuer omega sind von http://www-lcs.ensicaen.fr/pyPulsar/index.php/List_of_NMR_isotopes
+## entnommen. die umrechnung findet sich im larmor frequenzen.ods
+## alle weiteren werte sind aus dem adishchev paper
+##
+
 set terminal x11 persist
 set log
 set title '1/T_1 mit CSA'
