@@ -6,7 +6,7 @@ from pylab import *
 from scipy import *
 
 # if you experience problem "optimize not found", try to uncomment the following line. The problem is present at least at Ubuntu Lucid python scipy package
-# from scipy import optimize
+from scipy import optimize
 
 # Generate data points with noise
 num_points = 150
@@ -47,25 +47,25 @@ text(0.8, 0.07,'x freq :  %.3f kHz \n y freq :  %.3f kHz' % (1/p1[1],1/p2[1]),fo
 show()
 
 class Parameter:
-def __init__(self, value):
-self.value = value
+	def __init__(self, value):
+		self.value = value
 
-def set(self, value):
-self.value = value
+	def set(self, value):
+		self.value = value
 
-def __call__(self):
-return self.value
+	def __call__(self):
+		return self.value
 
-def fit(function, parameters, y, x = None):
-def f(params):
-i = 0
-for p in parameters:
-p.set(params[i])
-i += 1
-return y - function(x)
-if x is None: x = arange(y.shape[0])
-p = [param() for param in parameters]
-optimize.leastsq(f, p)
+	def fit(function, parameters, y, x = None):
+		def f(params):
+			i = 0
+			for p in parameters:
+				p.set(params[i])
+				i += 1
+				return y - function(x)
+				if x is None: x = arange(y.shape[0])
+				p = [param() for param in parameters]
+			optimize.leastsq(f, p)
 # giving initial parameters
 mu = Parameter(7)
 sigma = Parameter(3)

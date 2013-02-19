@@ -4,14 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons
 beta=0.6
-print 'hallo'
-#omega=1.0
 omega=np.logspace(4.0,9.0,300,10)
-tau_c=1e-30
+tau_c=1
 K_DD=1.0
 delta_sigma_CSA=0.226
 def K_CSA(omega):
-	a=2.0/18*(omega * delta_sigma_CSA)**2
+	a=1.0#2.0/18*(omega * delta_sigma_CSA)**2
 	return a
 def J(omega,tau_c):
 	a=tau_c * 1.0/(1.0+(omega * tau_c)**2)**beta
@@ -19,6 +17,7 @@ def J(omega,tau_c):
 def R_1(omega,tau_c):
 	a=1/(K_DD * J(omega,tau_c) + K_CSA(omega) * J(omega,tau_c))
 	return a
+
 alle=[]
 temp=glob.glob('*.dat')
 temp.remove('all.dat')
@@ -47,7 +46,27 @@ for i, val in enumerate(temp):
 	chis.append(chi)
 #if t1s in t1 > 0.001: plt.plot(brlx,t1)
 	plt.plot(cbrlx, chi,label=temp[i])
-plt.plot(omega, R_1,'r--')
+def update(val):
+    tau_c = samp.val
+    l.set_ydata(R_1(omega,tau_c))
+    plt.draw()
+stau_c.on_changed(update)
+
+resetax = plt.axes([0.8, 0.025, 0.1, 0.04])
+def reset(event):
+    stau_c.reset()
+button.on_clicked(reset)
+rax = plt.axes([0.025, 0.5, 0.15, 0.15], axisbg=axcolor)
+def colorfunc(label):
+    l.set_color(label)
+    plt.draw()
+
+
+
+stau_c = Slider(axtau_c, 'tau_c', 0.00001, 10.0, valinit=tau_c)
+
+axcolor = 'lightgoldenrodyellow'
+l, = plt.plot(omega, R_1(omega,tau_c=1.0),'r--')
 plt.legend(loc='upper left')
 plt.yscale('log')
 plt.xscale('log')
