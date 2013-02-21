@@ -41,3 +41,132 @@ correlation matrix of the fit parameters:
 
                tau_c  
 tau_c           1.000 
+
+
+*******************************************************************************
+Wed Feb 20 14:24:29 2013
+
+
+FIT:    data read from 'all.dat' index 4  using ( $1 * 10**6):( $2>0.002 ? $1 * 10**6 * $3 :1/0)
+        format = x:z
+        #datapoints = 13
+        residuals are weighted equally (unit weight)
+
+function used for fitting: Chi (x)
+fitted parameters initialized with current variable values
+
+
+
+ Iteration 0
+ WSSR        : 7.65699e+18       delta(WSSR)/WSSR   : 0
+ delta(WSSR) : 0                 limit for stopping : 1e-05
+ lambda	  : 6.59736e-05
+
+initial set of free parameter values
+
+tau_c           = 0.1
+
+After 1 iterations the fit converged.
+final sum of squares of residuals : 7.65699e+18
+rel. change during last iteration : -5.34936e-16
+
+degrees of freedom    (FIT_NDF)                        : 12
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 7.988e+08
+variance of residuals (reduced chisquare) = WSSR/ndf   : 6.38082e+17
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+
+tau_c           = 0.0932248        +/- 2.918e+12    (3.131e+15%)
+
+
+correlation matrix of the fit parameters:
+
+               tau_c  
+tau_c           1.000 
+
+
+*******************************************************************************
+Wed Feb 20 16:42:42 2013
+
+
+FIT:    data read from 'all.dat' index 4  using ( $1 * 10**6):( $2>0.002 ? $1 * 10**6 * $3 :1/0)
+        format = x:z
+        #datapoints = 13
+        residuals are weighted equally (unit weight)
+
+function used for fitting: Chi (x)
+fitted parameters initialized with current variable values
+
+
+
+ Iteration 0
+ WSSR        : 7.65699e+18       delta(WSSR)/WSSR   : 0
+ delta(WSSR) : 0                 limit for stopping : 1e-05
+ lambda	  : 6.59736e-05
+
+initial set of free parameter values
+
+tau_c           = 0.1
+
+After 1 iterations the fit converged.
+final sum of squares of residuals : 7.65699e+18
+rel. change during last iteration : -5.34936e-16
+
+degrees of freedom    (FIT_NDF)                        : 12
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 7.988e+08
+variance of residuals (reduced chisquare) = WSSR/ndf   : 6.38082e+17
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+
+tau_c           = 0.0932248        +/- 2.918e+12    (3.131e+15%)
+
+
+correlation matrix of the fit parameters:
+
+               tau_c  
+tau_c           1.000 
+
+
+*******************************************************************************
+Wed Feb 20 16:50:00 2013
+
+
+FIT:    data read from 'all.dat' index 4  using ( $1 * 10**6):( $2>0.002 ? $1 * 10**6 * $3 :1/0)
+        format = x:z
+        #datapoints = 13
+        residuals are weighted equally (unit weight)
+
+function used for fitting: Chi (x)
+fitted parameters initialized with current variable values
+
+
+
+ Iteration 0
+ WSSR        : 7.65699e+18       delta(WSSR)/WSSR   : 0
+ delta(WSSR) : 0                 limit for stopping : 1e-05
+ lambda	  : 6.59736e-05
+
+initial set of free parameter values
+
+tau_c           = 0.1
+
+After 1 iterations the fit converged.
+final sum of squares of residuals : 7.65699e+18
+rel. change during last iteration : -5.34936e-16
+
+degrees of freedom    (FIT_NDF)                        : 12
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 7.988e+08
+variance of residuals (reduced chisquare) = WSSR/ndf   : 6.38082e+17
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+
+tau_c           = 0.0932248        +/- 2.918e+12    (3.131e+15%)
+
+
+correlation matrix of the fit parameters:
+
+               tau_c  
+tau_c           1.000 
