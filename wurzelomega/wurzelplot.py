@@ -2,6 +2,7 @@
 import glob
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import optimize
 from matplotlib.widgets import Slider, Button, RadioButtons
 beta=0.9
 omega=np.logspace(5.0,8.5,20,10)
@@ -22,7 +23,6 @@ ax = plt.subplot(111)
 plt.subplots_adjust(bottom=0.25)
 alle=[]
 temp=glob.glob('*.dat')
-temp.remove('all.dat')
 temp.sort()
 brlxs=[]
 chis=[]
@@ -50,31 +50,36 @@ for i, val in enumerate(temp):
 		wurzelcbrlx.append(cbrlx[ii]**0.5)
 	brlxs.append(cbrlx)
 	chis.append(chi)
-	print wurzelcbrlx
-	print cr1
 	plt.plot(wurzelcbrlx, cr1,label=temp[i])
+	#wir wollen sehen ob sich die daten mit einer gerade fitten lassen
+#fitfunc = lambda p, x: p[0]*x+p[1]
+#	errfunc = lambda p, x, y: fitfunc(p,x)-y
+#	p0=[-1.0,1.0]
+#	p1, success =optimize.leastsq(errfunc,p0[:], args=[wurzelcbrlx,cr1])
 #l1, = ax.plot(omega, R_1(omega,tau_c),'r--')
 #plt.legend(loc='upper left')
 plt.legend()
 #plt.yscale('log')
 #plt.xscale('log')
-#plt.show()
-
-axcolor = 'lightgoldenrodyellow'
-axtau_c=plt.axes([0.25,0.1,0.65,0.03],axisbg=axcolor)
-stau_c=Slider(axtau_c,'log (tau_c)',-3,6,valinit=np.log10(tau_c))
-
-def update(val):
-	l1.set_ydata(R_1(omega,10.0**stau_c.val))
-	plt.draw()
-stau_c.on_changed(update)
-resetax =plt.axes([0.8,0.025,0.1,0.04])
-button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
-
-def reset(event):
-	stau_c.reset()
-button.on_clicked(reset)
+plt.xlabel('Wurzel omega')
+plt.ylabel('R_1')
 plt.show()
+
+#axcolor = 'lightgoldenrodyellow'
+#axtau_c=plt.axes([0.25,0.1,0.65,0.03],axisbg=axcolor)
+#stau_c=Slider(axtau_c,'log (tau_c)',-3,6,valinit=np.log10(tau_c))
+#
+#def update(val):
+#	l1.set_ydata(R_1(omega,10.0**stau_c.val))
+#	plt.draw()
+#stau_c.on_changed(update)
+#resetax =plt.axes([0.8,0.025,0.1,0.04])
+#button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
+#
+#def reset(event):
+#	stau_c.reset()
+#button.on_clicked(reset)
+#plt.show()
 #vor dem plt.show kann man noch diese 5 zeilen pasten
 #rax = plt.axes([0.025,0.5,0.15,0.15],axisbg=axcolor)
 #def colorfunc(label):
