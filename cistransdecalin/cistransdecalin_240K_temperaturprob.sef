@@ -1,0 +1,37 @@
+STELAR Export File
+
+_BRLX______	_T1________	_R1________	____%err___	+-err(R1)__	Zone	File
+
+ 1.9998e+01	 4.0473e-01	 2.4708e+00	 5.7120e-01	 1.4113e-02	 1	 cistransdecalin_240K.sdf
+ 1.5652e+01	 3.9741e-01	 2.5163e+00	 4.0671e-01	 1.0234e-02	 2	 cistransdecalin_240K.sdf
+ 1.2247e+01	 3.8891e-01	 2.5713e+00	 2.0491e-01	 5.2689e-03	 3	 cistransdecalin_240K.sdf
+ 9.5823e+00	 3.7790e-01	 2.6462e+00	 1.4116e+00	 3.7355e-02	 4	 cistransdecalin_240K.sdf
+ 9.5823e+00	 3.9030e-01	 2.5621e+00	 8.0214e-01	 2.0552e-02	 5	 cistransdecalin_240K.sdf
+ 7.4993e+00	 3.8870e-01	 2.5727e+00	 8.0563e-01	 2.0726e-02	 6	 cistransdecalin_240K.sdf
+ 5.8703e+00	 3.8834e-01	 2.5751e+00	 9.9258e-01	 2.5560e-02	 7	 cistransdecalin_240K.sdf
+ 4.5930e+00	 3.8710e-01	 2.5833e+00	 2.9308e-01	 7.5712e-03	 8	 cistransdecalin_240K.sdf
+ 3.5950e+00	 3.8378e-01	 2.6056e+00	 6.1752e-01	 1.6090e-02	 9	 cistransdecalin_240K.sdf
+ 2.8119e+00	 3.7905e-01	 2.6381e+00	 6.3293e-01	 1.6698e-02	 10	 cistransdecalin_240K.sdf
+ 2.2023e+00	 3.7896e-01	 2.6388e+00	 4.3331e-01	 1.1434e-02	 11	 cistransdecalin_240K.sdf
+ 1.7231e+00	 3.7532e-01	 2.6644e+00	 3.2758e-01	 8.7281e-03	 12	 cistransdecalin_240K.sdf
+ 1.3484e+00	 3.7517e-01	 2.6655e+00	 3.7108e-01	 9.8910e-03	 13	 cistransdecalin_240K.sdf
+ 1.0554e+00	 3.7467e-01	 2.6690e+00	 3.1003e-01	 8.2748e-03	 14	 cistransdecalin_240K.sdf
+ 8.2551e-01	 3.7496e-01	 2.6670e+00	 5.0446e-01	 1.3454e-02	 15	 cistransdecalin_240K.sdf
+ 6.4541e-01	 3.6977e-01	 2.7044e+00	 3.7274e-01	 1.0080e-02	 16	 cistransdecalin_240K.sdf
+ 5.0541e-01	 3.7436e-01	 2.6712e+00	 3.6780e-01	 9.8246e-03	 17	 cistransdecalin_240K.sdf
+ 3.9543e-01	 3.7282e-01	 2.6823e+00	 3.9181e-01	 1.0509e-02	 18	 cistransdecalin_240K.sdf
+ 3.0947e-01	 3.7175e-01	 2.6900e+00	 2.7505e-01	 7.3988e-03	 19	 cistransdecalin_240K.sdf
+ 2.4260e-01	 3.7101e-01	 2.6953e+00	 3.3675e-01	 9.0765e-03	 20	 cistransdecalin_240K.sdf
+ 1.8936e-01	 3.7373e-01	 2.6757e+00	 3.3235e-01	 8.8927e-03	 21	 cistransdecalin_240K.sdf
+ 1.4819e-01	 3.7193e-01	 2.6887e+00	 3.7285e-01	 1.0025e-02	 22	 cistransdecalin_240K.sdf
+ 1.1636e-01	 5.2151e-01	 1.9175e+00	 9.9713e-01	 1.9120e-02	 23	 cistransdecalin_240K.sdf
+ 9.0760e-02	 8.4012e-01	 1.1903e+00	 7.2274e-01	 8.6028e-03	 24	 cistransdecalin_240K.sdf
+ 7.1285e-02	 9.9683e-01	 1.0032e+00	 6.2407e-01	 6.2606e-03	 25	 cistransdecalin_240K.sdf
+ 5.5651e-02	 1.0123e+00	 9.8783e-01	 3.2953e-01	 3.2552e-03	 26	 cistransdecalin_240K.sdf
+ 4.3600e-02	 1.0320e+00	 9.6898e-01	 4.3173e-01	 4.1834e-03	 27	 cistransdecalin_240K.sdf
+ 3.4187e-02	 1.0276e+00	 9.7311e-01	 3.5224e-01	 3.4277e-03	 28	 cistransdecalin_240K.sdf
+ 2.6694e-02	 1.0353e+00	 9.6591e-01	 4.4865e-01	 4.3336e-03	 29	 cistransdecalin_240K.sdf
+ 2.0809e-02	 1.0312e+00	 9.6974e-01	 5.5327e-01	 5.3652e-03	 30	 cistransdecalin_240K.sdf
+ 1.6261e-02	 1.0309e+00	 9.7002e-01	 4.1636e-01	 4.0387e-03	 31	 cistransdecalin_240K.sdf
+ 1.2806e-02	 1.0344e+00	 9.6674e-01	 3.7653e-01	 3.6401e-03	 32	 cistransdecalin_240K.sdf
+ 9.9244e-03	 1.0339e+00	 9.6717e-01	 5.0976e-01	 4.9302e-03	 33	 cistransdecalin_240K.sdf

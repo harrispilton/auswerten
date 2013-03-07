@@ -51,11 +51,14 @@ for i, val in enumerate(temp):
 	brlxs.append(cbrlx)
 	chis.append(chi)
 	plt.plot(wurzelcbrlx, cr1,label=temp[i])
-	#wir wollen sehen ob sich die daten mit einer gerade fitten lassen
-#fitfunc = lambda p, x: p[0]*x+p[1]
-#	errfunc = lambda p, x, y: fitfunc(p,x)-y
-#	p0=[-1.0,1.0]
-#	p1, success =optimize.leastsq(errfunc,p0[:], args=[wurzelcbrlx,cr1])
+#wir wollen sehen ob sich die daten mit einer gerade fitten lassen
+	fitfunc = lambda p, x: p[0]*x+p[1]
+	errfunc = lambda p, x, y: fitfunc(p,x)-y
+	p0=[-1.0,1.0]
+	#p1, success =optimize.leastsq(errfunc, p0[:], args=(wurzelcbrlx,cr1))
+	p1, success = optimize.leastsq(errfunc, p0[:], args=(wurzelcbrlx, cr1))
+	p0=[2.9,1.0]
+	p2,sucecess =optimize.leastsq(errfunc,p0[:],args=[vif,fvoji])
 #l1, = ax.plot(omega, R_1(omega,tau_c),'r--')
 #plt.legend(loc='upper left')
 plt.legend()
@@ -65,6 +68,39 @@ plt.xlabel('Wurzel omega')
 plt.ylabel('R_1')
 plt.show()
 
+class Parameter:
+	def __init__(self, value):
+		self.value = value
+
+	def set(self, value):
+		self.value = value
+
+	def __call__(self):
+		return self.value
+
+	def fit(function, parameters, y, x = None):
+		def f(params):
+			i = 0
+			for p in parameters:
+				p.set(params[i])
+				i += 1
+				return y - function(x)
+				if x is None: x = arange(y.shape[0])
+				p = [param() for param in parameters]
+			optimize.leastsq(f, p)
+
+# giving initial parameters
+mu = Parameter(7)
+sigma = Parameter(3)
+height = Parameter(5)
+
+# define your function:
+def f(x): return height() * exp(-((x-mu())/sigma())**2)
+
+# fit! (given that data is an array with the data to fit)
+fit(f, [mu, sigma, height], data)
+
+#
 #axcolor = 'lightgoldenrodyellow'
 #axtau_c=plt.axes([0.25,0.1,0.65,0.03],axisbg=axcolor)
 #stau_c=Slider(axtau_c,'log (tau_c)',-3,6,valinit=np.log10(tau_c))
