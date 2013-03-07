@@ -1,6 +1,3 @@
 *~
 *.swp
-benzophenone/*
-dhiq/*
-Glyzerin\ d3\ test/*
-mTCP/*
+*.sdf
