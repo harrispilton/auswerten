@@ -22,7 +22,7 @@ ax = plt.subplot(111)
 plt.subplots_adjust(bottom=0.25)
 alle=[]
 temp=glob.glob('*.dat')
-temp.remove('all.dat')
+#temp.remove('all.dat')
 temp.sort()
 brlxs=[]
 chis=[]

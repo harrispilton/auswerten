@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons
 beta=0.9
 omega=np.logspace(5.0,8.5,20,10)
-tau_c=1.0
-K_DD=1.0
+tau_c=1.0e-6
+K_DD=1.0e9
 delta_sigma_CSA=0.226
 sef=glob.glob('*K.sef')
 sef.sort()
@@ -16,7 +16,7 @@ sdf.sort()
 def J(omega,tau_c):
 	return tau_c/(1. + omega **2 * tau_c **2)**beta
 def Chi(omega,tau_c):
-	return omega*J(omega,tau_c)
+	return K_DD*omega*J(omega,tau_c)
 plt.axes([0.1,0.1,0.55,0.8])
 sefdata=[]
 for filename in sef:
