@@ -100,7 +100,7 @@ for filename in sef:
 		brlx[i]=brlx[i]*10e6
 		chi.append(r1[i]*brlx[i])
 	plt.plot(brlx,chi,label=relativefile[0])
-line1, = plt.plot(omega, Chi(omega,1e-6),label='chi mit tau_c =1')
+plt.plot(omega, Chi(omega,1e-6),label='chi mit tau_c =1')
 for i in range(0,ax.lines.__len__()-1): print ax.lines[i]
 plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
 resetax =plt.axes([0.8,0.025,0.1,0.04])
