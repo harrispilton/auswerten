@@ -17,22 +17,13 @@ sef=glob.glob('*K.sef')
 sef.sort()
 sdf=glob.glob('*K.sdf')
 sdf.sort()
+
 def J(omega,tau_c):
 	return tau_c/(1. + omega **2 * tau_c **2)**beta
 def Chi(omega,tau_c):
 	return K_DD*omega*J(omega,tau_c)
 def update(val):
-	slide=10.0**val
-	print rf[0], 'hallo'
-	for i,b in enumerate(br):
-		br[i]=br[i]*10e6*10
-		ch.append(ra1[i]*br[i])
-	for i,b in enumerate(br): br[i]=br[i]*slide
-	plt.plot(br,ch,label=rf[0])
-	plt.draw()
-def pick(val):
-	print relativefile[0]
-	fin=open(sef[int(val)],'r')
+	fin=open(sef[int(picker.val)],'r')
 	sefdata=fin.readlines()
 	for i in range(0,4):sefdata.pop(0)
 	ch=[]
@@ -48,6 +39,16 @@ def pick(val):
 		ra1=map(float,ra1)
 		rf.append(liste[6])
 	print rf[0]	
+	slide=10.0**val
+#	for i,b in enumerate(br):
+#		br[i]=br[i]*10e6*10
+#		ch.append(ra1[i]*br[i])
+	for i,b in enumerate(br): 
+		br[i]=br[i]*10e6*slide
+		ch.append(ra1[i]*br[i]/slide)
+	plt.plot(br,ch,label=rf[0])
+	plt.draw()
+def pick(val):
 	return val
 ax = plt.axes([0.1,0.2,0.55,0.8])
 plt.xscale('log')
