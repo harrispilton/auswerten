@@ -46,7 +46,8 @@ def update(val):
 	for i,b in enumerate(br): 
 		br[i]=br[i]*10e6*slide
 		ch.append(ra1[i]*br[i]/slide)
-	plt.plot(br,ch,label=rf[0])
+	#plt.plot(br,ch,label=rf[0])
+	ax.lines[int(picker.val)].set_xdata(br)
 	plt.draw()
 def pick(val):
 	return val
@@ -58,7 +59,7 @@ plt.ylabel('Chi')
 
 axcolor = 'lightgoldenrodyellow'
 axtau_c=plt.axes([0.6,0.1,0.3,0.02],axisbg=axcolor)
-stau_c=Slider(axtau_c,'log (tau_c)',-9,9,valinit=np.log10(tau_c))
+stau_c=Slider(axtau_c,'log (tau_c)',-7,2,valinit=np.log10(tau_c))
 axpicker=plt.axes([0.1,0.1,0.25,0.02],axisbg=axcolor)
 picker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
 sefdata=[]
@@ -99,8 +100,8 @@ for filename in sef:
 		brlx[i]=brlx[i]*10e6
 		chi.append(r1[i]*brlx[i])
 	plt.plot(brlx,chi,label=relativefile[0])
-plt.plot(omega, Chi(omega,1e-6),label='chi mit tau_c =1')
-print ax.lines[0]
+line1, = plt.plot(omega, Chi(omega,1e-6),label='chi mit tau_c =1')
+for i in range(0,ax.lines.__len__()-1): print ax.lines[i]
 plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
 resetax =plt.axes([0.8,0.025,0.1,0.04])
 button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
