@@ -57,37 +57,37 @@ def pick(val):
 def reset(event):
 	stau_c.reset()
 
-ax=plt.axes([0.1,0.6,0.55,0.35])
-plt.xscale('log')
-plt.yscale('log')
+ax=plt.axes([0.1,0.1,0.55,0.85])
+#plt.xscale('lin')
+#plt.yscale('lin')
 plt.xlabel('omega')
-plt.ylabel('Chi')
+plt.ylabel('Rate in 1/s')
 plt.setp(ax.get_xticklabels())
 ax.autoscale_view(True,True,True)
-ax2=plt.axes([0.1,0.2,0.55,0.35])
-plt.xscale('log')
-plt.yscale('log')
-#plt.xlabel('omega')
-plt.ylabel('Chi')
-ax2.sharex=ax
-ax2.sharey=ax
-plt.setp(ax2.get_xticklabels(),visible=False)
+#ax2=plt.axes([0.1,0.2,0.55,0.35])
+#plt.xscale('log')
+#plt.yscale('log')
+##plt.xlabel('omega')
+#plt.ylabel('Chi')
+#ax2.sharex=ax
+#ax2.sharey=ax
+#plt.setp(ax2.get_xticklabels(),visible=False)
 
 
-axcolor = 'lightgoldenrodyellow'
-
-resetax =plt.axes([0.8,0.025,0.1,0.04])
-button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
-
-axtau_c=plt.axes([0.6,0.1,0.3,0.02],axisbg=axcolor)
-stau_c=Slider(axtau_c,'log (tau_c)',-7,7,valinit=np.log10(tau_c))
-
-axpicker=plt.axes([0.1,0.1,0.25,0.02],axisbg=axcolor)
-spicker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
-
-stau_c.on_changed(update)
-spicker.on_changed(pick)
-button.on_clicked(reset)
+#axcolor = 'lightgoldenrodyellow'
+#
+#resetax =plt.axes([0.8,0.025,0.1,0.04])
+#button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
+#
+#axtau_c=plt.axes([0.6,0.1,0.3,0.02],axisbg=axcolor)
+#stau_c=Slider(axtau_c,'log (tau_c)',-7,7,valinit=np.log10(tau_c))
+#
+#axpicker=plt.axes([0.1,0.1,0.25,0.02],axisbg=axcolor)
+#spicker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
+#
+#stau_c.on_changed(update)
+#spicker.on_changed(pick)
+#button.on_clicked(reset)
 
 ax
 sefdata=[]
@@ -122,11 +122,11 @@ for filename in sef:
 	for i,b in enumerate(brlx):
 		brlx[i]=brlx[i]*10e6
 		chi.append(r1[i]*brlx[i])
-	ax.plot(brlx,chi,label=relativefile[0])
-	ax2.plot(brlx,chi)	
-plt.plot(omega, Chi(omega,1e-6),label='chi mit tau_c =1')
+		brlx[i]=brlx[i]**0.5
+	ax.plot(brlx,r1,label=relativefile[0])
+	#ax2.plot(brlx,chi)	
 
-plt.legend(loc='center left',bbox_to_anchor=(1.,0.5))
+ax.legend(loc='center left',bbox_to_anchor=(1.,0.5))
 #set1ax=plt.axes([0.7,0.025,0.1,0.04])
 #set1 = Button(set1ax,'set1 relativefile?? somehow',color=axcolor) 
 
