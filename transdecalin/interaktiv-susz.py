@@ -2,14 +2,16 @@
 import glob
 import re
 import numpy as np
+from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
+#text.usetex: True
 br=[]
 rf=[]
 ra1=[]
 ch=[]
 beta=0.9
-omega=np.logspace(5.0,8.5,20,10)
+omega=np.logspace(4.0,7.301,20,10)
 tau_c=1.0e-6
 K_DD=1.0e9
 delta_sigma_CSA=0.226
@@ -38,7 +40,6 @@ def update(val):
 		ra1.append(liste[2])
 		ra1=map(float,ra1)
 		rf.append(liste[6])
-	print rf[0]	
 	slide=10.0**val
 #	for i,b in enumerate(br):
 #		br[i]=br[i]*10e6*10
@@ -52,7 +53,10 @@ def update(val):
 	plt.draw()
 def pick(val):
 	return val
-ax = plt.axes([0.1,0.2,0.55,0.8])
+def reset(event):
+	stau_c.reset()
+
+ax = plt.axes([0.1,0.2,0.55,0.7])
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('omega')
@@ -63,12 +67,14 @@ axtau_c=plt.axes([0.6,0.1,0.3,0.02],axisbg=axcolor)
 stau_c=Slider(axtau_c,'log (tau_c)',-7,2,valinit=np.log10(tau_c))
 axpicker=plt.axes([0.1,0.1,0.25,0.02],axisbg=axcolor)
 picker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
-sefdata=[]
-plt.axes([0.1,0.2,0.55,0.8])
+resetax =plt.axes([0.8,0.025,0.1,0.04])
+button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
 
 stau_c.on_changed(update)
-print picker.on_changed(pick)
+picker.on_changed(pick)
+button.on_clicked(reset)
 
+sefdata=[]
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
@@ -98,23 +104,40 @@ for filename in sef:
 		zone=map(int,zone)
 		relativefile.append(liste[6])
 	for i,b in enumerate(brlx):
-		brlx[i]=brlx[i]*10e6
+		brlx[i]=brlx[i]*1e6
 		chi.append(r1[i]*brlx[i])
+	plt.figure(1)
+	plt.axes([0.1,0.2,0.55,0.7])
+#	fitpars, covmat = curve_fit(Chi,brlx,chi)
 	plt.plot(brlx,chi,label=relativefile[0])
-plt.plot(omega, Chi(omega,1e-6),label='chi mit tau_c =1')
-for i in range(0,ax.lines.__len__()-1): print ax.lines[i]
-plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
-resetax =plt.axes([0.8,0.025,0.1,0.04])
-button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
-#set1ax=plt.axes([0.7,0.025,0.1,0.04])
-#set1 = Button(set1ax,'set1 relativefile?? somehow',color=axcolor) 
-def reset(event):
-	stau_c.reset()
-button.on_clicked(reset)
+	plt.figure(2)
+	plt.title('Wurzel')
+	for i, b in enumerate(brlx):
+		brlx[i]=brlx[i]**0.5
+	plt.plot(brlx,r1,label=relativefile[0])
+	plt.figure(3)
+	plt.title('Rate')
+	plt.xscale('log')
+	plt.yscale('log')
+	for i,b in enumerate(brlx):
+		brlx[i]=brlx[i]**2 #wir hatten die wurzel gezogen
+	plt.plot(brlx,r1,label=relativefile[0])
+	
 
-plt.axes([0.1,0.2,0.55,0.8])
+plt.figure(1)
+plt.plot(omega, Chi(omega,1e-6),label='chi mit tau_c =1')
+plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
+plt.savefig('suscibility',dpi=300,orientation='landscape')
+plt.figure(2)
+plt.savefig('wurzel',dpi=300,orientation='landscape')
+plt.figure(3)
+plt.savefig('rate',dpi=300,orientation='landscape')
 plt.show()
 
+#set1ax=plt.axes([0.7,0.025,0.1,0.04])
+#set1 = Button(set1ax,'set1 relativefile?? somehow',color=axcolor) 
+
+#for i in range(0,ax.lines.__len__()-1): print ax.lines[i]
 #vor dem plt.show kann man noch diese 5 zeilen pasten
 #rax = plt.axes([0.025,0.5,0.15,0.15],axisbg=axcolor)
 #def colorfunc(label):
