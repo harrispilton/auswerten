@@ -23,13 +23,30 @@ sef=glob.glob('*K.sef')
 sef.sort()
 sdf=glob.glob('*K.sdf')
 sdf.sort()
+verschiebefaktoren=[]
+verschiebetemperaturen=[]
+for i in range(0,sef.__len__()): 
+	verschiebetemperaturen.append(0)
+	verschiebefaktoren.append(0)
 ###
 ### funktionen definieren
 ###
+
+##die spektraldichte J und die Suszibilitaet Chi
 def J(omega,tau_c,beta):
 	return tau_c/(1. + omega **2 * tau_c **2)**beta
 def Chi(omega,tau_c,beta,K_DD):
 	return K_DD*omega*J(omega,tau_c,beta)
+##die auswertefunktion fuer die Diffusion und die rate. mal sehen...
+def Diffusion(x):
+	return x
+def R_1(omega,R1_0,D):
+	mu_0 =1.2566e-6
+	h_quer = 6.626e-34/2/np.pi
+	N=N_mTCP=21*6.022e-23*1.15*100**3/368.4
+	B=np.pi/30*(1+4*(2**0.5))*(mu_0/4/np.pi * h_quer * gamma_H **2)**2 * N
+	return R1_0-B/(D**1.5) *omega**0.5
+##die verschiebefunktion fuer die suszibilitaet
 def update(val):
 	fin=open(sef[int(picker.val)],'r')
 	sefdata=fin.readlines()
@@ -37,6 +54,7 @@ def update(val):
 	ch=[]
 	br=[]
 	ra1=[]
+	zone=[]
 	rf=[]
 	for data in sefdata: 
 		liste=data.split()
@@ -45,19 +63,56 @@ def update(val):
 		br=map(float,br)
 		ra1.append(liste[2])
 		ra1=map(float,ra1)
+		zone.append(liste[5])
+		zone=map(int,zone)
 		rf.append(liste[6])
 	slide=10.0**val
+	print slide
 	for i,b in enumerate(br): 
-		br[i]=br[i]*10e6
+		br[i]=br[i]*1e6
 		ch.append(ra1[i]*br[i])
 		br[i]=br[i]*slide
-	ax.lines[int(picker.val)].set_xdata(br)
+	#for line in ax.lines: print line
+	ax.lines[int(picker.val)*2+1].set_xdata(br)
 	plt.draw()
+	verschiebefaktoren[int(picker.val)]=slide
+	verschiebetemperaturen[int(picker.val)]=temps[int(picker.val)]
+	print verschiebefaktoren
+	print verschiebetemperaturen
+	plt.figure(4)
+	plt.cla()
+	plt.plot(verschiebefaktoren,verschiebetemperaturen)
+	plt.draw()
+	return slide
+#	fin=open(sef[int(picker.val)],'r')
+#	sefdata=fin.readlines()
+#	for i in range(0,4):sefdata.pop(0)
+#	ch=[]
+#	br=[]
+#	ra1=[]
+#	rf=[]
+#	for data in sefdata: 
+#		liste=data.split()
+#	#	liste = re.findall(r"[\w.][\f]+",data)
+#		br.append(liste[0])
+#		br=map(float,br)
+#		ra1.append(liste[2])
+#		ra1=map(float,ra1)
+#		rf.append(liste[6])
+#	slide=10.0**val
+#	for i,b in enumerate(br): 
+#		br[i]=br[i]*10e6
+#		ch.append(ra1[i]*br[i])
+#		br[i]=br[i]*slide
+#	ax.lines[int(picker.val)].set_xdata(br)
+#	plt.draw()
+## den pick gibts nur anstandshalber
 def pick(val):
 	return val
 def reset(event):
 	stau_c.reset()
 
+plt.figure(1)
 ax = plt.axes([0.1,0.2,0.55,0.7])
 plt.xscale('log')
 plt.yscale('log')
@@ -72,11 +127,26 @@ picker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
 resetax =plt.axes([0.8,0.025,0.1,0.04])
 button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
 
-stau_c.on_changed(update)
+plt.figure(2)
+wurzelax=plt.axes([0.1,0.1,0.8,0.8])
+axr0=plt.axes([0.05,0.02,0.6,0.02],axisbg=axcolor)
+sr0=Slider(axr0,'r0',0.3,10,valinit=1.0)
+
+plt.figure(3)
+##wird spaeter bemalt
+
+plt.figure(4)
+fakchiax=plt.axes([0.15,0.15,0.8,0.8])
+plt.title('verschiebefaktoren in der suszeptiblitaet')
+plt.xlabel('T')
+plt.ylabel('schiebefaktoren a.u.')
+
 picker.on_changed(pick)
 button.on_clicked(reset)
+stau_c.on_changed(update)
 
 sefdata=[]
+temps=[]
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
@@ -105,17 +175,32 @@ for filename in sef:
 		zone.append(liste[5])
 		zone=map(int,zone)
 		relativefile.append(liste[6])
+	fin2=open(relativefile[0],'r')
+	sdfdata=fin2.readlines()
+	temp=sdfdata[sdfdata.index('ZONE=\t'+str(zone[5])+'\r\n')+7]
+	temp=temp[6:]
+	temp=temp.rstrip()
+	temps.append(float(temp))
+	#print repr(temp)
+	print fin2
+	print zone
+
 	for i,b in enumerate(brlx):
 		brlx[i]=brlx[i]*1e6
 		chi.append(r1[i]*brlx[i])
 	plt.figure(1)
+	plt.title(relativefile[0][0:-9])
 	plt.axes([0.1,0.2,0.55,0.7])
-	plt.plot(brlx,map(lambda x:Chi(x,1e-6,0.7,1e8),brlx))
-	#fitpars, covmat = curve_fit(Chi,brlx,chi,p0=[1e-6,0.7,1e8])
-	#print fitpars
-	plt.plot(brlx,chi,label=relativefile[0])
+	#plt.plot(brlx,map(lambda x:Chi(x,1e-6,0.7,1e8),brlx))
+	brlx=np.array(brlx)
+	chi=np.array(chi)
+	fitpars, covmat = curve_fit(Chi,brlx,chi,p0=[1e-6,0.7,1e10],maxfev=10000)
+	print fitpars
+	plt.plot(brlx,map(lambda x:Chi(x,fitpars[0],fitpars[1],fitpars[2]),brlx),label='Chi '+temp+' K')
+	plt.plot(brlx,chi,label=temp+' K',marker='o',linestyle='None')
 	plt.figure(2)
 	plt.title('Wurzel')
+	wurzelax=plt.axes([0.1,0.1,0.8,0.8])
 	for i, b in enumerate(brlx):
 		brlx[i]=brlx[i]**0.5
 	plt.plot(brlx,r1,label=relativefile[0])
@@ -126,7 +211,8 @@ for filename in sef:
 	for i,b in enumerate(brlx):
 		brlx[i]=brlx[i]**2 #wir hatten die wurzel gezogen
 	plt.plot(brlx,r1,label=relativefile[0])
-	
+print temps	
+plt.figure(2)
 
 plt.figure(1)
 plt.plot(omega, Chi(omega,1e-6,0.7,1e8),label='chi mit tau_c =1')
@@ -137,6 +223,7 @@ plt.savefig('wurzel',dpi=300,orientation='landscape')
 plt.figure(3)
 plt.savefig('rate',dpi=300,orientation='landscape')
 plt.show()
+
 
 #set1ax=plt.axes([0.7,0.025,0.1,0.04])
 #set1 = Button(set1ax,'set1 relativefile?? somehow',color=axcolor) 
