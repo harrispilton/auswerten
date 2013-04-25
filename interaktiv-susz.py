@@ -38,13 +38,12 @@ def J(omega,tau_c,beta):
 def Chi(omega,tau_c,beta,K_DD):
 	return K_DD*omega*J(omega,tau_c,beta)
 ##die auswertefunktion fuer die Diffusion und die rate. mal sehen...
-def Diffusion(x):
-	return x
 def R_1(omega,R1_0,D):
 	mu_0 =1.2566e-6
 	h_quer = 6.626e-34/2/np.pi
+	gamma_H=2.675e8
 	N=N_mTCP=21*6.022e-23*1.15*100**3/368.4
-	B=np.pi/30*(1+4*(2**0.5))*(mu_0/4/np.pi * h_quer * gamma_H **2)**2 * N
+	B=np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2)**2 * N
 	return R1_0-B/(D**1.5) *omega**0.5
 ##die verschiebefunktion fuer die suszibilitaet
 def update(val):
@@ -67,7 +66,6 @@ def update(val):
 		zone=map(int,zone)
 		rf.append(liste[6])
 	slide=10.0**val
-	print slide
 	for i,b in enumerate(br): 
 		br[i]=br[i]*1e6
 		ch.append(ra1[i]*br[i])
@@ -77,11 +75,9 @@ def update(val):
 	plt.draw()
 	verschiebefaktoren[int(picker.val)]=slide
 	verschiebetemperaturen[int(picker.val)]=temps[int(picker.val)]
-	print verschiebefaktoren
-	print verschiebetemperaturen
 	plt.figure(4)
 	plt.cla()
-	plt.plot(verschiebefaktoren,verschiebetemperaturen)
+	plt.plot(verschiebetemperaturen,verschiebefaktoren)
 	plt.draw()
 	return slide
 #	fin=open(sef[int(picker.val)],'r')
@@ -131,6 +127,8 @@ plt.figure(2)
 wurzelax=plt.axes([0.1,0.1,0.8,0.8])
 axr0=plt.axes([0.05,0.02,0.6,0.02],axisbg=axcolor)
 sr0=Slider(axr0,'r0',0.3,10,valinit=1.0)
+axD=plt.axes([0.7,0.02,0.2,0.02],axisbg=axcolor)
+sd0=Slider(axD,'D',-12,-9,valinit=-11)
 
 plt.figure(3)
 ##wird spaeter bemalt
@@ -141,6 +139,7 @@ plt.title('verschiebefaktoren in der suszeptiblitaet')
 plt.xlabel('T')
 plt.ylabel('schiebefaktoren a.u.')
 
+##interaktion mit der gui
 picker.on_changed(pick)
 button.on_clicked(reset)
 stau_c.on_changed(update)
@@ -182,8 +181,6 @@ for filename in sef:
 	temp=temp.rstrip()
 	temps.append(float(temp))
 	#print repr(temp)
-	print fin2
-	print zone
 
 	for i,b in enumerate(brlx):
 		brlx[i]=brlx[i]*1e6
@@ -195,9 +192,14 @@ for filename in sef:
 	brlx=np.array(brlx)
 	chi=np.array(chi)
 	fitpars, covmat = curve_fit(Chi,brlx,chi,p0=[1e-6,0.7,1e10],maxfev=10000)
-	print fitpars
-	plt.plot(brlx,map(lambda x:Chi(x,fitpars[0],fitpars[1],fitpars[2]),brlx),label='Chi '+temp+' K')
-	plt.plot(brlx,chi,label=temp+' K',marker='o',linestyle='None')
+	print 'fitparamer temperatur (tau,beta,kopplungskonstante)'+temp+str(fitpars)
+	plt.plot(brlx,
+			map(lambda x:Chi(x,fitpars[0],fitpars[1],fitpars[2]),brlx),
+			#label='Chi '+temp+' K'
+			)
+	plt.plot(brlx,chi,
+			label=temp+' K',
+			marker='o',linestyle='None')
 	plt.figure(2)
 	plt.title('Wurzel')
 	wurzelax=plt.axes([0.1,0.1,0.8,0.8])
@@ -211,17 +213,22 @@ for filename in sef:
 	for i,b in enumerate(brlx):
 		brlx[i]=brlx[i]**2 #wir hatten die wurzel gezogen
 	plt.plot(brlx,r1,label=relativefile[0])
-print temps	
-plt.figure(2)
+
+plt.figure(4)
+print (map(lambda x: x**0.5,omega),map(lambda y:R_1(y**0.5,2,1e-10),omega))
 
 plt.figure(1)
-plt.plot(omega, Chi(omega,1e-6,0.7,1e8),label='chi mit tau_c =1')
+plt.plot(omega, Chi(omega,1e-6,0.7,1e8),label='chi mit tau_c =1e-6')
+plt.plot(omega, Chi(omega,1e-8,0.7,1e8),label='chi mit tau_c =1e-8')
+plt.plot(omega, Chi(omega,1e-4,0.7,1e8),label='chi mit tau_c =1e-4')
 plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
 plt.savefig('suscibility',dpi=300,orientation='landscape')
 plt.figure(2)
 plt.savefig('wurzel',dpi=300,orientation='landscape')
 plt.figure(3)
 plt.savefig('rate',dpi=300,orientation='landscape')
+plt.figure(4)
+plt.savefig('verschiebeparameter',dpi=300,orientation='landscape')
 plt.show()
 
 
