@@ -28,6 +28,8 @@ verschiebetemperaturen=[]
 for i in range(0,sef.__len__()): 
 	verschiebetemperaturen.append(0)
 	verschiebefaktoren.append(0)
+wurzelomega=[]
+for om in omega: wurzelomega.append(om**0.5)
 ###
 ### funktionen definieren
 ###
@@ -105,6 +107,42 @@ def update(val):
 ## den pick gibts nur anstandshalber
 def pick(val):
 	return val
+def r0(r):
+	plt.figure(2)
+	plt.cla()
+	for om in omega: om=om**0.5
+	plt.plot(omega,R_1(omega,r,10**sd0.val))
+	plt.draw()
+	
+	fin=open(sef[int(picker.val)],'r')
+	sefdata=fin.readlines()
+	for i in range(0,4):sefdata.pop(0)
+	ch=[]
+	br=[]
+	ra1=[]
+	zone=[]
+	rf=[]
+	for data in sefdata: 
+		liste=data.split()
+	#	liste = re.findall(r"[\w.][\f]+",data)
+		br.append(liste[0])
+		br=map(float,br)
+		ra1.append(liste[2])
+		ra1=map(float,ra1)
+		zone.append(liste[5])
+		zone=map(int,zone)
+		rf.append(liste[6])
+	slide=10.0**val
+	for i,b in enumerate(br): 
+		br[i]=br[i]*1e6
+		ch.append(ra1[i]*br[i])
+		br[i]=br[i]*slide
+	#for line in ax.lines: print line
+	ax.lines[int(picker.val)*2+1].set_xdata(br)
+	plt.draw()
+
+def d0(d):
+	return d
 def reset(event):
 	stau_c.reset()
 
@@ -143,6 +181,8 @@ plt.ylabel('schiebefaktoren a.u.')
 picker.on_changed(pick)
 button.on_clicked(reset)
 stau_c.on_changed(update)
+sr0.on_changed(r0)
+sd0.on_changed(d0)
 
 sefdata=[]
 temps=[]
@@ -215,8 +255,11 @@ for filename in sef:
 	plt.plot(brlx,r1,label=relativefile[0])
 
 plt.figure(4)
-print (map(lambda x: x**0.5,omega),map(lambda y:R_1(y**0.5,2,1e-10),omega))
 
+print (map(lambda x: x**0.5,omega),map(lambda y:R_1(y,2,1e-10),wurzelomega))
+
+plt.figure(2)
+plt.plot(wurzelomega,R_1(wurzelomega,20,10e-9))
 plt.figure(1)
 plt.plot(omega, Chi(omega,1e-6,0.7,1e8),label='chi mit tau_c =1e-6')
 plt.plot(omega, Chi(omega,1e-8,0.7,1e8),label='chi mit tau_c =1e-8')
