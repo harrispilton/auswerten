@@ -42,10 +42,15 @@ def Chi(omega,tau_c,beta,K_DD):
 ##die auswertefunktion fuer die Diffusion und die rate. mal sehen...
 def R_1(omega,R1_0,D):
 	mu_0 =1.2566e-6
-	h_quer = 6.626e-34/2/np.pi
-	gamma_H=2.675e8
-	N=N_mTCP=21*6.022e-23*1.15*100**3/368.4
+	h_quer = 6.626e-34/(2.*np.pi)
+	gamma_H=2.675e8*2*np.pi
+	N_a=6.022e23
+	n_H=21.0
+	rho=rho_mTCP=1.15*1e6
+	M=M_mTCP=368.4
+	N=n_H*N_a*rho/M
 	B=np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2)**2 * N
+	print omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
 	return R1_0-B/(D**1.5) *omega**0.5
 ##die verschiebefunktion fuer die suszibilitaet
 def update(val):
@@ -107,41 +112,27 @@ def update(val):
 ## den pick gibts nur anstandshalber
 def pick(val):
 	return val
-def r0(r):
-	plt.figure(2)
-	plt.cla()
-	for om in omega: om=om**0.5
-	plt.plot(omega,R_1(omega,r,10**sd0.val))
-	plt.draw()
-	
-	fin=open(sef[int(picker.val)],'r')
-	sefdata=fin.readlines()
-	for i in range(0,4):sefdata.pop(0)
-	ch=[]
+def r_ref(r):
 	br=[]
 	ra1=[]
-	zone=[]
 	rf=[]
-	for data in sefdata: 
-		liste=data.split()
-	#	liste = re.findall(r"[\w.][\f]+",data)
-		br.append(liste[0])
-		br=map(float,br)
-		ra1.append(liste[2])
-		ra1=map(float,ra1)
-		zone.append(liste[5])
-		zone=map(int,zone)
-		rf.append(liste[6])
-	slide=10.0**val
-	for i,b in enumerate(br): 
-		br[i]=br[i]*1e6
-		ch.append(ra1[i]*br[i])
-		br[i]=br[i]*slide
-	#for line in ax.lines: print line
-	ax.lines[int(picker.val)*2+1].set_xdata(br)
+	d=10**float(sd0.val)
+	for i,om in enumerate(omega): 
+		br.append(omega[i]**0.5)
+		ra1.append(R_1(omega[i],r,d))
+	wurzelax.lines[wurzelax.lines.__len__()-1].set_ydata(ra1)
 	plt.draw()
-
 def d0(d):
+	br=[]
+	ra1=[]
+	rf=[]
+	r=float(sr0.val)
+	d=10**d
+	for i,om in enumerate(omega): 
+		br.append(omega[i]**0.5)
+		ra1.append(R_1(omega[i],r,d))
+	wurzelax.lines[wurzelax.lines.__len__()-1].set_ydata(ra1)
+	plt.draw()
 	return d
 def reset(event):
 	stau_c.reset()
@@ -164,9 +155,9 @@ button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
 plt.figure(2)
 wurzelax=plt.axes([0.1,0.1,0.8,0.8])
 axr0=plt.axes([0.05,0.02,0.6,0.02],axisbg=axcolor)
-sr0=Slider(axr0,'r0',0.3,10,valinit=1.0)
+sr0=Slider(axr0,'r0',500,2000,valinit=1.0)
 axD=plt.axes([0.7,0.02,0.2,0.02],axisbg=axcolor)
-sd0=Slider(axD,'D',-12,-9,valinit=-11)
+sd0=Slider(axD,'D',-15,-7,valinit=-11)
 
 plt.figure(3)
 ##wird spaeter bemalt
@@ -181,7 +172,7 @@ plt.ylabel('schiebefaktoren a.u.')
 picker.on_changed(pick)
 button.on_clicked(reset)
 stau_c.on_changed(update)
-sr0.on_changed(r0)
+sr0.on_changed(r_ref)
 sd0.on_changed(d0)
 
 sefdata=[]
@@ -231,7 +222,12 @@ for filename in sef:
 	#plt.plot(brlx,map(lambda x:Chi(x,1e-6,0.7,1e8),brlx))
 	brlx=np.array(brlx)
 	chi=np.array(chi)
-	fitpars, covmat = curve_fit(Chi,brlx,chi,p0=[1e-6,0.7,1e10],maxfev=10000)
+	fitpars, covmat = curve_fit(
+			Chi,
+			brlx,
+			chi,
+			p0=[1e-6,0.7,1e10],
+			maxfev=10000)
 	print 'fitparamer temperatur (tau,beta,kopplungskonstante)'+temp+str(fitpars)
 	plt.plot(brlx,
 			map(lambda x:Chi(x,fitpars[0],fitpars[1],fitpars[2]),brlx),
@@ -259,7 +255,7 @@ plt.figure(4)
 print (map(lambda x: x**0.5,omega),map(lambda y:R_1(y,2,1e-10),wurzelomega))
 
 plt.figure(2)
-plt.plot(wurzelomega,R_1(wurzelomega,20,10e-9))
+plt.plot(wurzelomega,map(lambda x: R_1(x,20,10e-9),omega))
 plt.figure(1)
 plt.plot(omega, Chi(omega,1e-6,0.7,1e8),label='chi mit tau_c =1e-6')
 plt.plot(omega, Chi(omega,1e-8,0.7,1e8),label='chi mit tau_c =1e-8')
