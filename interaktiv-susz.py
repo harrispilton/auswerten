@@ -50,7 +50,7 @@ def R_1(omega,R1_0,D):
 	M=M_mTCP=368.4
 	N=n_H*N_a*rho/M
 	B=np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2)**2 * N
-	print omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
+	print N, omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
 	return R1_0-B/(D**1.5) *omega**0.5
 ##die verschiebefunktion fuer die suszibilitaet
 def update(val):
@@ -205,14 +205,16 @@ for filename in sef:
 		zone.append(liste[5])
 		zone=map(int,zone)
 		relativefile.append(liste[6])
-	fin2=open(relativefile[0],'r')
+	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
-	temp=sdfdata[sdfdata.index('ZONE=\t'+str(zone[5])+'\r\n')+7]
+	temp=sdfdata[
+			sdfdata.index(
+				'ZONE=\t'+str(zone[
+					sef.index(filename)])+'\r\n')+7]
 	temp=temp[6:]
 	temp=temp.rstrip()
 	temps.append(float(temp))
 	#print repr(temp)
-
 	for i,b in enumerate(brlx):
 		brlx[i]=brlx[i]*1e6
 		chi.append(r1[i]*brlx[i])

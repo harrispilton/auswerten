@@ -50,7 +50,7 @@ def R_1(omega,R1_0,D):
 	M=M_mTCP=368.4
 	N=n_H*N_a*rho/M
 	B=np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2)**2 * N
-	print N, omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
+	print omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
 	return R1_0-B/(D**1.5) *omega**0.5
 ##die verschiebefunktion fuer die suszibilitaet
 def update(val):
@@ -155,9 +155,9 @@ button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
 plt.figure(2)
 wurzelax=plt.axes([0.1,0.1,0.8,0.8])
 axr0=plt.axes([0.05,0.02,0.6,0.02],axisbg=axcolor)
-sr0=Slider(axr0,'r0',0.1500,10.2000,valinit=1.0)
+sr0=Slider(axr0,'r0',500,2000,valinit=1.0)
 axD=plt.axes([0.7,0.02,0.2,0.02],axisbg=axcolor)
-sd0=Slider(axD,'D',-13,-8,valinit=-11)
+sd0=Slider(axD,'D',-15,-7,valinit=-11)
 
 plt.figure(3)
 ##wird spaeter bemalt
@@ -205,12 +205,9 @@ for filename in sef:
 		zone.append(liste[5])
 		zone=map(int,zone)
 		relativefile.append(liste[6])
-	fin2=open(relativefile[1],'r')
+	fin2=open(relativefile[0],'r')
 	sdfdata=fin2.readlines()
-	temp=sdfdata[
-			sdfdata.index(
-				'ZONE=\t'+str(zone[
-					sef.index(filename)])+'\r\n')+7]
+	temp=sdfdata[sdfdata.index('ZONE=\t'+str(zone[zone.__len__()-2])+'\r\n')+7]
 	temp=temp[6:]
 	temp=temp.rstrip()
 	temps.append(float(temp))
