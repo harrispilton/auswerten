@@ -146,10 +146,13 @@ def conf(event):
 	plt.figure(5)
 	plt.plot(zeichneT,zeichneD)
 	lsout=[]
-	for i, x in enumerate(zeichneD):
-		lsout.append(str(zeichneD[i])+'\t'+str(zeichneT[i])+'\n \r')
-	fout=open('m-tcp_D.dat','w')
-	fout.write(str(lsout))
+	with open('m-tcp_D.dat','w') as fout:
+		fout.close()
+	with open('m-tcp_D.dat','a') as fout:
+		for i, x in enumerate(zeichneD):
+			fout.write(str(1000/zeichneT[i])+'\t'+str(zeichneD[i])+'\n')
+	
+
 
 def normchi(K):
 	plt.figure(1)

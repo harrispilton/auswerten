@@ -138,13 +138,22 @@ def d0(d):
 	plt.draw()
 	return d
 def conf(event):
-	d=10**(float(sd0.val))
+	d=float(sd0.val)
 	r=10**(float(sr0.val))
-	zeichneD.append(d)
 	T=raw_input('gebe temperatur ein')
+	zeichneD.append(d)
 	zeichneT.append(1000/float(T))
 	plt.figure(5)
 	plt.plot(zeichneT,zeichneD)
+	lsout=[]
+	with open('m-tcp_D.dat','w') as fout:
+		fout.close()
+	with open('m-tcp_D.dat','a') as fout:
+		for i, x in enumerate(zeichneD):
+			fout.write(str(1000/zeichneT[i])+'\t'+str(zeichneD[i])+'\n')
+	
+
+
 def normchi(K):
 	plt.figure(1)
 	for line in ax.lines:
@@ -195,7 +204,7 @@ plt.figure(5)
 diffax=plt.axes([0.15,0.15,0.8,0.8])
 plt.title('Diffusion')
 plt.xlabel('1000/T $[K^{-1}]$')
-plt.ylabel(r'D $[\frac{m^2}{s}]$')
+plt.ylabel(r'lg(D) $[\frac{m^2}{s}]$')
 ##interaktion mit der gui
 picker.on_changed(pick)
 button.on_clicked(reset)
