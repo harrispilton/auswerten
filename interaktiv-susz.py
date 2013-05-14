@@ -16,6 +16,7 @@ ra1=[]
 ch=[]
 zeichneD=[]
 zeichneT=[]
+chiNormHelp=[1,1]
 beta=0.9
 omega=np.logspace(4.0,7.301,20,10)
 tau_c=1.0e-6
@@ -156,11 +157,17 @@ def conf(event):
 
 def normchi(K):
 	plt.figure(1)
+	chiNormHelp[1]=chiNormHelp[0]
+	chiNormHelp[0]=10**K
 	for line in ax.lines:
 		linex=line.get_xdata()
 		liney=line.get_ydata()
-		for y in liney: y=y/(10**K)
+		for i, y in enumerate(liney): 
+			liney[i]=y/(10**K)*chiNormHelp[1]
 		line.set_ydata(liney)
+		print liney
+	ax.relim()
+	ax.autoscale_view(True,True,True)
 	plt.draw()
 def reset(event):
 	stau_c.reset()
