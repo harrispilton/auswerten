@@ -17,6 +17,7 @@ ch=[]
 zeichneD=[]
 zeichneT=[]
 chiNormHelp=[1,1]
+tauNormHelp=[1,1]
 beta=0.9
 omega=np.logspace(4.0,7.301,20,10)
 tau_c=1.0e-6
@@ -165,10 +166,24 @@ def normchi(K):
 		for i, y in enumerate(liney): 
 			liney[i]=y/(10**K)*chiNormHelp[1]
 		line.set_ydata(liney)
-		print liney
 	ax.relim()
 	ax.autoscale_view(True,True,True)
 	plt.draw()
+def normtau(val):##verschiebe die daten auf der x achse
+	plt.figure(1)
+	tauNormHelp[1]=tauNormHelp[0]
+	tauNormHelp[0]=10**val
+	for line in ax.lines:
+		linex=line.get_xdata()
+		liney=line.get_ydata()
+		for i, x in enumerate(linex): 
+			linex[i]=x/(10**val)*tauNormHelp[1]
+		line.set_xdata(linex)
+	ax.relim()
+	ax.autoscale_view(True,True,True)
+	plt.draw()
+	
+
 def reset(event):
 	stau_c.reset()
 
@@ -188,6 +203,10 @@ resetax =plt.axes([0.8,0.025,0.1,0.04])
 button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
 axK = plt.axes([0.1,0.05,0.3,0.02],axisbg=axcolor)
 sK=Slider(axK,'K',8,12,valinit=9)
+axOm = plt.axes([0.1,0.02,0.3,0.02],axisbg=axcolor)
+sOm = Slider(axOm,'normY',2,10,valinit=9)
+
+
 
 plt.figure(2)
 wurzelax=plt.axes([0.1,0.1,0.8,0.8])
@@ -217,6 +236,7 @@ picker.on_changed(pick)
 button.on_clicked(reset)
 stau_c.on_changed(update)
 sK.on_changed(normchi)
+sOm.on_changed(normtau)
 sr0.on_changed(r_ref)
 sd0.on_changed(d0)
 bconf.on_clicked(conf)
