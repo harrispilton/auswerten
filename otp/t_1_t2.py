@@ -1,17 +1,30 @@
 #!/usr/bin/python
 import glob
 import re
+import itertools
 import numpy as np
 import scipy as sp
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 
-def lorentz(f,f0,fwhmi,a0):
-	return (a0 * (0.5 * fwhm)/((f-f0)**2 + 0.25 * fwhm**2))
+def Lorentz(fr,f0,fwhm,a0):
+	return (a0 * (0.5 * fwhm)/((fr - f0)**2 + 0.25 * fwhm**2))
 
-files=glob.glob('otp/1d/'+'*.dat')
+markers = itertools.cycle(['o','s','v'])
+files=glob.glob('otp/1d/'+'*K.dat')
 files.sort()
+fr=np.linspace(-1e6,1e6,1e5)
+a0=2e5
+fwhm=2e4
+f0=0
+a0_a=[]
+fwhm_a=[]
+f0_a=[]
+for freq in fr:
+	a0_a.append(a0)
+	fwhm_a.append(fwhm)
+	f0_a.append(f0)
 for data in files:
 	f=open(data,'r')
 	lines=f.readlines()
@@ -23,6 +36,19 @@ for data in files:
 		freq.append(liste[0])
 		betrag.append(((float(liste[1]))**2+(float(liste[2])**2)**0.5))
 	plt.figure(1)
-	plt.plot(freq,betrag,label=data,marker='o',linestyle='None')
+	plt.plot(freq,betrag,label=str(data),marker=markers.next(),linestyle='None')	
+	plt.plot(fr,Lorentz(fr,f0,fwhm,a0))
+	fitpars, covmat = curve_fit(
+			Lorentz,
+			np.array(freq),
+			np.array(betrag),
+			[np.array(f0_a),np.array(fwhm_a),np.array(a0_a)],
+			#maxfev=10000
+			)
+	print 'fitparameter '+str(fitpars)+'\n\ncovmat '+str(covmat)+'\n\n\n'
+
+
+plt.legend()
 plt.show()
+
 
