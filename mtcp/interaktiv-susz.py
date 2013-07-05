@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import glob
 import re
+import itertools
 import numpy as np
 import scipy as sp
 from scipy.optimize import curve_fit
@@ -10,12 +11,15 @@ from matplotlib.widgets import Slider, Button, CheckButtons
 ###
 ### variablen zuweisen ordner durchfilzen
 ### 
+markers = itertools.cycle(['o','s','v','D','s','^'])
 br=[]
 rf=[]
 ra1=[]
 ch=[]
 zeichneD=[]
 zeichneT=[]
+chiNormHelp=[1,1]
+tauNormHelp=[1,1]
 beta=0.9
 omega=np.logspace(4.0,7.301,20,10)
 tau_c=1.0e-6
@@ -86,7 +90,7 @@ def update(val):
 	verschiebetemperaturen[int(picker.val)]=temps[int(picker.val)]
 	plt.figure(4)
 	plt.cla()
-	plt.plot(verschiebetemperaturen,verschiebefaktoren)
+	plt.plot(verschiebetemperaturen,verschiebefaktoren,marker=markers.next(),linestyle='None')
 	plt.draw()
 	return slide
 #	fin=open(sef[int(picker.val)],'r')
@@ -156,17 +160,37 @@ def conf(event):
 
 def normchi(K):
 	plt.figure(1)
+	chiNormHelp[1]=chiNormHelp[0]
+	chiNormHelp[0]=10**K
 	for line in ax.lines:
 		linex=line.get_xdata()
 		liney=line.get_ydata()
-		for y in liney: y=y/(10**K)
+		for i, y in enumerate(liney): 
+			liney[i]=y/(10**K)*chiNormHelp[1]
 		line.set_ydata(liney)
+	ax.relim()
+	ax.autoscale_view(True,True,True)
 	plt.draw()
+def normtau(val):##verschiebe die daten auf der x achse
+	plt.figure(1)
+	tauNormHelp[1]=tauNormHelp[0]
+	tauNormHelp[0]=10**val
+	for line in ax.lines:
+		linex=line.get_xdata()
+		liney=line.get_ydata()
+		for i, x in enumerate(linex): 
+			linex[i]=x/(10**val)*tauNormHelp[1]
+		line.set_xdata(linex)
+	ax.relim()
+	ax.autoscale_view(True,True,True)
+	plt.draw()
+	
+
 def reset(event):
 	stau_c.reset()
 
 plt.figure(1)
-ax = plt.axes([0.1,0.2,0.55,0.7])
+ax = plt.axes([0.1,0.2,0.85,0.7])
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('omega')
@@ -181,6 +205,10 @@ resetax =plt.axes([0.8,0.025,0.1,0.04])
 button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
 axK = plt.axes([0.1,0.05,0.3,0.02],axisbg=axcolor)
 sK=Slider(axK,'K',8,12,valinit=9)
+axOm = plt.axes([0.1,0.02,0.3,0.02],axisbg=axcolor)
+sOm = Slider(axOm,'normY',2,10,valinit=9)
+
+
 
 plt.figure(2)
 wurzelax=plt.axes([0.1,0.1,0.8,0.8])
@@ -210,6 +238,7 @@ picker.on_changed(pick)
 button.on_clicked(reset)
 stau_c.on_changed(update)
 sK.on_changed(normchi)
+sOm.on_changed(normtau)
 sr0.on_changed(r_ref)
 sd0.on_changed(d0)
 bconf.on_clicked(conf)
@@ -246,6 +275,7 @@ for filename in sef:
 		relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
+	print filename, zone
 	temp=sdfdata[
 			sdfdata.index(
 				'ZONE=\t'+str(zone[
@@ -259,7 +289,7 @@ for filename in sef:
 		chi.append(r1[i]*brlx[i])
 	plt.figure(1)
 	plt.title(relativefile[0][0:-9])
-	plt.axes([0.1,0.2,0.55,0.7])
+	plt.axes([0.1,0.2,0.85,0.7])
 	#plt.plot(brlx,map(lambda x:Chi(x,1e-6,0.7,1e8),brlx))
 	brlx=np.array(brlx)
 	chi=np.array(chi)
@@ -276,13 +306,16 @@ for filename in sef:
 			)
 	plt.plot(brlx,chi,
 			label=temp+' K',
-			marker='o',linestyle='None')
+			marker=markers.next(),linestyle='None')
+	plt.legend()
 	plt.figure(2)
 	plt.title('Wurzel')
 	wurzelax=plt.axes([0.1,0.1,0.8,0.8])
 	for i, b in enumerate(brlx):
 		brlx[i]=brlx[i]**0.5
 	plt.plot(brlx,r1,label=temp+' K')
+
+
 	plt.figure(3)
 	plt.title('Rate')
 	plt.xscale('log')
@@ -298,8 +331,6 @@ print (map(lambda x: x**0.5,omega),map(lambda y:R_1(y,2,1e-10),wurzelomega))
 plt.figure(2)
 plt.plot(wurzelomega,map(lambda x: R_1(x,20,10e-9),omega))
 plt.legend()
-plt.figure(1)
-plt.plot(omega, Chi(omega,1e-6,0.7,1e8),label='chi mit tau_c =1e-6')
 plt.plot(omega, Chi(omega,1e-8,0.7,1e8),label='chi mit tau_c =1e-8')
 plt.plot(omega, Chi(omega,1e-4,0.7,1e8),label='chi mit tau_c =1e-4')
 plt.legend(loc='center left',bbox_to_anchor=(1,0.5))

@@ -274,6 +274,7 @@ for filename in sef:
 		relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
+	print filename,  sdfdata, zone
 	temp=sdfdata[
 			sdfdata.index(
 				'ZONE=\t'+str(zone[
