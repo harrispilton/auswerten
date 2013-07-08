@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import glob
 import re
+import itertools
 import numpy as np
 import scipy as sp
 from scipy.optimize import curve_fit
@@ -10,10 +11,15 @@ from matplotlib.widgets import Slider, Button, CheckButtons
 ###
 ### variablen zuweisen ordner durchfilzen
 ### 
+markers = itertools.cycle(['o','s','v','D','s','^'])
 br=[]
 rf=[]
 ra1=[]
 ch=[]
+zeichneD=[]
+zeichneT=[]
+chiNormHelp=[1,1]
+tauNormHelp=[1,1]
 beta=0.9
 omega=np.logspace(4.0,7.301,20,10)
 tau_c=1.0e-6
@@ -43,15 +49,14 @@ def Chi(omega,tau_c,beta,K_DD):
 def R_1(omega,R1_0,D):
 	mu_0 =1.2566e-6
 	h_quer = 6.626e-34/(2.*np.pi)
-	gamma_H=2.675e8/2/np.pi
-	print gamma_H
+	gamma_H=2.675e8#/2/np.pi
 	N_a=6.022e23
 	n_H=21.0
 	rho=rho_mTCP=1.15*1e6
 	M=M_mTCP=368.4
 	N=n_H*N_a*rho/M
 	B=np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2)**2 * N
-	print N, omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
+	#print N, omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
 	return R1_0-B/(D**1.5) *omega**0.5
 ##die verschiebefunktion fuer die suszibilitaet
 def update(val):
@@ -85,7 +90,7 @@ def update(val):
 	verschiebetemperaturen[int(picker.val)]=temps[int(picker.val)]
 	plt.figure(4)
 	plt.cla()
-	plt.plot(verschiebetemperaturen,verschiebefaktoren)
+	plt.plot(verschiebetemperaturen,verschiebefaktoren,marker=markers.next(),linestyle='None')
 	plt.draw()
 	return slide
 #	fin=open(sef[int(picker.val)],'r')
@@ -120,33 +125,72 @@ def r_ref(r):
 	d=10**float(sd0.val)
 	for i,om in enumerate(omega): 
 		br.append(omega[i]**0.5)
-		ra1.append(R_1(omega[i],r,d))
+		ra1.append(R_1(omega[i],10**r,d))
 	wurzelax.lines[wurzelax.lines.__len__()-1].set_ydata(ra1)
 	plt.draw()
 def d0(d):
 	br=[]
 	ra1=[]
 	rf=[]
-	r=float(sr0.val)
+	r=10**float(sr0.val)
 	d=10**d
+	print d
 	for i,om in enumerate(omega): 
 		br.append(omega[i]**0.5)
 		ra1.append(R_1(omega[i],r,d))
 	wurzelax.lines[wurzelax.lines.__len__()-1].set_ydata(ra1)
 	plt.draw()
 	return d
+def conf(event):
+	d=float(sd0.val)
+	r=10**(float(sr0.val))
+	T=raw_input('gebe temperatur ein')
+	zeichneD.append(d)
+	zeichneT.append(1000/float(T))
+	plt.figure(5)
+	plt.plot(zeichneT,zeichneD)
+	lsout=[]
+	with open('m-tcp_D.dat','w') as fout:
+		fout.close()
+	with open('m-tcp_D.dat','a') as fout:
+		for i, x in enumerate(zeichneD):
+			fout.write(str(1000/zeichneT[i])+'\t'+str(zeichneD[i])+'\n')
+	
+
+
 def normchi(K):
 	plt.figure(1)
+	chiNormHelp[1]=chiNormHelp[0]
+	chiNormHelp[0]=10**K
 	for line in ax.lines:
 		linex=line.get_xdata()
 		liney=line.get_ydata()
-		for y in liney: y=y/(10**K)
+		for i, y in enumerate(liney): 
+			liney[i]=y/(10**K)*chiNormHelp[1]
 		line.set_ydata(liney)
+	ax.relim()
+	ax.autoscale_view(True,True,True)
+	plt.draw()
+def normtau(val):##verschiebe die daten auf der x achse
+	plt.figure(1)
+	tauNormHelp[1]=tauNormHelp[0]
+	tauNormHelp[0]=10**val
+	for line in ax.lines:
+		linex=line.get_xdata()
+		liney=line.get_ydata()
+		for i, x in enumerate(linex): 
+			linex[i]=x/(10**val)*tauNormHelp[1]
+		line.set_xdata(linex)
+	ax.relim()
+	ax.autoscale_view(True,True,True)
+	plt.draw()
+	
+
 def reset(event):
 	stau_c.reset()
 
 plt.figure(1)
-ax = plt.axes([0.1,0.2,0.55,0.7])
+ax = plt.axes([0.1,0.2,0.85,0.7])
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('omega')
@@ -161,13 +205,19 @@ resetax =plt.axes([0.8,0.025,0.1,0.04])
 button = Button(resetax,'reset',color=axcolor,hovercolor='0.975')
 axK = plt.axes([0.1,0.05,0.3,0.02],axisbg=axcolor)
 sK=Slider(axK,'K',8,12,valinit=9)
+axOm = plt.axes([0.1,0.02,0.3,0.02],axisbg=axcolor)
+sOm = Slider(axOm,'normY',2,10,valinit=9)
+
+
 
 plt.figure(2)
 wurzelax=plt.axes([0.1,0.1,0.8,0.8])
 axr0=plt.axes([0.05,0.02,0.6,0.02],axisbg=axcolor)
-sr0=Slider(axr0,'r0',500,2000,valinit=1.0)
+sr0=Slider(axr0,'r0',-1,4,valinit=1.0)
 axD=plt.axes([0.7,0.02,0.2,0.02],axisbg=axcolor)
 sd0=Slider(axD,'D',-15,-7,valinit=-11)
+confax =plt.axes([0.9,0.025,0.08,0.04])
+bconf = Button(confax,'confirm & append',color=axcolor,hovercolor='0.975')
 
 plt.figure(3)
 ##wird spaeter bemalt
@@ -178,13 +228,20 @@ plt.title('verschiebefaktoren in der suszeptiblitaet')
 plt.xlabel('T')
 plt.ylabel('schiebefaktoren a.u.')
 
+plt.figure(5)
+diffax=plt.axes([0.15,0.15,0.8,0.8])
+plt.title('Diffusion')
+plt.xlabel('1000/T $[K^{-1}]$')
+plt.ylabel(r'lg(D) $[\frac{m^2}{s}]$')
 ##interaktion mit der gui
 picker.on_changed(pick)
 button.on_clicked(reset)
 stau_c.on_changed(update)
 sK.on_changed(normchi)
+sOm.on_changed(normtau)
 sr0.on_changed(r_ref)
 sd0.on_changed(d0)
+bconf.on_clicked(conf)
 
 sefdata=[]
 temps=[]
@@ -218,6 +275,7 @@ for filename in sef:
 		relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
+	print filename, zone
 	temp=sdfdata[
 			sdfdata.index(
 				'ZONE=\t'+str(zone[
@@ -231,7 +289,7 @@ for filename in sef:
 		chi.append(r1[i]*brlx[i])
 	plt.figure(1)
 	plt.title(relativefile[0][0:-9])
-	plt.axes([0.1,0.2,0.55,0.7])
+	plt.axes([0.1,0.2,0.85,0.7])
 	#plt.plot(brlx,map(lambda x:Chi(x,1e-6,0.7,1e8),brlx))
 	brlx=np.array(brlx)
 	chi=np.array(chi)
@@ -248,13 +306,16 @@ for filename in sef:
 			)
 	plt.plot(brlx,chi,
 			label=temp+' K',
-			marker='o',linestyle='None')
+			marker=markers.next(),linestyle='None')
+	plt.legend()
 	plt.figure(2)
 	plt.title('Wurzel')
 	wurzelax=plt.axes([0.1,0.1,0.8,0.8])
 	for i, b in enumerate(brlx):
 		brlx[i]=brlx[i]**0.5
-	plt.plot(brlx,r1,label=relativefile[0])
+	plt.plot(brlx,r1,label=temp+' K')
+
+
 	plt.figure(3)
 	plt.title('Rate')
 	plt.xscale('log')
@@ -269,8 +330,7 @@ print (map(lambda x: x**0.5,omega),map(lambda y:R_1(y,2,1e-10),wurzelomega))
 
 plt.figure(2)
 plt.plot(wurzelomega,map(lambda x: R_1(x,20,10e-9),omega))
-plt.figure(1)
-plt.plot(omega, Chi(omega,1e-6,0.7,1e8),label='chi mit tau_c =1e-6')
+plt.legend()
 plt.plot(omega, Chi(omega,1e-8,0.7,1e8),label='chi mit tau_c =1e-8')
 plt.plot(omega, Chi(omega,1e-4,0.7,1e8),label='chi mit tau_c =1e-4')
 plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
