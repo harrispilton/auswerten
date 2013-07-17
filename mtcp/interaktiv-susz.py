@@ -276,10 +276,14 @@ for filename in sef:
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
 	print filename, zone
+	print sef
+	print sdfdata
+	print zone[-1]
+	print sdfdata.index['ZONE=\t'+str(zone[-1])]
 	temp=sdfdata[
 			sdfdata.index(
 				'ZONE=\t'+str(zone[
-					sef.index(filename)])+'\r\n')+7]
+					-1])+'\r\n')+7]
 	temp=temp[6:]
 	temp=temp.rstrip()
 	temps.append(float(temp))
@@ -331,6 +335,7 @@ print (map(lambda x: x**0.5,omega),map(lambda y:R_1(y,2,1e-10),wurzelomega))
 plt.figure(2)
 plt.plot(wurzelomega,map(lambda x: R_1(x,20,10e-9),omega))
 plt.legend()
+plt.figure(1)
 plt.plot(omega, Chi(omega,1e-8,0.7,1e8),label='chi mit tau_c =1e-8')
 plt.plot(omega, Chi(omega,1e-4,0.7,1e8),label='chi mit tau_c =1e-4')
 plt.legend(loc='center left',bbox_to_anchor=(1,0.5))
