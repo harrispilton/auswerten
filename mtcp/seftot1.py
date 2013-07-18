@@ -51,7 +51,8 @@ for filename in sef:
 	temp=sdfdata[
 			sdfdata.index(
 				'ZONE=\t'+str(zone[
-					sef.index(filename)])+'\r\n')+7]
+					1])+'\r\n')+7]
+	
 	temp=temp[6:]
 	temp=temp.rstrip()
 	temps.append(float(temp))
