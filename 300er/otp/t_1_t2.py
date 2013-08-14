@@ -9,7 +9,10 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 
 def Lorentz(x,f0,fwhm,a0):
-	return (a0 * (0.5 * fwhm)/((x * f0)**2.0 + 0.25 * fwhm**2))
+	if(fwhm<1e-6):
+		return 1/x
+	else:
+		return (a0 * (0.5 * fwhm)/((x * f0)**2.0 + 0.25 * fwhm**2))
 
 markers = itertools.cycle(['o','s','v'])
 files=glob.glob('otp/1d/'+'*K.dat')
