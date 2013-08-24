@@ -165,7 +165,7 @@ sK=Slider(axK,'K',8,12,valinit=9)
 plt.figure(2)
 wurzelax=plt.axes([0.1,0.1,0.8,0.8])
 axr0=plt.axes([0.05,0.02,0.6,0.02],axisbg=axcolor)
-sr0=Slider(axr0,'r0',0.5,10,valinit=1.0)
+sr0=Slider(axr0,'r0',80,100,valinit=1.0)
 axD=plt.axes([0.7,0.02,0.2,0.02],axisbg=axcolor)
 sd0=Slider(axD,'D',-15,-7,valinit=-11)
 
