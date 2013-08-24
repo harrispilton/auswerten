@@ -10,10 +10,9 @@ from matplotlib.widgets import Slider, Button, CheckButtons
 
 def Lorentz(x,f0,fwhm,a0):
 	if(fwhm<1e-6):
-		return 1/x
+		return x
 	else:
 		return (a0 * (0.5 * fwhm)/((x * f0)**2.0 + 0.25 * fwhm**2))
-
 markers = itertools.cycle(['o','s','v'])
 files=glob.glob('otp/1d/'+'*K.dat')
 files.sort()
@@ -39,6 +38,8 @@ for data in files:
 		liste=line.split()
 		freq.append(np.float(liste[0]))
 		betrag.append(((np.float(liste[1]))**2+(np.float(liste[2])**2)**0.5))
+	maxbetrag=max(betrag)
+	betrag=[b/maxbetrag for b in betrag]
 	plt.figure(1)
 	plt.plot(freq,betrag,label=str(data),marker=markers.next(),linestyle='None')	
 	#plt.plot(fr,Lorentz(fr,f0,fwhm,a0))
@@ -58,7 +59,6 @@ for data in files:
 		fout.write(str(data[7:10])+'\t'+str(np.pi/fitpars[2])+'\n')
 	plt.plot(freq,Lorentz(freq,fitpars[0],fitpars[1],fitpars[2]),label=data[7:10])
 	p0=fitpars
-
 plt.legend()
 plt.show()
 
