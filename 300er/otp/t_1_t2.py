@@ -8,17 +8,18 @@ from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 
-def Lorentz(x,f0,fwhm,a0):
-	if(fwhm<1e-6):
-		return x
+def Lorentz(x,f0,hwhm,a0):
+	if(hwhm<1e-9 or f0>10000 or a0>1000 or a0<0.5):
+		return x**2
 	else:
-		return (a0 * (0.5 * fwhm)/((x * f0)**2.0 + 0.25 * fwhm**2))
+		return (a0/(1.+((x-f0)/hwhm)**2))
+		#return (a0 * (0.5 * fwhm)/((x * f0)**2.0 + 0.25 * fwhm**2))
 markers = itertools.cycle(['o','s','v'])
 files=glob.glob('otp/1d/'+'*K.dat')
 files.sort()
 x=np.linspace(-1e6,1e6,1e5)
 print type(x)
-p0=[2e5,1.0e4,2.0]
+p0=[2,1.0e4,1.0]
 #a0_a=[]
 #fwhm_a=[]
 #f0_a=[]
@@ -26,7 +27,6 @@ p0=[2e5,1.0e4,2.0]
 #	a0_a.append(a0)
 #	fwhm_a.append(fwhm)
 #	f0_a.append(f0)
-
 with open('otp_T1.dat','w') as fout: fout.close()
 for data in files:
 	f=open(data,'r')
@@ -37,7 +37,7 @@ for data in files:
 	for line in lines:
 		liste=line.split()
 		freq.append(np.float(liste[0]))
-		betrag.append(((np.float(liste[1]))**2+(np.float(liste[2])**2)**0.5))
+		betrag.append(((np.float(liste[1]))**2+(np.float(liste[2])**2))**0.5)
 	maxbetrag=max(betrag)
 	betrag=[b/maxbetrag for b in betrag]
 	plt.figure(1)
@@ -55,9 +55,15 @@ for data in files:
 			#maxfev=10000
 			#)
 	print 'fitparameter '+str(fitpars)+'\n\ncovmat '+str(covmat)+'\n\n\n'
+	print "fitpars[0]"+str(fitpars[0])
+	print "fitpars[0]"+str(fitpars[0])
+	print "fitpars[0]"+str(fitpars[0])
+	print "fitpars[0]"+str(fitpars[0])
 	with open('otp_T1.dat','a') as fout:
-		fout.write(str(data[7:10])+'\t'+str(np.pi/fitpars[2])+'\n')
-	plt.plot(freq,Lorentz(freq,fitpars[0],fitpars[1],fitpars[2]),label=data[7:10])
+		fout.write(str(data[7:10])+'\t'+str(np.pi/fitpars[1])+'\n')
+	plt.plot(freq,Lorentz(freq,fitpars[0],fitpars[1],fitpars[2]),
+			#label=data[7:10]
+			)
 	p0=fitpars
 plt.legend()
 plt.show()
