@@ -51,11 +51,11 @@ for filename in sef:
 		relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
-	#print 'filename: '+filename
-	#print 'zone: '+str(zone)
-	#print 'relativefile: '+relativefile[1]
+	print 'filename: '+filename
+	print 'zone: '+str(zone)
+	print 'relativefile: '+relativefile[1]
 	#print 'zone[sef.index(filename)]' + str(zone[sef.index(filename)])
-	#print 'ZONE=\t'+str(zone[-2])
+	print 'ZONE=\t'+str(zone[1])+'\n\n'
 	temp=sdfdata[
 			sdfdata.index(
 				'ZONE=\t'+str(zone[
