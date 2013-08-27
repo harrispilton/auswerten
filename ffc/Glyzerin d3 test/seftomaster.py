@@ -9,6 +9,22 @@ from scipy.optimize import brentq
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 
+
+def J_cd(omega,tau,beta):
+	a=omega*beta*tau
+	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
+def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
+	return omega*3*K_dd*J_cd(omega,tau,beta)
+omega=np.logspace(-3,1.5,200,10)
+K_dd=1e-9
+beta=0.4
+tau_alpha=1
+plt.figure(2)
+ax=plt.axes([0.1,0.15,0.8,0.8])
+ax.set_xscale('log')
+ax.set_yscale('log')
+plt.plot(omega,Chi_dd(omega))
+plt.draw()
 #def schieb(val):
 #	global taus
 #	slide=10.0**val
@@ -57,6 +73,8 @@ plt.ylabel(r"$\chi$ in $s^{-2}$")
 plt.xscale('log')
 plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
+
+
 #axpicker=plt.axes([0.1,0.1,0.25,0.02],axisbg=axcolor)
 #picker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
 #axtau_c=plt.axes([0.6,0.1,0.3,0.02],axisbg=axcolor)
@@ -116,6 +134,9 @@ plt.show()
 #	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
 #	if selecttofit==n:break
 #	brlxs[int(selecttofit)]
+####im folgenden kann man einzelne daten per eingabedialog verschieben
+####die strukturrelaxationszeiten werden logarithmisiert in
+####einer liste abgelegt
 while True:
 	sel=raw_input("Waehle den datenset: ")
 	try: 
@@ -130,17 +151,18 @@ while True:
 			plt.draw()
 	except ValueError: print 'n zum beenden'
 	if sel=='n':break
-mastered=[]
-#mastered.append(temps)
-#mastered.append(0)
-#for i in range(0,brlxs.__len__()):
-#	for b in brlxs[i]: mastered.append[[temps[i],b*taus[i],taus[i]]]
+
+
+####aus datensaetzen mit peak im frequenzfenster kann die
+####kopplungskonstante bestimmt werden. diese muessen
+####vom benutzer gewaehlt werden.
+
+
+
+
+####die normierten masterdaten koennen in ein file geschrieben
+####werden.
 for i in range(0,temps.__len__()):
 	fout=open(str(temps[i])+'.dat','w')
 	for ii in range(0,brlxs[i].__len__()):
 		fout.write('\n'+str(brlxs[i][ii]*10**taus[i])+' '+str(chis[i][ii]))
-
-#for i in range(0,brlxs.__len__()):
-#	for ii in range(0,brlx.__len__()):
-#		fout.write("\n"+str(brlxs[i][ii]+' '+str(chis[i][ii]))
-#		fout2.write("\n"+str(brlxs[i][ii])+' '+str(chis[i][ii]+' '+taus[i])
