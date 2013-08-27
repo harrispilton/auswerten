@@ -5,22 +5,26 @@ import itertools
 import numpy as np
 import scipy as sp
 from scipy.optimize import curve_fit
+from scipy.optimize import brentq 
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 
-def schieb(val):
-	global taus
-	slide=10.0**val
-	if int(picker.val) == 0:
-		tau_old=taus[0]
-		taus=[tau-tau_old+slide for tau in taus]
-	else:
-		tau_old=0
-
-	for i in range(int(picker.val),brlxs.__len__()):
-		brlxs[i]=[brlx*slide for brlx in brlxs[i]]
-		ax.lines[i].set_xdata(brlxs[i])
-		brlxs[i]=[brlx/slide for brlx in brlxs[i]]
+#def schieb(val):
+#	global taus
+#	slide=10.0**val
+#	#if int(picker.val) == 0:
+#	tau_old=taus[0]
+#	taus=[tau-tau_old+slide for tau in taus]
+#	#else:
+#	#	tau_old=taus[int(picker.val-1)]
+#	#	for i in range(int(picker.val),taus.__len__()):
+#	#		taus=[tau-tau_old+slide for tau in taus]
+#
+#
+#	for i in range(int(picker.val),brlxs.__len__()):
+#		brlxs[i]=[brlx*slide for brlx in brlxs[i]]
+#		ax.lines[i].set_xdata(brlxs[i])
+#		brlxs[i]=[brlx/slide for brlx in brlxs[i]]
 #	if int(picker.val) == 0:
 #		return [tau+slide for tau in taus]
 #	else:
@@ -31,8 +35,8 @@ def schieb(val):
 #		return taus
 	#for i in range(0,brlxs.__len__()):
 	#	brlxs[i]=[brlx*taus[i] for brlx in brlxs[i]]
-	plt.draw()
-
+#	plt.draw()
+#
 
 #text.usetex: True
 ###
@@ -43,8 +47,9 @@ sef=glob.glob('*K.sef')
 sef.sort()
 sdf=glob.glob('*K.sdf')
 sdf.sort()
+plt.ion()
 plt.figure(1)
-ax=plt.axes([0.1,0.2,0.85,0.7])
+ax=plt.axes([0.1,0.1,0.85,0.85])
 title=raw_input("enter plot title: ")
 plt.title(title)
 plt.xlabel(r"$\nu$ in $MHz$")
@@ -52,11 +57,11 @@ plt.ylabel(r"$\chi$ in $s^{-2}$")
 plt.xscale('log')
 plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
-axpicker=plt.axes([0.1,0.1,0.25,0.02],axisbg=axcolor)
-picker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
-axtau_c=plt.axes([0.6,0.1,0.3,0.02],axisbg=axcolor)
-stau_c=Slider(axtau_c,'log (tau_c)',-7,2,valinit=5)
-print stau_c.on_changed(schieb)##schiebe die daten durch die gegend
+#axpicker=plt.axes([0.1,0.1,0.25,0.02],axisbg=axcolor)
+#picker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
+#axtau_c=plt.axes([0.6,0.1,0.3,0.02],axisbg=axcolor)
+#stau_c=Slider(axtau_c,'log (tau_c)',-7,2,valinit=5)
+#print stau_c.on_changed(schieb)##schiebe die daten durch die gegend
 markers=itertools.cycle(['o','s','v','x'])
 
 sefdata=[]
@@ -64,7 +69,7 @@ temps=[]
 brlxs=[]
 chis=[]
 omegas=[]
-taus=[]
+taus=[]##liste mit log10(tau_strukturrelaxation)
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
@@ -104,6 +109,38 @@ for filename in sef:
 			label=temp+' K',
 			marker=markers.next(),linestyle='None')
 
+for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
 plt.show()
+#while True:
+#	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
+#	if selecttofit==n:break
+#	brlxs[int(selecttofit)]
+while True:
+	sel=raw_input("Waehle den datenset: ")
+	try: 
+		int(sel)
+		print "aktuelles log tau: "+str(taus[int(sel)])
+		while True:
+			logtau=raw_input("neues tau: ")
+			if logtau=='n':break
+			tau=10**float(logtau)
+			taus[int(sel)]=float(logtau)
+			ax.lines[int(sel)].set_xdata([brlx*tau for brlx in brlxs[int(sel)]])
+			plt.draw()
+	except ValueError: print 'n zum beenden'
+	if sel=='n':break
+mastered=[]
+#mastered.append(temps)
+#mastered.append(0)
+#for i in range(0,brlxs.__len__()):
+#	for b in brlxs[i]: mastered.append[[temps[i],b*taus[i],taus[i]]]
+for i in range(0,temps.__len__()):
+	fout=open(str(temps[i])+'.dat','w')
+	for ii in range(0,brlxs[i].__len__()):
+		fout.write('\n'+str(brlxs[i][ii]*10**taus[i])+' '+str(chis[i][ii]))
 
+#for i in range(0,brlxs.__len__()):
+#	for ii in range(0,brlx.__len__()):
+#		fout.write("\n"+str(brlxs[i][ii]+' '+str(chis[i][ii]))
+#		fout2.write("\n"+str(brlxs[i][ii])+' '+str(chis[i][ii]+' '+taus[i])
