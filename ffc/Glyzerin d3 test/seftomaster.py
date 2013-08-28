@@ -8,17 +8,31 @@ from scipy.optimize import curve_fit
 from scipy.optimize import brentq 
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
+from scipy.optimize import leastsq
+from lmfit import minimize, Parameters
 
-
+def residual(params,xdata,ydata):
+	K_dd=params['K_dd'].value
+	tau=params['tau'].value
+	beta=params['beta'].value
+	return (ydata-Chi_dd(xdata,K_dd,tau,beta))
 def J_cd(omega,tau,beta):
 	a=omega*beta*tau
 	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
-def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
-	return omega*3*K_dd*J_cd(omega,tau,beta)
+def Chi_dd(omega,K_dd=1e-8,tau=1e-6,beta=0.5):
+	return omega*3*10**K_dd*J_cd(omega,tau,beta)
 omega=np.logspace(-3,1.5,200,10)
 K_dd=1e-9
 beta=0.4
 tau_alpha=1
+params= Parameters()
+params.add('logK_dd',value=-9.0,min=-14,max=2)
+params.add('K_dd',expr='(10.0**logK_dd)')
+params.add('logtau',value=-6.0,min=-14,max=2)
+params.add('tau',expr='(10.0**logtau)')
+params.add('beta',value=0.45,vary=False)
+
+
 plt.figure(2)
 ax=plt.axes([0.1,0.15,0.8,0.8])
 ax.set_xscale('log')
@@ -154,15 +168,39 @@ while True:
 
 
 ####aus datensaetzen mit peak im frequenzfenster kann die
-####kopplungskonstante bestimmt werden. diese muessen
+####kopplungskonstante bestimmt werden. datensaetze muessen
 ####vom benutzer gewaehlt werden.
 
-
-
+k=raw_input("Schaetze die Kopplungskonstante:  ") 
+try:
+	k=float(k)
+	brlxs[1]=np.array(brlxs[1])
+	k,tau,beta=1e-9,2e-6,0.5
+	out = minimize(residual, params,args=(brlxs[1],chis[1]))
+	result=brlxs[1]+out.residual
+	print result
+	print out['K_dd'].value##wie bekomme ich die angefitteten parameter her ihr saubaeren??
+	plt.figure(3)
+	plt.plot(brlxs[1],result)
+	plt.show()
+	#fitpars,covmat=curve_fit(#
+	#		Chi_dd,	
+	#		brlxs[1],
+	#		[brlx*taus[1] for brlx in brlxs[1]],
+	#		p0=[1e9,1,0.5],
+	#		maxfev=5000
+	#		)
+	#print fitpars, covmat
+	plt.figure(2)
+	#plt.plot(brlxs[1],peval(brlxs[1],plsq[0]))
+	#plt.draw()
+except ValueError: print 'n zum beenden'
 
 ####die normierten masterdaten koennen in ein file geschrieben
 ####werden.
+
+
 for i in range(0,temps.__len__()):
-	fout=open(str(temps[i])+'.dat','w')
+	fout=open(str(temps[i])+' K.dat','w')
 	for ii in range(0,brlxs[i].__len__()):
 		fout.write('\n'+str(brlxs[i][ii]*10**taus[i])+' '+str(chis[i][ii]))
