@@ -9,26 +9,31 @@ from scipy.optimize import brentq
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from scipy.optimize import leastsq
-from lmfit import minimize, Parameters
+from lmfit import  minimize, Parameters, report_errors
 
-def residual(params,xdata,ydata):
+def residual(params,xdata,ydata=None,releps=None):
 	K_dd=params['K_dd'].value
 	tau=params['tau'].value
 	beta=params['beta'].value
-	return (ydata-Chi_dd(xdata,K_dd,tau,beta))
+	if ydata is None:
+		return Chi_dd
+	if releps is None:
+		return (ydata-Chi_dd(xdata,K_dd,tau,beta))
+	return ((ydata-Chi_dd(xdata,K_dd,tau,beta))*releps)
+
 def J_cd(omega,tau,beta):
 	a=omega*beta*tau
 	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
 def Chi_dd(omega,K_dd=1e-8,tau=1e-6,beta=0.5):
 	return omega*3*10**K_dd*J_cd(omega,tau,beta)
 omega=np.logspace(-3,1.5,200,10)
-K_dd=1e-9
-beta=0.4
-tau_alpha=1
+#K_dd=1e-9
+#beta=0.4
+#tau_alpha=1
 params= Parameters()
-params.add('logK_dd',value=-9.0,min=-14,max=2)
+params.add('logK_dd',value=-8.0,min=-14,max=2)
 params.add('K_dd',expr='(10.0**logK_dd)')
-params.add('logtau',value=-6.0,min=-14,max=2)
+params.add('logtau',value=-6.0,min=-10,max=10)
 params.add('tau',expr='(10.0**logtau)')
 params.add('beta',value=0.45,vary=False)
 
@@ -171,30 +176,36 @@ while True:
 ####kopplungskonstante bestimmt werden. datensaetze muessen
 ####vom benutzer gewaehlt werden.
 
-k=raw_input("Schaetze die Kopplungskonstante:  ") 
-try:
-	k=float(k)
-	brlxs[1]=np.array(brlxs[1])
-	k,tau,beta=1e-9,2e-6,0.5
-	out = minimize(residual, params,args=(brlxs[1],chis[1]))
-	result=brlxs[1]+out.residual
-	print result
-	print out['K_dd'].value##wie bekomme ich die angefitteten parameter her ihr saubaeren??
-	plt.figure(3)
-	plt.plot(brlxs[1],result)
-	plt.show()
-	#fitpars,covmat=curve_fit(#
-	#		Chi_dd,	
-	#		brlxs[1],
-	#		[brlx*taus[1] for brlx in brlxs[1]],
-	#		p0=[1e9,1,0.5],
-	#		maxfev=5000
-	#		)
-	#print fitpars, covmat
-	plt.figure(2)
+#k=raw_input("Schaetze die Kopplungskonstante:  ") 
+#try:
+	#k=float(k)
+brlxs[1]=np.array(brlxs[1])
+k,tau,beta=1e-5,2e-6,0.5
+out = minimize(residual, params,args=(brlxs[1],chis[1]))
+result=brlxs[1]+out.residual
+fit = residual(params,brlxs[1])
+print fit
+print result
+print params['K_dd'].value
+print params['beta'].value
+print params['tau'].value
+#print out['K_dd'].value##wie bekomme ich die angefitteten parameter her ihr saubaeren??
+plt.figure(3)
+plt.plot(brlxs[1],result)
+plt.show()
+report_errors(params)
+#fitpars,covmat=curve_fit(#
+#		Chi_dd,	
+#		brlxs[1],
+#		[brlx*taus[1] for brlx in brlxs[1]],
+#		p0=[1e9,1,0.5],
+#		maxfev=5000
+#		)
+#print fitpars, covmat
+plt.figure(2)
 	#plt.plot(brlxs[1],peval(brlxs[1],plsq[0]))
 	#plt.draw()
-except ValueError: print 'n zum beenden'
+#except ValueError: print 'what the fuck??n zum beenden'
 
 ####die normierten masterdaten koennen in ein file geschrieben
 ####werden.
