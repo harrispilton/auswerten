@@ -149,7 +149,7 @@ for i in seti:
 	print params['beta'].value
 	print params['tau'].value
 	
-	report_errors(params)
+	#report_errors(params)
 	plt.figure(3)
 	fitax=plt.axes([0.1,0.1,0.8,0.8])
 	fitax.set_xscale('log')
@@ -158,7 +158,7 @@ for i in seti:
 	plt.plot(brlxs[i],chis[i])
 	plt.show()
 
-	mk=raw_input('fuer naechster fit ente druecken')
+	#mk=raw_input('fuer naechster fit ente druecken')
 K_dd=0.0
 for k in ks:
 	K_dd=K_dd+k
@@ -172,6 +172,18 @@ for i in range(0,chis.__len__()):
 ####Im Folgenden kann man einzelne Daten per Eingabedialog verschieben
 ####die Strukturrelaxationszeiten werden logarithmisiert in
 ####einer Liste abgelegt
+while True:
+	tauin=open('tau.dat','r')
+	lines=tauin.readlines()
+	if lines.__len__()==taus.__len__():
+		for i in range(0,lines.__len__()):
+			liste=lines[i].split()
+			taus[i]=float(liste[1])
+			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
+		plt.draw()
+	else: a=raw_input('laenge der tau stimmt nicht...')
+	break
+
 while True:
 	sel=raw_input("Waehle den datenset: ")
 	try: 
@@ -193,10 +205,14 @@ while True:
 		for i in range(int(minsel),int(maxsel)):
 			taus[i]=taus[i]+float(logtau)
 			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
+		plt.draw()
 
-tauout=open('tau.dat','w')
-for i in range(0,taus.__len__()):
-	tauout.write(str(temps[i])+' '+str(taus[i]))
+while True:
+	
+	tauout=open('tau.dat','w')
+	for i in range(0,taus.__len__()):
+		tauout.write(str(temps[i])+' '+str(taus[i])+'\n')
+	break
 #		delta=[]
 #		for i in range(minsel,maxsel):
 #			delta.append(10**taus[i]-10**taus[minsel])
@@ -212,14 +228,17 @@ for i in range(0,brlxs.__len__()):
 for chi in chis:
 	for ch in chi:
 		masterchi.append(ch)
-plt.figure(4)
-masterax=plt.axes([0.1,0.1,0.85,0.85])
-masterax.set_xscale=('log')
-masterax.set_yscale=('log')
-masterax.xlabel=(r'$\omega \tau$')
-masterax.ylabel=(r'$\frac{\chi}{K_(dd)}$')
-masterax.plot(omegataus,masterchi)
-masterax.plot(omegataus,Chi_dd(np.array(omegataus),1.,1.,0.5))
+#plt.figure(4)
+#masterax=plt.axes([0.1,0.1,0.85,0.85])
+#masterax.yscale=('log')
+#masterax.xscale=('log')
+#masterax.xlabel=(r'$\omega \tau$')
+#masterax.ylabel=(r'$\frac{\chi}{K_(dd)}$')
+fitax.cla()
+fitax.plot(omegataus,masterchi,ls='None',marker='o')
+fitax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
+plt.draw()
+
 
 mk=raw_input('ende')
 #fitpars,covmat=curve_fit(#
