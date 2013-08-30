@@ -186,6 +186,22 @@ while True:
 			plt.draw()
 	except ValueError: print 'n zum beenden'
 	if sel=='n':break
+	if sel=='a':
+		minsel=raw_input('schiebe mehrere datensets\n waehle set min:')
+		maxsel=raw_input('waehle set max: ')
+		logtau=raw_input('um wieviele dekaden sollen die daten geschoben werden? ')
+		for i in range(int(minsel),int(maxsel)):
+			taus[i]=taus[i]+float(logtau)
+			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
+
+tauout=open('tau.dat','w')
+for i in range(0,taus.__len__()):
+	tauout.write(str(temps[i])+' '+str(taus[i]))
+#		delta=[]
+#		for i in range(minsel,maxsel):
+#			delta.append(10**taus[i]-10**taus[minsel])
+#		for i in range
+
 ####Schreibe die normierten geschobenen daten heraus
 ####bestimme beta
 omegataus=[]
