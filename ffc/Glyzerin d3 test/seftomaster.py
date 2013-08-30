@@ -34,9 +34,9 @@ omega=np.logspace(-3,1.5,200,10)
 params= Parameters()
 params.add('logK_dd',value=8.0,min=7,max=10)
 params.add('K_dd',expr='(10.0**logK_dd)')
-params.add('logtau',value=-6.0,min=-10,max=10)
+params.add('logtau',value=-6.0,min=-12,max=3)
 params.add('tau',expr='(10.0**logtau)')
-params.add('beta',value=0.45,vary=True,min=0.1,max=1.0)
+params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
 
 
 plt.figure(2)
@@ -120,25 +120,7 @@ plt.show()
 #	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
 #	if selecttofit==n:break
 #	brlxs[int(selecttofit)]
-####im folgenden kann man einzelne daten per eingabedialog verschieben
-####die strukturrelaxationszeiten werden logarithmisiert in
-####einer liste abgelegt
-while True:
-	sel=raw_input("Waehle den datenset: ")
-	try: 
-		int(sel)
-		print "aktuelles log tau: "+str(taus[int(sel)])
-		while True:
-			logtau=raw_input("neues tau: ")
-			if logtau=='n':break
-			tau=10**float(logtau)
-			taus[int(sel)]=float(logtau)
-			ax.lines[int(sel)].set_xdata([brlx*tau for brlx in brlxs[int(sel)]])
-			plt.draw()
-	except ValueError: print 'n zum beenden'
-	if sel=='n':break
-
-
+####Normierung der Hoehe:
 ####aus datensaetzen mit peak im frequenzfenster kann die
 ####kopplungskonstante bestimmt werden. datensaetze muessen
 ####vom benutzer gewaehlt werden.
@@ -154,6 +136,7 @@ while True:
 	if seti[-1]=='n': 
 		seti.pop()
 		break
+ks=[]
 for i in seti:
 	brlxs[i]=np.array(brlxs[i])
 	k,tau,beta=1e-5,2e-6,0.5
@@ -162,7 +145,7 @@ for i in seti:
 	fit = residual(params,brlxs[i])
 	print fit
 	print result
-	print params['K_dd'].value
+	ks.append(params['K_dd'].value)
 	print params['beta'].value
 	print params['tau'].value
 	
@@ -174,8 +157,55 @@ for i in seti:
 	plt.plot(brlxs[i],Chi_dd(brlxs[i],params['K_dd'].value,params['tau'].value,0.5))
 	plt.plot(brlxs[i],chis[i])
 	plt.show()
-	k=raw_input('fuer naechster fit ente druecken')
-k=raw_input('ende')
+
+	mk=raw_input('fuer naechster fit ente druecken')
+K_dd=0.0
+for k in ks:
+	K_dd=K_dd+k
+K_dd=K_dd/ks.__len__()
+for i in range(0,chis.__len__()):
+	chis[i]=[chi/K_dd for chi in chis[i]]
+
+####Uebereinanderschieben der Daten:
+####die taus koennen von Hand eingegben werden,
+####Fits bringen hier niemanden weiter
+####Im Folgenden kann man einzelne Daten per Eingabedialog verschieben
+####die Strukturrelaxationszeiten werden logarithmisiert in
+####einer Liste abgelegt
+while True:
+	sel=raw_input("Waehle den datenset: ")
+	try: 
+		int(sel)
+		print "aktuelles log tau: "+str(taus[int(sel)])
+		while True:
+			logtau=raw_input("neues tau: ")
+			if logtau=='n':break
+			tau=10**float(logtau)
+			taus[int(sel)]=float(logtau)
+			ax.lines[int(sel)].set_xdata([brlx*tau for brlx in brlxs[int(sel)]])
+			plt.draw()
+	except ValueError: print 'n zum beenden'
+	if sel=='n':break
+####Schreibe die normierten geschobenen daten heraus
+####bestimme beta
+omegataus=[]
+masterchi=[]
+for i in range(0,brlxs.__len__()):
+	for b in brlxs[i]:
+		omegataus.append(b*10**taus[i])
+for chi in chis:
+	for ch in chi:
+		masterchi.append(ch)
+plt.figure(4)
+masterax=plt.axes([0.1,0.1,0.85,0.85])
+masterax.set_xscale=('log')
+masterax.set_yscale=('log')
+masterax.xlabel=(r'$\omega \tau$')
+masterax.ylabel=(r'$\frac{\chi}{K_(dd)}$')
+masterax.plot(omegataus,masterchi)
+masterax.plot(omegataus,Chi_dd(np.array(omegataus),1.,1.,0.5))
+
+mk=raw_input('ende')
 #fitpars,covmat=curve_fit(#
 #		Chi_dd,	
 #		brlxs[1],
@@ -191,6 +221,7 @@ k=raw_input('ende')
 
 ####die normierten masterdaten koennen in ein file geschrieben
 ####werden.
+
 
 
 for i in range(0,temps.__len__()):
