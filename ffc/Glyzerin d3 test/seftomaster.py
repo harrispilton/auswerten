@@ -20,18 +20,19 @@ def residual(params,xdata,ydata=None,releps=None):
 	if releps is None:
 		return (ydata-Chi_dd(xdata,K_dd,tau,beta))
 	return ((ydata-Chi_dd(xdata,K_dd,tau,beta))*releps)
-
+def J_p(omega,tau):
+	return (tau/(1+(omega*tau)**2))
 def J_cd(omega,tau,beta):
 	a=omega*beta*tau
 	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
 def Chi_dd(omega,K_dd=1e-8,tau=1e-6,beta=0.5):
-	return omega*3*10**K_dd*J_cd(omega,tau,beta)
+	return omega*3*K_dd*J_cd(omega,tau,beta)
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logK_dd',value=-8.0,min=-14,max=2)
+params.add('logK_dd',value=8.0,min=7,max=10)
 params.add('K_dd',expr='(10.0**logK_dd)')
 params.add('logtau',value=-6.0,min=-10,max=10)
 params.add('tau',expr='(10.0**logtau)')
@@ -44,35 +45,6 @@ ax.set_xscale('log')
 ax.set_yscale('log')
 plt.plot(omega,Chi_dd(omega))
 plt.draw()
-#def schieb(val):
-#	global taus
-#	slide=10.0**val
-#	#if int(picker.val) == 0:
-#	tau_old=taus[0]
-#	taus=[tau-tau_old+slide for tau in taus]
-#	#else:
-#	#	tau_old=taus[int(picker.val-1)]
-#	#	for i in range(int(picker.val),taus.__len__()):
-#	#		taus=[tau-tau_old+slide for tau in taus]
-#
-#
-#	for i in range(int(picker.val),brlxs.__len__()):
-#		brlxs[i]=[brlx*slide for brlx in brlxs[i]]
-#		ax.lines[i].set_xdata(brlxs[i])
-#		brlxs[i]=[brlx/slide for brlx in brlxs[i]]
-#	if int(picker.val) == 0:
-#		return [tau+slide for tau in taus]
-#	else:
-#		#for tau in reversed(taus):#range(i,taus.__len__()):
-#		#		taus[ii]=slide+taus[i-1]+tau
-#		for i in xrange(int(picker.val), -1, -1):
-#			taus[i]=taus[i]+slide
-#		return taus
-	#for i in range(0,brlxs.__len__()):
-	#	brlxs[i]=[brlx*taus[i] for brlx in brlxs[i]]
-#	plt.draw()
-#
-
 #text.usetex: True
 ###
 ### variablen zuweisen ordner durchfilzen
@@ -85,7 +57,7 @@ sdf.sort()
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
-title=raw_input("enter plot title: ")
+title='dummer fit'#raw_input("enter plot title: ")
 plt.title(title)
 plt.xlabel(r"$\nu$ in $MHz$")
 plt.ylabel(r"$\chi$ in $s^{-2}$")
@@ -93,12 +65,6 @@ plt.xscale('log')
 plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
-
-#axpicker=plt.axes([0.1,0.1,0.25,0.02],axisbg=axcolor)
-#picker=Slider(axpicker,'pick set',0,sef.__len__()-0.01,valinit=0)
-#axtau_c=plt.axes([0.6,0.1,0.3,0.02],axisbg=axcolor)
-#stau_c=Slider(axtau_c,'log (tau_c)',-7,2,valinit=5)
-#print stau_c.on_changed(schieb)##schiebe die daten durch die gegend
 markers=itertools.cycle(['o','s','v','x'])
 
 sefdata=[]
@@ -127,6 +93,7 @@ for filename in sef:
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
 	print 'filename: '+filename
+	#wenn einzelne files fehlerhaft sind kann man es einfach durch auskommentieren der folgenden zeilen sehen
 	#print 'zone: '+str(zone)
 	#print 'relativefile: '+relativefile[1]
 	#print 'zone[sef.index(filename)]' + str(zone[1])
@@ -179,21 +146,33 @@ while True:
 #k=raw_input("Schaetze die Kopplungskonstante:  ") 
 #try:
 	#k=float(k)
-brlxs[1]=np.array(brlxs[1])
-k,tau,beta=1e-5,2e-6,0.5
-out = minimize(residual, params,args=(brlxs[1],chis[1]))
-result=brlxs[1]+out.residual
-fit = residual(params,brlxs[1])
-print fit
-print result
-print params['K_dd'].value
-print params['beta'].value
-print params['tau'].value
-#print out['K_dd'].value##wie bekomme ich die angefitteten parameter her ihr saubaeren??
-plt.figure(3)
-plt.plot(brlxs[1],result)
-plt.show()
-report_errors(params)
+seti=[]
+while True:
+	seti.append(raw_input("waehle ein datenset mit maximum: "))
+	try: int(seti[-1])
+	except ValueError: print 'n zum beenden'
+for i in seti:
+	brlxs[i]=np.array(brlxs[i])
+	k,tau,beta=1e-5,2e-6,0.5
+	out = minimize(residual, params,args=(brlxs[i],chis[i]),method=('leastsq'))
+	result=brlxs[i]+out.residual
+	fit = residual(params,brlxs[i])
+	print fit
+	print result
+	print params['K_dd'].value
+	print params['beta'].value
+	print params['tau'].value
+	
+	report_errors(params)
+	plt.figure(3)
+	fitax=plt.axes([0.1,0.1,0.8,0.8])
+	fitax.set_xscale('log')
+	fitax.set_yscale('log')
+	plt.plot(brlxs[i],Chi_dd(brlxs[i],params['K_dd'].value,params['tau'].value,0.5))
+	plt.plot(brlxs[i],chis[i])
+	plt.show()
+	k=raw_input('fuer naechster fit ente druecken')
+k=raw_input('ende')
 #fitpars,covmat=curve_fit(#
 #		Chi_dd,	
 #		brlxs[1],
@@ -202,7 +181,7 @@ report_errors(params)
 #		maxfev=5000
 #		)
 #print fitpars, covmat
-plt.figure(2)
+
 	#plt.plot(brlxs[1],peval(brlxs[1],plsq[0]))
 	#plt.draw()
 #except ValueError: print 'what the fuck??n zum beenden'
