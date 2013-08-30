@@ -36,7 +36,7 @@ params.add('logK_dd',value=8.0,min=7,max=10)
 params.add('K_dd',expr='(10.0**logK_dd)')
 params.add('logtau',value=-6.0,min=-10,max=10)
 params.add('tau',expr='(10.0**logtau)')
-params.add('beta',value=0.45,vary=False)
+params.add('beta',value=0.45,vary=True,min=0.1,max=1.0)
 
 
 plt.figure(2)
@@ -57,7 +57,7 @@ sdf.sort()
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
-title='dummer fit'#raw_input("enter plot title: ")
+title=''#raw_input("enter plot title: ")
 plt.title(title)
 plt.xlabel(r"$\nu$ in $MHz$")
 plt.ylabel(r"$\chi$ in $s^{-2}$")
@@ -149,8 +149,11 @@ while True:
 seti=[]
 while True:
 	seti.append(raw_input("waehle ein datenset mit maximum: "))
-	try: int(seti[-1])
+	try: seti[-1]=int(seti[-1])
 	except ValueError: print 'n zum beenden'
+	if seti[-1]=='n': 
+		seti.pop()
+		break
 for i in seti:
 	brlxs[i]=np.array(brlxs[i])
 	k,tau,beta=1e-5,2e-6,0.5
