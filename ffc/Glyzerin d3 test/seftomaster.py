@@ -282,9 +282,7 @@ for i in range(0,brlxs.__len__()):
 		masterchi.append(chi*K_dd/params['K_dd'].value)
 	ax.plot([brlx*10*taus[i] for brlx in brlxs[i]],
 			chis[i],
-			label=str(temps[i])+' K')
-print temps
-print type('Fit')
+			label=(str(temps[i])+' K'))
 ax.plot(sorted(omegataus),
 		Chi_dd(np.array(sorted(omegataus)),
 			1,1,params['beta'].value),
