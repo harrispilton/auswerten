@@ -39,12 +39,12 @@ params.add('tau',expr='(10.0**logtau)')
 params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
 
 
-plt.figure(2)
-ax=plt.axes([0.1,0.15,0.8,0.8])
-ax.set_xscale('log')
-ax.set_yscale('log')
-plt.plot(omega,Chi_dd(omega))
-plt.draw()
+#plt.figure(2)
+#ax=plt.axes([0.1,0.15,0.8,0.8])
+#ax.set_xscale('log')
+#ax.set_yscale('log')
+#plt.plot(omega,Chi_dd(omega))
+#plt.draw()
 #text.usetex: True
 ###
 ### variablen zuweisen ordner durchfilzen
@@ -149,20 +149,22 @@ for i in seti:
 	print params['beta'].value
 	print params['tau'].value
 	
-	#report_errors(params)
-	plt.figure(3)
-	fitax=plt.axes([0.1,0.1,0.8,0.8])
-	fitax.set_xscale('log')
-	fitax.set_yscale('log')
-	plt.plot(brlxs[i],Chi_dd(brlxs[i],params['K_dd'].value,params['tau'].value,0.5))
-	plt.plot(brlxs[i],chis[i])
-	plt.show()
+#	report_errors(params)
+#	plt.figure(3)
+#
+#	fitax=plt.axes([0.1,0.1,0.8,0.8])
+#	fitax.set_xscale('log')
+#	fitax.set_yscale('log')
+#	plt.plot(brlxs[i],Chi_dd(brlxs[i],params['K_dd'].value,params['tau'].value,0.5))
+#	plt.plot(brlxs[i],chis[i])
+#	plt.show()
 
-	#mk=raw_input('fuer naechster fit ente druecken')
+#	mk=raw_input('fuer naechster fit ente druecken')
 K_dd=0.0
 for k in ks:
 	K_dd=K_dd+k
 K_dd=K_dd/ks.__len__()
+#params['K_dd'].value=K_dd
 for i in range(0,chis.__len__()):
 	chis[i]=[chi/K_dd for chi in chis[i]]
 
@@ -217,8 +219,16 @@ while True:
 #		for i in range(minsel,maxsel):
 #			delta.append(10**taus[i]-10**taus[minsel])
 #		for i in range
-
-####Schreibe die normierten geschobenen daten heraus
+####zeichne die kurve neu
+ax.cla()
+ax.set_xscale('log')
+ax.set_yscale('log')
+ax.set_title('Masterkurve')
+for i in range(0,brlxs.__len__()):
+	ax.plot([brlx*10**taus[i] for brlx in brlxs[i]],
+			chis[i],
+			label=temps[i])
+plt.show()
 ####bestimme beta
 omegataus=[]
 masterchi=[]
@@ -228,17 +238,69 @@ for i in range(0,brlxs.__len__()):
 for chi in chis:
 	for ch in chi:
 		masterchi.append(ch)
+#fitax.plot(omegataus,masterchi,ls='None',marker='o')
+ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
+ax.autoscale()
+
+
+xmin=raw_input('jetzt die masterkurve nochmal fitten\n waehle xmin:')
+xmax=raw_input('waehle xmax:')
+for i in range(omegataus.__len__()-1,-1,-1):
+	if omegataus[i] < float(xmin) or omegataus[i] > float(xmax):
+		omegataus.pop(i)
+		masterchi.pop(i)
+#print omegataus
+#print masterchi
+params['beta'].vary=True
+params['logK_dd'].value=0
+params['logK_dd'].min=-2
+params['logK_dd'].max=2
+params['logtau'].value=0
+params['logtau'].min=-3
+params['logtau'].max=3
+omegataus=np.array(omegataus)
+out=minimize(residual,params,args=(omegataus,masterchi))
+result=omegataus+out.residual
+fit=residual(params,omegataus)
+print 'beta '+str(params['beta'].value)
+
+report_errors(params)
+####parameter updaten und ausgabe anpassen
+
+while True:
+	tauout=open('tau.dat','w')
+	for i in range(0,taus.__len__()):
+		taus[i]=taus[i]+params['logtau'].value
+		tauout.write(str(temps[i])+' '+str(taus[i])+'\n')
+	break
+omegataus=[]
+masterchi=[]
+for i in range(0,brlxs.__len__()):
+	for b in brlxs[i]:
+		omegataus.append(b*taus[i])
+	for chi in chis[i]:
+		masterchi.append(chi*K_dd/params['K_dd'].value)
+	ax.plot([brlx*10*taus[i] for brlx in brlxs[i]],
+			chis[i],
+			label=str(temps[i])+' K')
+print temps
+print type('Fit')
+ax.plot(sorted(omegataus),
+		Chi_dd(np.array(sorted(omegataus)),
+			1,1,params['beta'].value),
+		label='Fit')
+
+#ax.legend()
+plt.draw()
+		
+
+
 #plt.figure(4)
 #masterax=plt.axes([0.1,0.1,0.85,0.85])
 #masterax.yscale=('log')
 #masterax.xscale=('log')
 #masterax.xlabel=(r'$\omega \tau$')
 #masterax.ylabel=(r'$\frac{\chi}{K_(dd)}$')
-fitax.cla()
-fitax.plot(omegataus,masterchi,ls='None',marker='o')
-fitax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
-plt.draw()
-
 
 mk=raw_input('ende')
 #fitpars,covmat=curve_fit(#
