@@ -8,6 +8,7 @@ from scipy.optimize import curve_fit
 from scipy.optimize import brentq 
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
+import matplotlib.cm as cm
 from scipy.optimize import leastsq
 from lmfit import  minimize, Parameters, report_errors
 
@@ -27,10 +28,6 @@ def J_cd(omega,tau,beta):
 	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
 def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
 	return omega*3*K_dd*J_cd(omega,tau,beta)
-omega=np.logspace(-3,1.5,200,10)
-#K_dd=1e-9
-#beta=0.4
-#tau_alpha=1
 params= Parameters()
 params.add('logK_dd',value=8.0,min=7,max=10)
 params.add('K_dd',expr='(10.0**logK_dd)')
@@ -39,6 +36,10 @@ params.add('tau',expr='(10.0**logtau)')
 params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
 
 
+#K_dd=1e-9
+#beta=0.4
+#tau_alpha=1
+#omega=np.logspace(-3,1.5,200,10)
 #plt.figure(2)
 #ax=plt.axes([0.1,0.15,0.8,0.8])
 #ax.set_xscale('log')
@@ -54,6 +55,8 @@ sef=glob.glob('*K.sef')
 sef.sort()
 sdf=glob.glob('*K.sdf')
 sdf.sort()
+c=[]
+for i in np.arange(40):c.append(cm.jet(i/40.))
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
@@ -115,7 +118,7 @@ for filename in sef:
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
-plt.show()
+plt.draw()
 #while True:
 #	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
 #	if selecttofit==n:break
@@ -164,7 +167,6 @@ K_dd=0.0
 for k in ks:
 	K_dd=K_dd+k
 K_dd=K_dd/ks.__len__()
-#params['K_dd'].value=K_dd
 for i in range(0,chis.__len__()):
 	chis[i]=[chi/K_dd for chi in chis[i]]
 
@@ -286,19 +288,29 @@ ax.set_title('Masterkurve')
 
 for i in range(0,brlxs.__len__()):
 	for b in brlxs[i]:
-		omegataus.append(b*taus[i])
+		omegataus.append(b*10**taus[i])
 	for chi in chis[i]:
 		masterchi.append(chi*K_dd/params['K_dd'].value)
 	ax.plot([brlx*10**taus[i] for brlx in brlxs[i]],
 			chis[i],
 			label=str(temps[i])+' K',
-			marker='o',linestyle='None')
+			marker='o',linestyle='None',
+			color=c[int((float(temps[i])-160)/6.)]
+			)
+while True:
+	ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,params['beta'].value),label='Modell')
+	tau=raw_input('passe tau an: ')
+	if tau != 'n':
+		omegataus=[float(tau)*ot for ot in omegataus]
+	k=raw_input('passe k an: ')
+	if k!= 'n':
+		masterchi=[chi*k for chi in masterchi]	
+	for i  in range(0,ax.lines.__len__())
+		ax.lines[i].set_xdata(omegataus)
+		ax.lines[i].set_ydata(masterchi)
+#ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
 
-ax.plot(sorted(omegataus),
-		Chi_dd(np.array(sorted(omegataus)),
-			1.,1.,params['beta'].value),
-		label='Modell')
-
+ax.autoscale()
 plt.legend()
 plt.draw()
 		
