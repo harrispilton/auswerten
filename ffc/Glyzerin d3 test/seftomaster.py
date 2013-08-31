@@ -25,7 +25,7 @@ def J_p(omega,tau):
 def J_cd(omega,tau,beta):
 	a=omega*beta*tau
 	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
-def Chi_dd(omega,K_dd=1e-8,tau=1e-6,beta=0.5):
+def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
 	return omega*3*K_dd*J_cd(omega,tau,beta)
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
@@ -224,10 +224,13 @@ ax.cla()
 ax.set_xscale('log')
 ax.set_yscale('log')
 ax.set_title('Masterkurve')
+#print [brlx*10**taus[1] for brlx in brlxs[i]]
+#print chis[i]
 for i in range(0,brlxs.__len__()):
 	ax.plot([brlx*10**taus[i] for brlx in brlxs[i]],
 			chis[i],
-			label=temps[i])
+			label=str(temps[i])+' K')
+plt.legend()
 plt.show()
 ####bestimme beta
 omegataus=[]
@@ -275,20 +278,28 @@ while True:
 	break
 omegataus=[]
 masterchi=[]
+
+ax.cla()
+ax.set_xscale('log')
+ax.set_yscale('log')
+ax.set_title('Masterkurve')
+
 for i in range(0,brlxs.__len__()):
 	for b in brlxs[i]:
 		omegataus.append(b*taus[i])
 	for chi in chis[i]:
 		masterchi.append(chi*K_dd/params['K_dd'].value)
-	ax.plot([brlx*10*taus[i] for brlx in brlxs[i]],
+	ax.plot([brlx*10**taus[i] for brlx in brlxs[i]],
 			chis[i],
-			label=(str(temps[i])+' K'))
+			label=str(temps[i])+' K',
+			marker='o',linestyle='None')
+
 ax.plot(sorted(omegataus),
 		Chi_dd(np.array(sorted(omegataus)),
-			1,1,params['beta'].value),
-		label='Fit')
+			1.,1.,params['beta'].value),
+		label='Modell')
 
-#ax.legend()
+plt.legend()
 plt.draw()
 		
 
