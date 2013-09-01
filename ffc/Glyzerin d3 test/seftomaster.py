@@ -33,8 +33,8 @@ params.add('logK_dd',value=8.0,min=7,max=10)
 params.add('K_dd',expr='(10.0**logK_dd)')
 params.add('logtau',value=-6.0,min=-12,max=3)
 params.add('tau',expr='(10.0**logtau)')
-params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
 
+params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
 
 #K_dd=1e-9
 #beta=0.4
