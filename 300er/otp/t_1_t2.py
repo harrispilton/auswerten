@@ -15,18 +15,20 @@ def residual(params,xdata,ydata=None):
 	f0=params['f0'].value
 	hwhm=10**params['loghwhm'].value
 	a0=params['a0'].value
+	y0=params['y0'].value
 	if ydata is None:
-		return Lorentz(xdata,f0,hwhm,a0)
-	return (ydata-Lorentz(xdata,f0,hwhm,a0))
-def Lorentz(x,f0,hwhm,a0):
-	return (a0/(1.+((x-f0)/hwhm)**2))
+		return Lorentz(xdata,f0,hwhm,a0,y0)
+	return (ydata-Lorentz(xdata,f0,hwhm,a0,y0))
+def Lorentz(x,f0,hwhm,a0,y0=0):
+	return (y0+a0/(1.+((x-f0)/hwhm)**2))
 	#return (a0 * (0.5 * fwhm)/((x * f0)**2.0 + 0.25 * fwhm**2))
 params = Parameters()
 params.add('loghwhm',value=2.0,min=-20.0,max=20.0)
 pi=np.pi
-params.add('t_2',expr='(1/(2*pi*10**(loghwhm)))')
-params.add('a0', value=1, min=0.95,max=1.1)
+params.add('t_2',expr='(2/(pi*10**(loghwhm)))')
+params.add('a0', value=1, min=0.95,max=1.1,vary=False)
 params.add('f0', value=0,min=-1e4,max=1e4)
+params.add('y0',value=0.05,min=0,max=0.2)
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.8,0.8])
@@ -43,10 +45,11 @@ p0=[2,1.0e4,1.0]
 #	a0_a.append(a0)
 #	fwhm_a.append(fwhm)
 #	f0_a.append(f0)
-with open('otp_T1.dat','w') as fout: fout.close()
 freqs=[]
 betrags=[]
 temps=[]
+fittemps=[]
+t2s=[]
 for data in files:
 	f=open(data,'r')
 	lines=f.readlines()
@@ -67,8 +70,13 @@ for data in files:
 	plt.autoscale()
 	plt.draw()
 	#plt.plot(fr,Lorentz(fr,f0,fwhm,a0))
-	fitten=raw_input('fitten (y)')
+	fitten='y'
 	if str(fitten)=='y':
+		params['loghwhm'].value=2
+		#for i in range(freq.__len__()-1,-1,-1):
+		#	if abs(freq[i])>1.5e4:
+		#		freq.pop(i)
+		#		betrag.pop(i)
 		freq=np.array(freq)
 		betrag=np.array(betrag)
 		out = minimize(residual, params,args=(freq,betrag))
@@ -77,7 +85,12 @@ for data in files:
 		print report_errors(params)
 		ax.plot(freq,fit,label=str(temps[-1])+' Fit')
 		plt.legend()
-		
+		t2s.append(params['t_2'].value)
+		fittemps.append(temps[-1])
+
+with open('otp_T2.dat','w') as fout: 
+	for i in range(0,t2s.__len__()):
+		fout.write(str(fittemps[i])+' '+str(t2s[i])+'\n')
 #	print type(freq), type(betrag), type(p0), type(p0[0])
 #	fitpars, covmat = curve_fit(
 #			Lorentz,
@@ -102,3 +115,9 @@ plt.legend()
 plt.show()
 
 
+plt.figure(2)
+plt.xscale('linear')
+plt.yscale('log')
+plt.plot(fittemps,t2s,linestyle='None',marker='x')
+plt.draw()
+i=raw_input('ente')
