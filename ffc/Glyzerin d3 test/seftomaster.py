@@ -359,7 +359,6 @@ for i in range(0,brlxs.__len__()):
 			cpercerrs[i].append(percerrs[i][ii])
 for i in range(cbrlxs.__len__()-1,-1,-1):
 	if cbrlxs[i].__len__()<3:
-		print temps[i]
 		cbrlxs.pop(i)
 		cchis.pop(i)
 		cpercerrs.pop(i)
