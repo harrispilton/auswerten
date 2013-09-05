@@ -177,7 +177,7 @@ for i in range(0,chis.__len__()):
 	chis[i]=[chi/K_dd for chi in chis[i]]
 	ax.lines[i].set_ydata(chis[i])
 om=np.logspace(-6,3,80)
-ax.plot(om,Chi_dd(om,1.,1.),label='fit')
+x.plot(om,Chi_dd(om,1.,1.),label='fit')
 plt.draw()
 while True:
 	print 'K alt='+str(K_dd)
