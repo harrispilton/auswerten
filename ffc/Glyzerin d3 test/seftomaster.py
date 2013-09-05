@@ -17,24 +17,27 @@ def residual(params,xdata,ydata=None,releps=None):
 	tau=params['tau'].value
 	beta=params['beta'].value
 	if ydata is None:
-		return Chi_dd
+		return Chi_dd(xdata,K_dd,tau,beta)
 	if releps is None:
 		return (ydata-Chi_dd(xdata,K_dd,tau,beta))
 	return ((ydata-Chi_dd(xdata,K_dd,tau,beta))*releps)
-def J_p(omega,tau):
+def J_p(nu,tau):
+	omega=nu*2*np.pi
 	return (tau/(1+(omega*tau)**2))
-def J_cd(omega,tau,beta):
+def J_cd(nu,tau,beta):
+	omega=nu*2*np.pi
 	a=omega*beta*tau
 	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
-def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
-	return omega*3*K_dd*J_cd(omega,tau,beta)
+def Chi_dd(nu,K_dd=1,tau=1,beta=0.7):
+	omega=nu*2*np.pi
+	return omega*3*K_dd*J_cd(nu,tau,beta)
 params= Parameters()
 params.add('logK_dd',value=8.0,min=3,max=12)
 params.add('K_dd',expr='(10.0**logK_dd)')
 params.add('logtau',value=-6.0,min=-12,max=3)
 params.add('tau',expr='(10.0**logtau)')
 
-params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
+params.add('beta',value=0.5,vary=False,min=0.3,max=1.0)
 
 #K_dd=1e-9
 #beta=0.4
@@ -60,7 +63,7 @@ for i in np.arange(40):c.append(cm.jet(i/40.))
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
-title=''#raw_input("enter plot title: ")
+title='Glyzerin'#raw_input("enter plot title: ")
 plt.title(title)
 plt.xlabel(r"$\nu$ in $MHz$")
 plt.ylabel(r"$\chi$ in $s^{-2}$")
@@ -125,6 +128,7 @@ plt.draw()
 #	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
 #	if selecttofit==n:break
 #	brlxs[int(selecttofit)]
+
 ####Normierung der Hoehe:
 ####aus datensaetzen mit peak im frequenzfenster kann die
 ####kopplungskonstante bestimmt werden. datensaetze muessen
@@ -171,6 +175,19 @@ for k in ks:
 K_dd=K_dd/ks.__len__()
 for i in range(0,chis.__len__()):
 	chis[i]=[chi/K_dd for chi in chis[i]]
+	ax.lines[i].set_ydata(chis[i])
+om=np.logspace(-6,3,80)
+ax.plot(om,Chi_dd(om,1.,1.),label='fit')
+plt.draw()
+while True:
+	print 'K alt='+str(K_dd)
+	kneu=raw_input('neues K: ')
+	if kneu=='n': break
+	for i in range(0,chis.__len__()):
+		chis[i]=[chi/float(kneu)*K_dd for chi in chis[i]]
+		ax.lines[i].set_ydata(chis[i])
+		plt.draw()
+	K_dd=float(kneu)
 
 ####Uebereinanderschieben der Daten:
 ####die taus koennen von Hand eingegben werden,
@@ -178,7 +195,7 @@ for i in range(0,chis.__len__()):
 ####Im Folgenden kann man einzelne Daten per Eingabedialog verschieben
 ####die Strukturrelaxationszeiten werden logarithmisiert in
 ####einer Liste abgelegt
-while open('tau.dat','r'):
+while True:
 	tauin=open('tau.dat','r')
 	lines=tauin.readlines()
 	if lines.__len__()==taus.__len__():
@@ -204,7 +221,8 @@ while True:
 			ax.lines[int(sel)].set_xdata([brlx*tau for brlx in brlxs[int(sel)]])
 			plt.draw()
 	except ValueError: print 'n zum beenden'
-	if sel=='n':break
+	if sel=='n':
+		break
 	if sel=='a':
 		minsel=raw_input('schiebe mehrere datensets\n waehle set min:')
 		maxsel=raw_input('waehle set max: ')
@@ -214,7 +232,9 @@ while True:
 			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
 		ax.autoscale()
 		plt.draw()
-
+with open('tau.dat','w') as tauout:
+	for i  in range(0,taus.__len__()):
+		tauout.write(str(temps[i])+' '+str(taus[i])+'\n')
 while True:
 	
 	tauout=open('tau.dat','w')
@@ -233,7 +253,7 @@ ax.set_title('Masterkurve')
 #print [brlx*10**taus[1] for brlx in brlxs[i]]
 #print chis[i]
 for i in range(0,brlxs.__len__()):
-	ax.plot([brlx*10**taus[i] for brlx in brlxs[i]],
+	ax.plot([brlx*10**taus[i]*2*np.pi for brlx in brlxs[i]],
 			chis[i],
 			label=str(temps[i])+' K')
 	plt.draw()
@@ -245,7 +265,7 @@ masterchi=[]
 mastererr=[]
 for i in range(0,brlxs.__len__()):
 	for b in brlxs[i]:
-		omegataus.append(b*10**taus[i])
+		omegataus.append(b*10**taus[i]*2*np.pi)
 for chi in chis:
 	for ch in chi:
 		masterchi.append(ch)
@@ -277,7 +297,21 @@ result=omegataus+out.residual
 fit=residual(params,omegataus)
 print 'beta '+str(params['beta'].value)
 report_errors(params)
-
+while True:
+	print "aktuelles beta: "+str(params['beta'].value)
+	betaneu=raw_input("passe beta an: ")
+	try: 
+		if betaneu=='n':break
+		betaneu=float(betaneu) 
+		
+		taus[int(sel)]=float(logtau)
+		params['beta'].value=betaneu
+		ax.lines[-1].set_ydata(residual(params,xdata(ax.lines[-1])))
+		plt.draw()
+	except ValueError: print 'n zum beenden'
+	if sel=='n':
+		break
+	
 ####parameter updaten und ausgabe anpassen
 while True:
 	tauout=open('tau.dat','w')
@@ -298,7 +332,7 @@ for i in range(0,brlxs.__len__()):
 		omegataus.append(b*10**taus[i])
 	for chi in chis[i]:
 		masterchi.append(chi*K_dd/params['K_dd'].value)
-	ax.plot([brlx*10**taus[i] for brlx in brlxs[i]],
+	ax.plot([brlx*10**taus[i]*2*np.pi for brlx in brlxs[i]],
 			chis[i],
 			label=str(temps[i])+' K',
 			marker='o',linestyle='None',
@@ -359,6 +393,7 @@ for i in range(0,brlxs.__len__()):
 			cpercerrs[i].append(percerrs[i][ii])
 for i in range(cbrlxs.__len__()-1,-1,-1):
 	if cbrlxs[i].__len__()<3:
+		print temps[i]
 		cbrlxs.pop(i)
 		cchis.pop(i)
 		cpercerrs.pop(i)
@@ -379,6 +414,10 @@ plt.draw()
 #masterax.yscale=('log')
 #masterax.xscale=('log')
 mk=raw_input('ende')
+with open('tau.dat','w') as fout:
+	for i in range(0,taus.__len__()):
+		fout.write(str(temps[i])+' '+str(taus[i])+'\n')
+
 #fitpars,covmat=curve_fit(#
 #		Chi_dd,	
 #		brlxs[1],

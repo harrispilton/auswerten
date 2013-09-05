@@ -24,6 +24,9 @@ def J_cd(nu,tau,beta=0.5):
 def R1_CSA(nu,tau,delta_sigma):
 	omega=nu*2.*np.pi
 	return 0.3*omega**2*J_cd(nu,tau)
+def susz(x):
+	x=x*2*np.pi
+	return x/(1+x**2.)
 def R1_DD(nu,tau,K_dd):
 	return K_dd*(J_cd(nu,tau)+4*J_cd(2*nu,tau))
 def R1_ges(nu,tau,K_dd,delta_sigma):
@@ -38,7 +41,11 @@ plt.xscale('log')
 plt.yscale('log')
 alpha=np.linspace(0,1,10)
 tau=np.logspace(-11,-7,5)
-print np.log10(K_DDs)
+#x=np.linspace(0.01,10,1e3)
+#ax.plot(x,susz(x))
+#plt.draw()
+#plt.show()
+#i = raw_input('next')
 for t in tau:
 	ax.plot(nu,R1_ges(nu,t,K_DDs[1],delta_sigma_ppm*1e-6/(nu*2*np.pi)),label='tau ='+str(t)+'K_DD = 1e'+str(np.log10(K_DDs[1])),alpha=(np.log10(K_DDs[1])-2)/10,color=colors.next())
 
