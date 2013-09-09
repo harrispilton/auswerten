@@ -81,56 +81,9 @@ for data in files:
 	plt.show()
 	t1s.append(params['t1'].value)
 	i=raw_input('next')
-	#plt.plot(fr,Lorentz(fr,f0,fwhm,a0))
-	fitten='n'
-#	if str(fitten)=='y':
-#		params['loghwhm'].value=2
-#		#for i in range(freq.__len__()-1,-1,-1):
-#		#	if abs(freq[i])>1.5e4:
-#		#		freq.pop(i)
-#		#		betrag.pop(i)
-#		freq=np.array(freq)
-#		betrag=np.array(betrag)
-#		result=freq+out.residual
-#		fit = residual(params, np.array(freq))
-#		print report_errors(params)
-#		plt.legend()
-#		t2s.append(params['t_2'].value)
-#		fittemps.append(temps[-1])
-#
-#with open('otp_T1.dat','w') as fout: 
-#	for i in range(0,t1s.__len__()):
-#		fout.write(str(fittemps[i])+' '+str(t2s[i])+'\n')
-#	print type(freq), type(betrag), type(p0), type(p0[0])
-#	fitpars, covmat = curve_fit(
-#			Lorentz,
-#			freq,
-#			betrag,
-#			p0)
-#			#[f0,fwhm,a0],
-#			#maxfev=10000
-#			#)
-#	print 'fitparameter '+str(fitpars)+'\n\ncovmat '+str(covmat)+'\n\n\n'
-#	print "fitpars[0]"+str(fitpars[0])
-#	print "fitpars[0]"+str(fitpars[0])
-#	print "fitpars[0]"+str(fitpars[0])
-#	print "fitpars[0]"+str(fitpars[0])
-#	with open('otp_T1.dat','a') as fout:
-#		fout.write(str(data[7:10])+'\t'+str(np.pi/fitpars[1])+'\n')
-#	plt.plot(freq,Lorentz(freq,fitpars[0],fitpars[1],fitpars[2]),
-			#label=data[7:10]
-#			)
-#	p0=fitpars
 plt.legend()
 plt.show()
 with open('satrec.dat','w') as fout:
 	for i in range(0,temps.__len__()):
 		fout.write(str(temps[i])+' '+str(t1s[i])+'\n')	
-i=raw_input('ente')
-
-plt.figure(2)
-plt.xscale('linear')
-plt.yscale('log')
-#plt.plot(fittemps,t2s,linestyle='None',marker='x')
-plt.draw()
 i=raw_input('ente')
