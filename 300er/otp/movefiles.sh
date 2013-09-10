@@ -35,6 +35,8 @@ cp otp/53.dat otp/invrec/293.2_K.dat
 cp otp/55.dat otp/invrec/285.8_K.dat
 cp otp/57.dat otp/invrec/280.0_K.dat
 cp otp/60.dat otp/invrec/276.9_K.dat
+cp otp/41.dat otp/invrec/331.5_K.dat
+cp otp/35.dat otp/invrec/306.5_K.dat
 
 
 cp otp/13.dat otp/satrec/273.8_K.dat
@@ -42,11 +44,8 @@ cp otp/15.dat otp/satrec/267.5_K.dat
 cp otp/19.dat otp/satrec/260.0_K.dat
 cp otp/29.dat otp/satrec/238.0_K.dat
 cp otp/37.dat otp/satrec/292.3_K.dat
-cp otp/35.dat otp/satrec/306.5_K.dat
-cp otp/41.dat otp/satrec/331.5_K.dat
 cp otp/58.dat otp/satrec/280.0_K.dat
 cp otp/61.dat otp/satrec/276.9_K.dat
-cp otp/65.dat otp/satrec/219.9_K.dat
 cp otp/66.dat otp/satrec/232.8_K.dat
 cp otp/67.dat otp/satrec/233.0_K.dat
 cp otp/68.dat otp/satrec/249.9_K.dat
