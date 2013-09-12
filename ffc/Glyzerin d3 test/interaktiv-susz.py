@@ -33,7 +33,7 @@ for om in omega: wurzelomega.append(om**0.5)
 ###
 ### funktionen definieren
 ###
-
+plt.ion()
 ##die spektraldichte J und die Suszibilitaet Chi
 def J(omega,tau_c,beta):
 	return tau_c/(1. + omega **2 * tau_c **2)**beta
@@ -45,13 +45,13 @@ def R_1(omega,R1_0,D):
 	h_quer = 6.626e-34/(2.*np.pi)
 	gamma_H=2.675e8#/2/np.pi
 	N_a=6.022e23
-	n_H=5.0
+	n_H=8.0*5./.8.
 	rho=rho_Glyzerin=1.26*1e6
-	M=M_Glyzerin_d3=95.0866#Sigma Aldrich Molecular Weight Calc
+	M=M_Glyzerin_d3=92.0866#Sigma Aldrich Molecular Weight Calc
 	N=n_H*N_a*rho/M
-	print 'N = 'N
+	print 'N = ' +str(N)
 	B=np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2)**2 * N
-	print 'B = 'B
+	print 'B = '+str(B)
 	print N, omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
 	return R1_0-B/(D**1.5) *(2*np.pi*omega)**0.5
 ##die verschiebefunktion fuer die suszibilitaet
