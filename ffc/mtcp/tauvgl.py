@@ -45,7 +45,7 @@ ax.plot(mytemp,mytau,label='FFC',marker='o',linestyle='None')
 ax.plot(schmidtketemp,schmidtketau,label='Schmidtke',marker='^',linestyle='None')
 ax.plot(pcstemp,pcstau,label='pcs')
 temp=np.linspace(200,400,100)
-tau=-13.24+(980.*((1.+np.exp(-6.2*(-1.+0.004269*temp)))))/temp
+tau=-13.24+(980.*(1.+np.exp(-6.2*(-1.+0.004269*temp))))/temp
 ax.plot(temp,tau,label='fit')
 plt.legend()
 laber=raw_input('ende')
