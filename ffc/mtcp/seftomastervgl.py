@@ -129,27 +129,27 @@ plt.draw()
 #k=raw_input("Schaetze die Kopplungskonstante:  ") 
 #try:
 	#k=float(k)
-seti=[]
-while True:
-	seti.append(raw_input("waehle ein datenset mit maximum: "))
-	try: seti[-1]=int(seti[-1])
-	except ValueError: print 'n zum beenden'
-	if seti[-1]=='n': 
-		seti.pop()
-		break
-ks=[]
-for i in seti:
-	brlxs[i]=np.array(brlxs[i])
-	k,tau,beta=1e-5,2e-6,0.5
-	out = minimize(residual, params,args=(brlxs[i],chis[i],percerrs[i]),method=('leastsq'))
-	result=brlxs[i]+out.residual
-	fit = residual(params,brlxs[i])
-	print fit
-	print result
-	ks.append(params['K_dd'].value)
-	print params['beta'].value
-	print params['tau'].value
-	
+#seti=[]
+#while True:
+#	seti.append(raw_input("waehle ein datenset mit maximum: "))
+#	try: seti[-1]=int(seti[-1])
+#	except ValueError: print 'n zum beenden'
+#	if seti[-1]=='n': 
+#		seti.pop()
+#		break
+#ks=[]
+#for i in seti:
+#	brlxs[i]=np.array(brlxs[i])
+#	k,tau,beta=1e-5,2e-6,0.5
+#	out = minimize(residual, params,args=(brlxs[i],chis[i],percerrs[i]),method=('leastsq'))
+#	result=brlxs[i]+out.residual
+#	fit = residual(params,brlxs[i])
+#	print fit
+#	print result
+#	ks.append(params['K_dd'].value)
+#	print params['beta'].value
+#	print params['tau'].value
+#	
 #	report_errors(params)
 #	plt.figure(3)
 #
@@ -161,27 +161,64 @@ for i in seti:
 #	plt.show()
 
 #	mk=raw_input('fuer naechster fit ente druecken')
-K_dd=0.0
-for k in ks:
-	K_dd=K_dd+k
-K_dd=K_dd/ks.__len__()
-for i in range(0,chis.__len__()):
-	chis[i]=[chi/K_dd for chi in chis[i]]
-	ax.lines[i].set_ydata(chis[i])	
-om=np.logspace(-6,3,80)
-ax.plot(om,Chi_dd(om,1.,1.),label='fit')
-plt.draw()
-while True:
-	print 'K alt='+str(K_dd)
-	kneu=raw_input('neues K: ')
-	if kneu=='n': break
-	for i in range(0,chis.__len__()):
-		chis[i]=[chi/float(kneu)*K_dd for chi in chis[i]]
-		ax.lines[i].set_ydata(chis[i])	
-		plt.draw()
+#K_dd=0.0
+K_dd=5.52e8
+#for k in ks:
+#	K_dd=K_dd+k
+#K_dd=K_dd/ks.__len__()
+#for i in range(0,chis.__len__()):
+#	chis[i]=[chi/K_dd for chi in chis[i]]
+#	ax.lines[i].set_ydata(chis[i])	
+#om=np.logspace(-6,3,80)
+#ax.plot(om,Chi_dd(om,1.,1.),label='fit')
+#plt.draw()
+#while True:
+#	print 'K alt='+str(K_dd)
+#	kneu=raw_input('neues K: ')
+#	if kneu=='n': break
+#	for i in range(0,chis.__len__()):
+#		chis[i]=[chi/float(kneu)*K_dd for chi in chis[i]]
+#		ax.lines[i].set_ydata(chis[i])	
+#		plt.draw()
+
 #####importiere die dielektrischen daten
+plt.xscale('log')
+plt.yscale('log')
+
+
 while True:
-	masterin=open('externe daten/
+	masterin=open('externe_daten/mtcp_master_dsX\'\'.dat','r')
+	dsdat=masterin.readlines()
+	omegatau=[]
+	chi=[]
+	for dat in dsdat:
+		liste=dat.split()
+		omegatau.append(float(liste[0]))
+		chi.append(float(liste[1]))
+	ax.plot(omegatau,chi,label='ds',marker='o')
+	plt.legend()
+	plt.autoscale()
+	plt.draw()
+	plt.show()
+	break
+
+####importiere die pcs daten
+while True:
+	masterin=open('externe_daten/pcs fit.dat','r')
+	dsdat=masterin.readlines()
+	omegatau=[]
+	chi=[]
+	for dat in dsdat:
+		liste=dat.split()
+		omegatau.append(float(liste[0]))
+		chi.append(float(liste[1]))
+	ax.plot(omegatau,chi,label='pcs',marker='o')
+	plt.legend()
+	plt.autoscale()
+	plt.draw()
+	plt.show()
+	break
+
 ####Uebereinanderschieben der Daten:
 ####die taus koennen von Hand eingegben werden,
 ####Fits bringen hier niemanden weiter
@@ -239,6 +276,16 @@ while True:
 #			delta.append(10**taus[i]-10**taus[minsel])
 #		for i in range
 ####zeichne die kurve neu
+for i in range(0,taus.__len__()):
+	ax.lines[i].set_ydata([chi*7.075e-10 for chi in chis[i]])
+	plt.draw()
+plt.show()
+
+fout=open('master.dat','w')
+for i in range(0,taus.__len__()):
+	for ii in range(0,chis[i].__len__()):
+		fout.write(str(brlxs[i][ii]*taus[i])+' '+str(chis[i][ii]*7.075e-10)+'\n')
+i=raw_input('ende')
 ax.cla()
 ax.set_xscale('log')
 ax.set_yscale('log')
@@ -338,6 +385,7 @@ try:
 		if tau=='n' and k == 'n': break
 except ValueError: 
 	print 'Value Error'
+
 
 #ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
 
