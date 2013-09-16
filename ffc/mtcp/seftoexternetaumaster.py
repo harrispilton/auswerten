@@ -115,12 +115,13 @@ for filename in sef:
 	omegatau=[]
 	for b in brlx:
 		omegatau.append(b*2*np.pi*10**tau)
-	#omtau.plot(omegatau,np.array(chi)*0.9e-9,label=temp+'0.9',linestyle='None',marker=markers.next())
-	omegataus.append(omegatau)
+		omegataus.append(b*2*np.pi*10**tau)
 	omtau.plot(omegatau,np.array(chi)*1.9e-9,label=temp,linestyle='None',marker=markers.next())
 	temps.append(float(temp))
 	brlxs.append(brlx)
-	chis.append(chi)
+	#chis.append(chi)
+	for c in chi:
+		chis.append(c*1.9e-9)
 	taus.append(0.0)
 	percerrs.append(percerr)
 	#print repr(temp)
@@ -138,8 +139,7 @@ plt.draw()
 plt.show()
 fout=open('master.dat','w')
 for i in range(0,chis.__len__()):
-	for ii in range(0,chis[i].__len__()):
-		fout.write(str(brlxs[i][ii]*10**taus[i])+' '+str(chis[i][ii]*1.9e-9)+'\n')
+		fout.write(str(omegataus[i])+' '+str(chis[i])+'\n')
 fout.close()
 iii=raw_input('next')
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])

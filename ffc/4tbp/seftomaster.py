@@ -21,13 +21,16 @@ def residual(params,xdata,ydata=None,releps=None):
 	if releps is None:
 		return (ydata-Chi_dd(xdata,K_dd,tau,beta))
 	return ((ydata-Chi_dd(xdata,K_dd,tau,beta))*releps)
-def J_p(omega,tau):
+def J_p(nu,tau):
+	omega=nu*2*np.pi
 	return (tau/(1+(omega*tau)**2))
-def J_cd(omega,tau,beta):
+def J_cd(nu,tau,beta):
+	omega=nu*2*np.pi
 	a=omega*beta*tau
 	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
-def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
-	return omega*3*K_dd*J_cd(omega,tau,beta)
+def Chi_dd(nu,K_dd=1,tau=1,beta=0.5):
+	omega=nu*2*np.pi
+	return omega*3*K_dd*J_cd(nu,tau,beta)
 params= Parameters()
 params.add('logK_dd',value=8.0,min=3,max=12)
 params.add('K_dd',expr='(10.0**logK_dd)')
@@ -87,7 +90,8 @@ for filename in sef:
 	zone=[]
 	relativefile=[]
 	for data in sefdata: 
-		liste=data.split() #	liste = re.findall(r"[\w.][\f]+",data)
+		liste=data.split()
+	#	liste = re.findall(r"[\w.][\f]+",data)
 		brlx.append(float(liste[0])*1e6)
 		chi.append(float(liste[2])*brlx[-1])
 		percerr.append(float(liste[3]))
@@ -170,7 +174,18 @@ for k in ks:
 K_dd=K_dd/ks.__len__()
 for i in range(0,chis.__len__()):
 	chis[i]=[chi/K_dd for chi in chis[i]]
-
+	ax.lines[i].set_ydata(chis[i])	
+om=np.logspace(-6,3,80)
+ax.plot(om,Chi_dd(om,1.,1.),label='fit')
+plt.draw()
+while True:
+	print 'K alt='+str(K_dd)
+	kneu=raw_input('neues K: ')
+	if kneu=='n': break
+	for i in range(0,chis.__len__()):
+		chis[i]=[chi/float(kneu)*K_dd for chi in chis[i]]
+		ax.lines[i].set_ydata(chis[i])	
+		plt.draw()
 ####Uebereinanderschieben der Daten:
 ####die taus koennen von Hand eingegben werden,
 ####Fits bringen hier niemanden weiter
@@ -203,7 +218,8 @@ while True:
 			ax.lines[int(sel)].set_xdata([brlx*tau for brlx in brlxs[int(sel)]])
 			plt.draw()
 	except ValueError: print 'n zum beenden'
-	if sel=='n':break
+	if sel=='n':
+		break
 	if sel=='a':
 		minsel=raw_input('schiebe mehrere datensets\n waehle set min:')
 		maxsel=raw_input('waehle set max: ')
@@ -213,7 +229,9 @@ while True:
 			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
 		ax.autoscale()
 		plt.draw()
-
+with open('tau.dat','w') as tauout:
+	for i  in range(0,taus.__len__()):
+		tauout.write(str(temps[i])+' '+str(taus[i])+'\n')
 while True:
 	
 	tauout=open('tau.dat','w')

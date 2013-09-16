@@ -111,7 +111,7 @@ for filename in sef:
 	#print repr(temp)
 	ax.plot(brlx,chi,
 			label=temp+' K',
-			marker=markers.next(),linestyle='None')
+			marker=markers.next(),ms=3.5,linestyle='None')
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
