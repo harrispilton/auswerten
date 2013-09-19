@@ -35,7 +35,7 @@ for i in range(0,zk.__len__()):
 
 mytau=[]
 mytemp=[]
-mytauin=open('tau.dat','r')
+mytauin=open('externe_daten/tau.txt','r')
 tau=mytauin.readlines()
 for i in range(0,tau.__len__()):
 	liste=tau[i].split()
@@ -43,9 +43,10 @@ for i in range(0,tau.__len__()):
 	mytau.append(float(liste[1]))
 ax.plot(mytemp,mytau,label='FFC',marker='o',linestyle='None')
 ax.plot(schmidtketemp,schmidtketau,label='Schmidtke',marker='^',linestyle='None')
-ax.plot(pcstemp,pcstau,label='pcs')
+ax.plot(pcstemp,pcstau,label='pcs',marker='v',ls='None')
 temp=np.linspace(200,400,100)
 tau=-13.24+(980.*(1.+np.exp(-6.2*(-1.+0.004269*temp))))/temp
 ax.plot(temp,tau,label='fit')
+ax.plot(245,np.log10(1.9e-7*0.61),marker='o',ms=8,label='testpunkt')
 plt.legend()
 laber=raw_input('ende')

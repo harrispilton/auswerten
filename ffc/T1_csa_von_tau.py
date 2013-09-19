@@ -17,10 +17,7 @@ def J_cd(omega,tau_cd,beta=1.):
 	return (1/omega*(np.sin(beta*np.arctan(a)))/((1.+a**2.)**(beta/2.)))
 def R1_CSA(omega,tau,delta_sigma,beta=1.):
 	return 0.3*omega**2.*delta_sigma**2.*J_cd(omega,tau,beta)
-def R1_DD(omega,tau,k_dd,beta=1.):
-	return k_dd*(J_cd(omega,tau,beta)+4*J_cd(2*omega,tau,beta))
-def R1_ges(omega,tau,k_dd,delta_sigma,beta=1.):
-	return R1_DD(omega,tau,k_dd,beta)+R1_CSA(omega,tau,delta_sigma,beta)
+
 
 
 plt.ion()
@@ -34,10 +31,10 @@ tau=np.logspace(-11,-7,120)
 nu=121.49e6
 delta_sigma_ppm=220*1e-6
 
-rateax.plot(tau,1./R1_ges(nu*2*np.pi,tau/0.3,1.2e9,delta_sigma_ppm,0.3),label='beta=0.3',color=c[0])
-rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau/0.3,delta_sigma_ppm,0.3),label='CSA',color=c[1])
-rateax.plot(tau,1./R1_DD(nu*2*np.pi,tau/0.3,1.2e9,0.3),label='DD',color=c[2])
-#rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
+rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau/0.3,delta_sigma_ppm,0.3),label='beta=0.3',color=c[0])
+rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5),label='beta=0.5',color=c[1])
+rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau/0.7,delta_sigma_ppm,0.7),label='beta=0.7',color=c[2])
+rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
 
 plt.legend()
 

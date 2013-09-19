@@ -18,13 +18,13 @@ def residual(params,xdata,ydata=None,releps=None):
 	if ydata is None:
 		return Chi_dd
 	if releps is None:
-		return (ydata-Chi_dd(xdata,K_dd,tau,beta))
-	return ((ydata-Chi_dd(xdata,K_dd,tau,beta))*releps)
+		return (ydata-Chi_dd(xdata,K_dd,tau/beta,beta))
+	return ((ydata-Chi_dd(xdata,K_dd,tau/beta,beta))*releps)
 def J_p(omega,tau):
 	return (tau/(1+(omega*tau)**2))
 def J_cd(omega,tau,beta):
-	a=omega*beta*tau
-	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
+	a=omega*tau
+	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2)**(beta/2.)))
 def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
 	return omega*3*K_dd*J_cd(omega,tau,beta)
 omega=np.logspace(-3,1.5,200,10)
@@ -241,7 +241,7 @@ for chi in chis:
 	for ch in chi:
 		masterchi.append(ch)
 #fitax.plot(omegataus,masterchi,ls='None',marker='o')
-ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
+ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1./0.5,0.5))
 ax.autoscale()
 
 
@@ -293,7 +293,7 @@ for i in range(0,brlxs.__len__()):
 			label=str(temps[i])+' K',
 			marker='o',linestyle='None')
 
-ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,params['beta'].value),label='Modell')
+ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1./params['beta'].value,params['beta'].value),label='Modell')
 #ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
 
 ax.autoscale()
