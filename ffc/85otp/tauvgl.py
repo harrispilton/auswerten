@@ -23,24 +23,37 @@ def residual(params,xdata,ydata=None):
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.8,0.8])
+alltau=[]
+alltemp=[]
+extauin=open('externe_daten/OTP - Decalin 85 zu 15_LS_ZK.txt','r')
+zk=extauin.readlines()
+schmidtketau=[]
+schmidtketemp=[]
+for i in range(0,zk.__len__()):
+	liste=zk[i].split()
+	schmidtketemp.append(float(liste[0]))
+	schmidtketau.append(float(liste[1]))
 
-#extauin=open('m-tcp_zk.dat','r')
-#zk=extauin.readlines()
-#schmidtketau=[]
-#schmidtketemp=[]
-#for i in range(0,zk.__len__()):
-#	liste=zk[i].split()
-#	schmidtketemp.append(float(liste[0]))
-#	schmidtketau.append(float(liste[1]))
-#extauin=open('externe_daten/mTCP_PCS_Tau.dat','r')
-#zk=extauin.readlines()
-#pcstau=[]
 
-#pcstemp=[]
-#for i in range(0,zk.__len__()):
-#	liste=zk[i].split()
-#	pcstemp.append(1000./float(liste[0]))
-#	pcstau.append(float(liste[1]))
+extauin=open('externe_daten/otp_NikoDLS.dat','r')
+
+zk=extauin.readlines()
+pcstau=[]
+
+pcstemp=[]
+for i in range(0,zk.__len__()):
+	liste=zk[i].split()
+	pcstemp.append(float(liste[0]))
+	pcstau.append(float(liste[1]))
+extauin.close()
+extauin=open('externe_daten/OTP_PCS.dat','r')
+zk=extauin.readlines()
+dlstau=[]
+dlstemp=[]
+for i in range(0,zk.__len__()):
+	liste=zk[i].split()
+	dlstau.append(float(liste[1]))
+	dlstemp.append(float(liste[0]))
 params=Parameters()
 params.add('p1',value = -12,min=-20,max=0)
 params.add('p2',value = 930,min=10,max=10000)
@@ -57,9 +70,10 @@ for i in range(0,tau.__len__()):
 	liste=tau[i].split()
 	mytemp.append(float(liste[0]))
 	mytau.append(float(liste[1]))
-ax.plot(mytemp,mytau,label='FFC',marker='o',linestyle='None')
-#ax.plot(schmidtketemp,schmidtketau,label='Schmidtke',marker='^',linestyle='None')
-#ax.plot(pcstemp,pcstau,label='pcs',marker='v',ls='None')
+ax.plot(mytemp,mytau,label='FFC, Decalin in 85%otp',marker='o',linestyle='None')
+ax.plot(schmidtketemp,schmidtketau,label='LS 85%otp',marker='^',linestyle='None')
+ax.plot(pcstemp,pcstau,label='PCS reines otp',marker='v',ls='None')
+ax.plot(dlstemp,dlstau,label='DLS reines otp',marker='x',ls='None')
 temp=np.linspace(200,400,100)
 tau=-12.24+(980.*(1.+np.exp(-6.2*(-1.+0.004269*temp))))/temp
 out=minimize(residual, params,args=(np.array(mytemp),np.array(mytau)))
