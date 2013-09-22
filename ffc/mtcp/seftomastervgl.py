@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 import matplotlib.cm as cm
 from scipy.optimize import leastsq
-from lmfit import  minimize, Parameters, report_errors
+#,,from lmfit import  minimize, Parameters, report_errors
 
 def residual(params,xdata,ydata=None,releps=None):
 	K_dd=params['K_dd'].value
@@ -284,7 +284,7 @@ plt.show()
 fout=open('master.dat','w')
 for i in range(0,taus.__len__()):
 	for ii in range(0,chis[i].__len__()):
-		fout.write(str(brlxs[i][ii]*taus[i])+' '+str(chis[i][ii]*7.075e-10)+'\n')
+		fout.write(str(brlxs[i][ii]*10**taus[i])+' '+str(chis[i][ii]*7.075e-10)+'\n')
 i=raw_input('ende')
 ax.cla()
 ax.set_xscale('log')

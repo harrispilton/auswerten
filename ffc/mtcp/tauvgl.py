@@ -10,8 +10,6 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 import matplotlib.cm as cm
 from scipy.optimize import leastsq
-from lmfit import  minimize, Parameters, report_errors
-
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.8,0.8])
