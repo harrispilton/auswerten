@@ -27,7 +27,7 @@ def J_p(nu,tau):
 def J_cd(nu,tau,beta):
 	omega=nu*2*np.pi
 	a=omega*beta*tau
-	return (np.sin(beta*np.arctan(a))/(omega*(1+a)**(beta/2)))
+	return (np.sin(beta*np.arctan(a))/(omega*(1+a**2.)**(beta/2.)))
 def Chi_dd(nu,K_dd=1,tau=1,beta=0.5):
 	omega=nu*2*np.pi
 	return omega*3*K_dd*J_cd(nu,tau,beta)
@@ -117,73 +117,8 @@ for filename in sef:
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
 plt.draw()
-#while True:
-#	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
-#	if selecttofit==n:break
-#	brlxs[int(selecttofit)]
-####Normierung der Hoehe:
-####aus datensaetzen mit peak im frequenzfenster kann die
-####kopplungskonstante bestimmt werden. datensaetze muessen
-####vom benutzer gewaehlt werden.
-
-#k=raw_input("Schaetze die Kopplungskonstante:  ") 
-#try:
-	#k=float(k)
-#seti=[]
-#while True:
-#	seti.append(raw_input("waehle ein datenset mit maximum: "))
-#	try: seti[-1]=int(seti[-1])
-#	except ValueError: print 'n zum beenden'
-#	if seti[-1]=='n': 
-#		seti.pop()
-#		break
-#ks=[]
-#for i in seti:
-#	brlxs[i]=np.array(brlxs[i])
-#	k,tau,beta=1e-5,2e-6,0.5
-#	out = minimize(residual, params,args=(brlxs[i],chis[i],percerrs[i]),method=('leastsq'))
-#	result=brlxs[i]+out.residual
-#	fit = residual(params,brlxs[i])
-#	print fit
-#	print result
-#	ks.append(params['K_dd'].value)
-#	print params['beta'].value
-#	print params['tau'].value
-#	
-#	report_errors(params)
-#	plt.figure(3)
-#
-#	fitax=plt.axes([0.1,0.1,0.8,0.8])
-#	fitax.set_xscale('log')
-#	fitax.set_yscale('log')
-#	plt.plot(brlxs[i],Chi_dd(brlxs[i],params['K_dd'].value,params['tau'].value,0.5))
-#	plt.plot(brlxs[i],chis[i])
-#	plt.show()
-
-#	mk=raw_input('fuer naechster fit ente druecken')
-#K_dd=0.0
 K_dd=5.52e8
-#for k in ks:
-#	K_dd=K_dd+k
-#K_dd=K_dd/ks.__len__()
-#for i in range(0,chis.__len__()):
-#	chis[i]=[chi/K_dd for chi in chis[i]]
-#	ax.lines[i].set_ydata(chis[i])	
-#om=np.logspace(-6,3,80)
-#ax.plot(om,Chi_dd(om,1.,1.),label='fit')
-#plt.draw()
-#while True:
-#	print 'K alt='+str(K_dd)
-#	kneu=raw_input('neues K: ')
-#	if kneu=='n': break
-#	for i in range(0,chis.__len__()):
-#		chis[i]=[chi/float(kneu)*K_dd for chi in chis[i]]
-#		ax.lines[i].set_ydata(chis[i])	
-#		plt.draw()
-
 #####importiere die dielektrischen daten
-plt.xscale('log')
-plt.yscale('log')
 
 
 while True:
@@ -280,7 +215,11 @@ for i in range(0,taus.__len__()):
 	ax.lines[i].set_ydata([chi*7.075e-10 for chi in chis[i]])
 	plt.draw()
 plt.show()
-
+x=np.logspace(-2,8,100)
+y=0.4*Chi_dd(x,1,1/0.35,0.35)
+ax.plot(x,y,label='fit mit beta =0.35')
+plt.autoscale()
+plt.draw()
 fout=open('master.dat','w')
 for i in range(0,taus.__len__()):
 	for ii in range(0,chis[i].__len__()):
