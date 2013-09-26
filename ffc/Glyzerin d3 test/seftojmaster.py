@@ -9,7 +9,7 @@ from scipy.optimize import brentq
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from scipy.optimize import leastsq
-from lmfit import  minimize, Parameters, report_errors
+from lmfit import  minimize, Parameters, report_errors, fit_report
 
 def R_1(sqrtom,R1_0,D):
 	mu_0 =1.2566e-6
@@ -21,16 +21,17 @@ def R_1(sqrtom,R1_0,D):
 	M=M_mTCP=368.4
 	N=n_H*N_a*rho/M
 	B=np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2.)**2. * N
-		B=1.5e-20
-		#print N, omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
-		return R1_0-B/(D**1.5) *sqrtom
+#	B=1.5e-20
+	#print N, omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
+	return R1_0-(B/(D**1.5))*sqrtom
+
 def J_p(omega,tau):
 	return (tau/(1.+(omega*tau)**2.))
 def J_cd(omega,tau,beta):
 	a=omega*tau
 	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2)**(beta/2.)))
-def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
-	return omega*3*K_dd*J_cd(omega,tau,beta)
+#def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
+#	return omega*3*K_dd*J_cd(omega,tau,beta)
 def residuals(params,xdata,ydata=None):
 	D=params['D'].value
 	r0=params['r0'].value
@@ -42,9 +43,9 @@ omega=np.logspace(-3,1.5,200,10)
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=1.0)
+params.add('logD',value=-9.0,min=-15,max=-8)
 params.add('D',expr='(10.0**logD)')
-params.add('logr0',value=1.,min=-3.,max=5.)
+params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
 #params.add('logK_dd',value=8.0,min=7,max=10)
 #params.add('K_dd',expr='(10.0**logK_dd)')
@@ -73,13 +74,23 @@ plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
 title='Diffusion und so'#raw_input("enter plot title: ")
 plt.title(title)
-plt.xlabel(r"$\nu$ in $MHz$")
-plt.ylabel(r"$\chi$ in $s^{-2}$")
+plt.xlabel(r"$\sqrt{\omega}$")
+plt.ylabel(r"$R_1$ $[s^{-1}]$")
 #plt.xscale('log')
 #plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
 markers=itertools.cycle(['o','s','v','x'])
+
+insetax=plt.axes([0.4,0.7,0.2,0.2])
+plt.ylabel(r"$lg(D)$")
+plt.xlabel(r"$T$ $[K]$")
+plt.xscale('linear')
+plt.yscale('linear')
+
+
+plt.figure(2)
+errax=plt.axes([0.1,0.1,0.8,0.8])
 
 sefdata=[]
 temps=[]
@@ -89,6 +100,7 @@ r1s=[]
 chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
+diffs=[]
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
@@ -116,31 +128,53 @@ for filename in sef:
 #print 'relativefile: '+relativefile[1]
 #print 'zone[sef.index(filename)]' + str(zone[1])
 #print 'ZONE=\t'+str(zone[1])+'\n\n'
-temp=sdfdata[
+	temp=sdfdata[
 		sdfdata.index(
 			'ZONE=\t'+str(zone[
 				1])+'\r\n')+7]
-temp=temp[6:]
-temp=temp.rstrip()
-temps.append(float(temp))
-print brlx[0]
-print sqrtom[0]
-brlxs.append(brlx)
-r1s.append(r1)
-sqrtoms.append(sqrtom)
-taus.append(0.0)
-#print repr(temp)
-ax.plot(sqrtom,r1,
-	label=temp+' K',
-	marker=markers.next(),ms=3.5,linestyle='None')
-out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
-print report_errors(params)
-fit=residuals(params,np.array(sorted(sqrtom)))
-ax.plot(sqrtom,fit,linestyle='--',label='fit')
+	temp=temp[6:]
+	temp=temp.rstrip()
+	temps.append(float(temp))
+	derrs=[]
+	ds=[]
+	iis=[]
+	for i in range(r1.__len__()-3,-1,-1):
+		minimize(residuals,params,args=(np.array(sqrtom[i:r1.__len__()]),np.array(r1[i:r1.__len__()])))
+		iis.append(i)
+		ds.append(params['logD'].value)
+		derrs.append(params['logD'].stderr)
+	minni=1
+	minnval=1.e90
+	for i in range(1,derrs.__len__()):
+		if derrs[i]<minnval:
+			minni=i
+			minnval=derrs[i]
+	print minni+3
+	plt.figure(2)
+	errax.plot(iis,derrs,label=temp,marker=markers.next())
+	plt.legend()
+	if i == 1:
+		pass
+	else:
+			minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
+		diffs.append(params['logD'].value)
+		fit=residuals(params,np.array(sorted(sqrtom)))
+		
+		#print repr(temp)
+		plt.figure(1)
+	
+		ax.plot(sqrtom,r1,label=temp+' K',marker=markers.next(),ms=3.5,linestyle='None')
+		ax.plot(sorted(sqrtom),fit,linestyle='--',label='fit')
 
+		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
+		brlxs.append(brlx)
+	r1s.append(r1)
+	sqrtoms.append(sqrtom)
+	taus.append(0.0)
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
+insetax.plot(temps,diffs)
 plt.draw()
 oksdfj=raw_input('ente')
 #while True:

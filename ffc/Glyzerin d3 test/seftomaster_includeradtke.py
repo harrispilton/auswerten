@@ -10,22 +10,32 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
 from scipy.optimize import leastsq
 from lmfit import  minimize, Parameters, report_errors
-def residual(params,xdata,ydata=None,releps=None):
-	K_dd=params['K_dd'].value
-	tau=params['tau'].value
-	beta=params['beta'].value
-	if ydata is None:
-		return Chi_dd
-	if releps is None:
-		return (ydata-Chi_dd(xdata,K_dd,tau/beta,beta))
-	return ((ydata-Chi_dd(xdata,K_dd,tau/beta,beta))*releps)
+
+def R_1(omega,R1_0,D):
+	mu_0 =1.2566e-6
+	h_quer = 6.626e-34/(2.*np.pi)
+	gamma_H=2.675e8#/2/np.pi
+	N_a=6.022e23
+	n_H=21.0
+	rho=rho_mTCP=1.15*1e6
+	M=M_mTCP=368.4
+	N=n_H*N_a*rho/M
+	B=np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2)**2 * N
+	#print N, omega,R1_0,D,B,R1_0-B/(D**1.5) *omega**0.5
+	return R1_0-B/(D**1.5) *omega**0.5
 def J_p(omega,tau):
-	return (tau/(1.+(omega*tau)**2))
+	return (tau/(1.+(omega*tau)**2.))
 def J_cd(omega,tau,beta):
 	a=omega*tau
-	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2.)**(beta/2.)))
+	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2)**(beta/2.)))
 def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
-	return omega*K_dd*J_cd(omega,tau,beta)+omega*4*K_dd*J_cd(2*omega,tau,beta)
+	return omega*3*K_dd*J_cd(omega,tau,beta)
+def residual(params,xdata,ydata=None):
+	D=10**params['logD'].value
+	params['r0'].value
+	if ydata==None:
+		return R_1(omega,r0,D)
+	return (ydata-R_1(omega,r0,D))
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
 #beta=0.4
@@ -84,7 +94,7 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		brlx.append(float(liste[0])*1e6*2.*np.pi)
+		brlx.append(float(liste[0])*1.e6*2.*np.pi)
 		chi.append(float(liste[2])*brlx[-1])
 		percerr.append(float(liste[3]))
 		zone.append(int(liste[5]))
@@ -108,7 +118,9 @@ for filename in sef:
 	chis.append(chi)
 	taus.append(0.0)
 	#print repr(temp)
-	ax.plot(brlx,chi,label=temp+' K',marker=markers.next(),ms=3.5,linestyle='None')
+	ax.plot(np.array(brlx)/2./np.pi,chi,
+		label=temp+' K',
+		marker=markers.next(),ms=3.5,linestyle='None')
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
@@ -292,7 +304,7 @@ for i in range(0,brlxs.__len__()):
 
 ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1./params['beta'].value,params['beta'].value),label='Modell')
 #ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
-ax.plot(np.array(sorted(omegataus)),(np.array(sorted(omegataus)))**-0.12,label='beta = 0.12')
+
 ax.autoscale()
 plt.legend()
 plt.draw()
@@ -305,10 +317,6 @@ plt.draw()
 #masterax.xscale=('log')
 #masterax.xlabel=(r'$\omega \tau$')
 #masterax.ylabel=(r'$\frac{\chi}{K_(dd)}$')
-fout=open('master.dat','w')
-for i in range(0,chis.__len__()):
-		fout.write(str(omegataus[i])+' '+str(chis[i])+'\n')
-fout.close()
 
 mk=raw_input('ende')
 #fitpars,covmat=curve_fit(#

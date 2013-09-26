@@ -8,8 +8,10 @@ from scipy.optimize import curve_fit
 from scipy.optimize import brentq 
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, CheckButtons
+import matplotlib.cm as cm
 from scipy.optimize import leastsq
 from lmfit import  minimize, Parameters, report_errors
+
 def residual(params,xdata,ydata=None,releps=None):
 	K_dd=params['K_dd'].value
 	tau=params['tau'].value
@@ -17,27 +19,24 @@ def residual(params,xdata,ydata=None,releps=None):
 	if ydata is None:
 		return Chi_dd
 	if releps is None:
-		return (ydata-Chi_dd(xdata,K_dd,tau/beta,beta))
-	return ((ydata-Chi_dd(xdata,K_dd,tau/beta,beta))*releps)
-def J_p(omega,tau):
-	return (tau/(1.+(omega*tau)**2))
-def J_cd(omega,tau,beta):
-	a=omega*tau
-	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2.)**(beta/2.)))
-def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
+		return (ydata-Chi_dd(xdata,K_dd,tau,beta))
+	return ((ydata-Chi_dd(xdata,K_dd,tau,beta))*releps)
+def schmidtkeformel(temp,tau0,einf,a):
+	return (tau0+((1.+np.exp(a*(-1.+(np.pi**2.*temp)/einf)))*einf)/(temp*np.log(10)))
+
+#def J_p(nu,tau):
+#	omega=nu*2*np.pi
+#	return (tau/(1+(omega*tau)**2))
+def J_cd(omega,tau_cd,beta):
+	a=omega*tau_cd
+	return (np.sin(beta*np.arctan(a))/(omega*(1+a**2.)**(beta/2.)))
+def Chi_dd(omega,K_dd=1,tau=2,beta=0.5):
 	return omega*K_dd*J_cd(omega,tau,beta)+omega*4*K_dd*J_cd(2*omega,tau,beta)
-omega=np.logspace(-3,1.5,200,10)
+
 #K_dd=1e-9
 #beta=0.4
 #tau_alpha=1
-params= Parameters()
-params.add('logK_dd',value=8.0,min=7,max=10)
-params.add('K_dd',expr='(10.0**logK_dd)')
-params.add('logtau',value=-6.0,min=-12,max=3)
-params.add('tau',expr='(10.0**logtau)')
-params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
-
-
+#omega=np.logspace(-3,1.5,200,10)
 #plt.figure(2)
 #ax=plt.axes([0.1,0.15,0.8,0.8])
 #ax.set_xscale('log')
@@ -48,21 +47,31 @@ params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
 ###
 ### variablen zuweisen ordner durchfilzen
 ### 
+a=-7.6
+einf=1931
+tau0=-13.3
 
 sef=glob.glob('*K.sef')
 sef.sort()
 sdf=glob.glob('*K.sdf')
 sdf.sort()
+c=[]
+for i in np.arange(40):c.append(cm.jet(i/40.))
 plt.ion()
-plt.figure(1)
-ax=plt.axes([0.1,0.1,0.85,0.85])
-title=''#raw_input("enter plot title: ")
-plt.title(title)
-plt.xlabel(r"$\nu$ in $MHz$")
-plt.ylabel(r"$\chi$ in $s^{-2}$")
+#plt.figure(1)
+#ax=plt.axes([0.1,0.1,0.85,0.85])
+#title=''#raw_input("enter plot title: ")
+#plt.title(title)
+#plt.xlabel(r"$\nu$ in $MHz$")
+#plt.ylabel(r"$\chi$ in $s^{-2}$")
+#plt.xscale('log')
+#plt.yscale('log')
+#axcolor = 'lightgoldenrodyellow'
+plt.figure(2)
+omtau=plt.axes([0.1,0.1,0.85,0.85])
+plt.title('externe taus')
 plt.xscale('log')
 plt.yscale('log')
-axcolor = 'lightgoldenrodyellow'
 
 markers=itertools.cycle(['o','s','v','x'])
 
@@ -71,6 +80,9 @@ temps=[]
 brlxs=[]
 chis=[]
 omegas=[]
+taus=[]
+omegataus=[]
+percerrs=[]
 taus=[]##liste mit log10(tau_strukturrelaxation)
 for filename in sef:
 	fin=open(filename,'r')
@@ -84,7 +96,7 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		brlx.append(float(liste[0])*1e6*2.*np.pi)
+		brlx.append(float(liste[0])*1e6)
 		chi.append(float(liste[2])*brlx[-1])
 		percerr.append(float(liste[3]))
 		zone.append(int(liste[5]))
@@ -100,69 +112,81 @@ for filename in sef:
 	temp=sdfdata[
 			sdfdata.index(
 				'ZONE=\t'+str(zone[
-					1])+'\r\n')+7]
+				1])+'\r\n')+7]
 	temp=temp[6:]
 	temp=temp.rstrip()
+
+	tau=schmidtkeformel(float(temp),tau0,einf,a)#-13.24+(980.*(1.+np.exp(-6.2*(-1.+0.004269*float(temp)))))/float(temp)
+	taus.append(tau)
+	omegatau=[]
+	for b in brlx:
+		omegatau.append(b*2.*np.pi*10**tau)
+		omegataus.append(b*2.*np.pi*10**tau)
+	omtau.plot(omegatau,np.array(chi)*1.9e-9,label=temp,linestyle='None',marker=markers.next())
 	temps.append(float(temp))
 	brlxs.append(brlx)
-	chis.append(chi)
+	#chis.append(chi)
+	for c in chi:
+		chis.append(c*1.9e-9)
 	taus.append(0.0)
+	percerrs.append(percerr)
 	#print repr(temp)
-	ax.plot(brlx,chi,label=temp+' K',marker=markers.next(),ms=3.5,linestyle='None')
-
+	ax.plot(brlx,chi,
+			label=temp+' K',
+			#marker=markers.next(),
+			linestyle='None')
+	
+x=np.logspace(-5,11,100)
+y=Chi_dd(x,1.,1./0.35,0.35)
+omtau.plot(x,y,label='fit')
+plt.legend()
+plt.autoscale()
+plt.draw()
+plt.show()
+fout=open('master.dat','w')
+for i in range(0,chis.__len__()):
+		fout.write(str(omegataus[i])+' '+str(chis[i])+'\n')
+fout.close()
+iii=raw_input('next')
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
 plt.draw()
-#while True:
-#	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
-#	if selecttofit==n:break
-#	brlxs[int(selecttofit)]
-####Normierung der Hoehe:
-####aus datensaetzen mit peak im frequenzfenster kann die
-####kopplungskonstante bestimmt werden. datensaetze muessen
-####vom benutzer gewaehlt werden.
+K_dd=5.52e8
+#####importiere die dielektrischen daten
 
-#k=raw_input("Schaetze die Kopplungskonstante:  ") 
-#try:
-	#k=float(k)
-seti=[]
+
 while True:
-	seti.append(raw_input("waehle ein datenset mit maximum: "))
-	try: seti[-1]=int(seti[-1])
-	except ValueError: print 'n zum beenden'
-	if seti[-1]=='n': 
-		seti.pop()
-		break
-ks=[]
-for i in seti:
-	brlxs[i]=np.array(brlxs[i])
-	k,tau,beta=1e-5,2e-6,0.5
-	out = minimize(residual, params,args=(brlxs[i],chis[i]),method=('leastsq'))
-	result=brlxs[i]+out.residual
-	fit = residual(params,brlxs[i])
-	print fit
-	print result
-	ks.append(params['K_dd'].value)
-	print params['beta'].value
-	print params['tau'].value
-	
-#	report_errors(params)
-#	plt.figure(3)
-#
-#	fitax=plt.axes([0.1,0.1,0.8,0.8])
-#	fitax.set_xscale('log')
-#	fitax.set_yscale('log')
-#	plt.plot(brlxs[i],Chi_dd(brlxs[i],params['K_dd'].value,params['tau'].value,0.5))
-#	plt.plot(brlxs[i],chis[i])
-#	plt.show()
+	masterin=open('externe_daten/mtcp_master_dsX\'\'.dat','r')
+	dsdat=masterin.readlines()
+	omegatau=[]
+	chi=[]
+	for dat in dsdat:
+		liste=dat.split()
+		omegatau.append(float(liste[0]))
+		chi.append(float(liste[1]))
+	ax.plot(omegatau,chi,label='ds',marker='o')
+	plt.legend()
+	plt.autoscale()
+	plt.draw()
+	plt.show()
+	break
 
-#	mk=raw_input('fuer naechster fit ente druecken')
-K_dd=0.0
-for k in ks:
-	K_dd=K_dd+k
-K_dd=K_dd/ks.__len__()
-for i in range(0,chis.__len__()):
-	chis[i]=[chi/K_dd for chi in chis[i]]
+####importiere die pcs daten
+while True:
+	masterin=open('externe_daten/pcs fit.dat','r')
+	dsdat=masterin.readlines()
+	omegatau=[]
+	chi=[]
+	for dat in dsdat:
+		liste=dat.split()
+		omegatau.append(float(liste[0]))
+		chi.append(float(liste[1]))
+	ax.plot(omegatau,chi,label='pcs',marker='o')
+	plt.legend()
+	plt.autoscale()
+	plt.draw()
+	plt.show()
+	break
 
 ####Uebereinanderschieben der Daten:
 ####die taus koennen von Hand eingegben werden,
@@ -178,6 +202,7 @@ while True:
 			liste=lines[i].split()
 			taus[i]=float(liste[1])
 			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
+		plt.autoscale()
 		plt.draw()
 	else: a=raw_input('laenge der tau stimmt nicht...')
 	break
@@ -195,7 +220,8 @@ while True:
 			ax.lines[int(sel)].set_xdata([brlx*tau for brlx in brlxs[int(sel)]])
 			plt.draw()
 	except ValueError: print 'n zum beenden'
-	if sel=='n':break
+	if sel=='n':
+		break
 	if sel=='a':
 		minsel=raw_input('schiebe mehrere datensets\n waehle set min:')
 		maxsel=raw_input('waehle set max: ')
@@ -203,8 +229,11 @@ while True:
 		for i in range(int(minsel),int(maxsel)):
 			taus[i]=taus[i]+float(logtau)
 			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
+		ax.autoscale()
 		plt.draw()
-
+with open('tau.dat','w') as tauout:
+	for i  in range(0,taus.__len__()):
+		tauout.write(str(temps[i])+' '+str(taus[i])+'\n')
 while True:
 	
 	tauout=open('tau.dat','w')
@@ -216,6 +245,20 @@ while True:
 #			delta.append(10**taus[i]-10**taus[minsel])
 #		for i in range
 ####zeichne die kurve neu
+for i in range(0,taus.__len__()):
+	ax.lines[i].set_ydata([chi*7.075e-10 for chi in chis[i]])
+	plt.draw()
+plt.show()
+x=np.logspace(-2,8,100)
+y=0.4*Chi_dd(x,1,1/0.35,0.35)
+ax.plot(x,y,label='fit mit beta =0.35')
+plt.autoscale()
+plt.draw()
+fout=open('master.dat','w')
+for i in range(0,taus.__len__()):
+	for ii in range(0,chis[i].__len__()):
+		fout.write(str(brlxs[i][ii]*10**taus[i])+' '+str(chis[i][ii]*7.075e-10)+'\n')
+i=raw_input('ende')
 ax.cla()
 ax.set_xscale('log')
 ax.set_yscale('log')
@@ -226,20 +269,25 @@ for i in range(0,brlxs.__len__()):
 	ax.plot([brlx*10**taus[i] for brlx in brlxs[i]],
 			chis[i],
 			label=str(temps[i])+' K')
+	plt.draw()
 plt.legend()
 plt.show()
 ####bestimme beta
 omegataus=[]
 masterchi=[]
+mastererr=[]
 for i in range(0,brlxs.__len__()):
 	for b in brlxs[i]:
 		omegataus.append(b*10**taus[i])
 for chi in chis:
 	for ch in chi:
 		masterchi.append(ch)
-#fitax.plot(omegataus,masterchi,ls='None',marker='o')
-ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1./0.5,0.5))
+for percerr in percerrs:
+	for p in percerr:
+		mastererr.append(p)
+ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
 ax.autoscale()
+plt.draw()
 
 
 xmin=raw_input('jetzt die masterkurve nochmal fitten\n waehle xmin:')
@@ -248,8 +296,7 @@ for i in range(omegataus.__len__()-1,-1,-1):
 	if omegataus[i] < float(xmin) or omegataus[i] > float(xmax):
 		omegataus.pop(i)
 		masterchi.pop(i)
-#print omegataus
-#print masterchi
+		mastererr.pop(i)
 params['beta'].vary=True
 params['logK_dd'].value=0
 params['logK_dd'].min=-2
@@ -258,14 +305,13 @@ params['logtau'].value=0
 params['logtau'].min=-3
 params['logtau'].max=3
 omegataus=np.array(omegataus)
-out=minimize(residual,params,args=(omegataus,masterchi))
+out=minimize(residual,params,args=(omegataus,masterchi,mastererr))
 result=omegataus+out.residual
 fit=residual(params,omegataus)
 print 'beta '+str(params['beta'].value)
-
 report_errors(params)
-####parameter updaten und ausgabe anpassen
 
+####parameter updaten und ausgabe anpassen
 while True:
 	tauout=open('tau.dat','w')
 	for i in range(0,taus.__len__()):
@@ -288,29 +334,90 @@ for i in range(0,brlxs.__len__()):
 	ax.plot([brlx*10**taus[i] for brlx in brlxs[i]],
 			chis[i],
 			label=str(temps[i])+' K',
-			marker='o',linestyle='None')
+			marker='o',linestyle='None',
+			color=c[int((float(temps[i])-160)/6.)]
+			)
+	plt.draw()
+ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,params['beta'].value),label='Modell')
+plt.draw()
+try:
+	while True:
+		tauc=raw_input('passe tau an (faktor): ')
+		if tauc != 'n':
+			taus=[np.log10(float(tauc))+tau for tau in taus]
+			for i in range(0,ax.lines.__len__()-1):
+				ax.lines[i].set_xdata([b*10**taus[i] for b in brlxs[i]])
+			xmin=float(xmin)*float(tauc)
+			xmax=float(xmax)*float(tauc)
+		k=raw_input('passe k an (faktor): ')
+		if k!= 'n':
+			params['K_dd'].value=params['K_dd'].value*float(k)
+			for i  in range(0,ax.lines.__len__()-1):
+				ax.lines[i].set_ydata([ch*params['K_dd'].value for ch in chis[i]])
+		plt.draw()
+		if tau=='n' and k == 'n': break
+except ValueError: 
+	print 'Value Error'
 
-ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1./params['beta'].value,params['beta'].value),label='Modell')
+
 #ax.plot(sorted(omegataus),Chi_dd(np.array(sorted(omegataus)),1.,1.,0.5))
-ax.plot(np.array(sorted(omegataus)),(np.array(sorted(omegataus)))**-0.12,label='beta = 0.12')
+
+ax.xlabel=(r'$\omega \tau$')
+ax.ylabel=(r'$\frac{\chi}{K_(dd)}$')
 ax.autoscale()
 plt.legend()
 plt.draw()
-		
 
+####2nd scaling
+kdds=[]
+cbrlxs=[]
+cchis=[]
+cpercerrs=[]
+params['tau'].vary=False
+params['beta'].vary=False
+print 'xmax'
+print xmax
+print 'xmin'
+print xmin
+
+####waehle zunaechst die wertepaare die fuers fitten in frage
+####kommen aus (massgeblich sind die vorher festgelegten xmin xmax)
+for i in range(0,brlxs.__len__()):
+	cbrlxs.append([])
+	cchis.append([])
+	cpercerrs.append([])
+	for ii in range(0,brlxs[i].__len__()):
+		if xmin<brlxs[i][ii]<xmax:
+			cbrlxs[i].append(brlxs[i][ii])
+			cchis[i].append(chis[i][ii])
+			cpercerrs[i].append(percerrs[i][ii])
+for i in range(cbrlxs.__len__()-1,-1,-1):
+	if cbrlxs[i].__len__()<3:
+		print temps[i]
+		cbrlxs.pop(i)
+		cchis.pop(i)
+		cpercerrs.pop(i)
+####minimiere den abstand zum model ohne die ywerte zu schieben
+for i in range(0,cbrlxs.__len__()):
+	cbrlxs[i]=np.array(cbrlxs[i])
+	out=minimize(residual,params,args=(cbrlxs[i],cchis[i],cpercerrs[i]),method=('leastsq'))
+	print report_errors(params)
+	kdds.append(params['K_dd'].value)
+	chis[i]=[kdds[i]*ch for ch in chis[i]]
+	ax.lines[i].set_ydata(chis[i])
+plt.draw()
+
+	
 
 #plt.figure(4)
 #masterax=plt.axes([0.1,0.1,0.85,0.85])
 #masterax.yscale=('log')
 #masterax.xscale=('log')
-#masterax.xlabel=(r'$\omega \tau$')
-#masterax.ylabel=(r'$\frac{\chi}{K_(dd)}$')
-fout=open('master.dat','w')
-for i in range(0,chis.__len__()):
-		fout.write(str(omegataus[i])+' '+str(chis[i])+'\n')
-fout.close()
-
 mk=raw_input('ende')
+with open('tau.dat','w') as fout:
+	for i in range(0,taus.__len__()):
+		fout.write(str(temps[i])+' '+str(taus[i])+'\n')
+
 #fitpars,covmat=curve_fit(#
 #		Chi_dd,	
 #		brlxs[1],
@@ -329,7 +436,7 @@ mk=raw_input('ende')
 
 
 
-for i in range(0,temps.__len__()):
-	fout=open(str(temps[i])+' K.dat','w')
-	for ii in range(0,brlxs[i].__len__()):
-		fout.write('\n'+str(brlxs[i][ii]*10**taus[i])+' '+str(chis[i][ii]))
+#for i in range(0,temps.__len__()):
+#	fout=open(str(temps[i])+' K.dat','w')
+#	for ii in range(0,brlxs[i].__len__()):
+#		fout.write('\n'+str(brlxs[i][ii]*10**taus[i])+' '+str(chis[i][ii]))
