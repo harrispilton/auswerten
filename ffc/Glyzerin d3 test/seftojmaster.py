@@ -38,6 +38,9 @@ def residuals(params,xdata,ydata=None):
 	if ydata==None:
 		return R_1(xdata,r0,D)
 	return (ydata-R_1(xdata,r0,D))
+def get_color():
+	for item in ['r', 'g', 'b', 'c', 'm', 'y', 'k']:
+		yield item
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
 #beta=0.4
@@ -81,6 +84,7 @@ plt.ylabel(r"$R_1$ $[s^{-1}]$")
 axcolor = 'lightgoldenrodyellow'
 
 markers=itertools.cycle(['o','s','v','x'])
+colors=get_color()
 
 insetax=plt.axes([0.4,0.7,0.2,0.2])
 plt.ylabel(r"$lg(D)$")
@@ -150,33 +154,32 @@ for filename in sef:
 		if derrs[i]<minnval:
 			minni=iis[i]
 			minnval=derrs[i]
+	acolor=next(colors)
+	amarker=next(markers)
 	plt.figure(2)
-	errax.plot(iis,derrs,label=temp,marker=markers.next())
+	errax.plot(iis,derrs,label=temp,color=acolor,marker=amarker)
 	plt.ylim([0,1])
 	plt.legend()
-	if i == 1:
-		pass
-	else:
-		minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
-		diffs.append(params['logD'].value)
-		r0s.append(params['r0'].value)
-		fit=residuals(params,np.array(sorted(sqrtom)))
-		
-		#print repr(temp)
-		plt.figure(1)
+	minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
+	diffs.append(params['logD'].value)
+	r0s.append(params['r0'].value)
+	fit=residuals(params,np.array(sorted(sqrtom)))
 	
-		ax.plot(sqrtom,r1,label=temp+' K',marker=markers.next(),ms=3.5,linestyle='None')
-		ax.plot(sorted(sqrtom),fit,linestyle='--',label='fit')
+	#print repr(temp)
+	plt.figure(1)
 
-		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
-		brlxs.append(brlx)
+	ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=3.5,linestyle='None')
+	ax.plot(sorted(sqrtom),fit,linestyle='--',label='fit')
+
+	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
+	brlxs.append(brlx)
 	r1s.append(r1)
 	sqrtoms.append(sqrtom)
 	taus.append(0.0)
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
-insetax.plot(temps,diffs)
+insetax.plot(temps,diffs,ls='None',marker='x')
 plt.draw()
 oksdfj=raw_input('ente')
 ##while True:
