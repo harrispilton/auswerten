@@ -16,9 +16,9 @@ plt.figure(1)
 ax=plt.axes([0.1,0.1,0.8,0.8])
 
 params=Parameters()
-params.add('tau0',value=-12,min=-14,max=-10)
-params.add('a',value=-7.0,min=-9,max=-5)
-params.add('einf',value=1850,min=500,max=5000)
+params.add('tau0',value=-12,min=-14,max=-11)
+params.add('a',value=-7.0,min=-8.5,max=-6)
+params.add('einf',value=1850,min=1500,max=5000)
 def vft():
 	return -tau0+(a*(1.+np.exp(-6.2*(-1.+0.004269*temp))))/temp
 def schmidtkeformel(temp,tau0,einf,a):
@@ -56,7 +56,7 @@ with open('externe_daten/ds_tau.dat','r') as extauin:
 	dstemp=[]
 	for i in range(0,zk.__len__()):
 		liste=zk[i].split()
-		dstemp.append(float(liste[0]))
+		dstemp.append(float(liste[0])+11.1)
 		dstau.append(float(liste[1]))
 
 
@@ -72,9 +72,9 @@ ax.plot(mytemp,mytau,label='FFC',marker='o',linestyle='None')
 ###die eigenen taus sind gemalt, jetzt fuehre alle taus und temps zusammen und fitte diese liste
 #mytau=[]
 #mytemp=[]
-for i in range(0,dstau.__len__()):
-	mytau.append(dstau[i])
-	mytemp.append(dstemp[i])
+#for i in range(0,dstau.__len__()):
+#	mytau.append(dstau[i])
+#	mytemp.append(dstemp[i])
 #for i in range(0,ls1temp.__len__()):
 #	mytau.append(ls1tau[i])
 #	mytemp.append(ls1temp[i])
