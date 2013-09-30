@@ -16,9 +16,9 @@ def calc_B():
 	h_quer = 6.626e-34/(2.*np.pi)
 	gamma_H=2.675e8#/2/np.pi
 	N_a=6.022e23
-	n_H=21.0
-	rho=rho_mTCP=1.15*1e6
-	M=M_mTCP=368.4
+	n_H=8.0
+	rho=rho_Glyzerin=1.26*1e6
+	M=M_Glyzerin=92.09
 	N=n_H*N_a*rho/M
 	return np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2.)**2. * N
 
@@ -48,7 +48,7 @@ omega=np.logspace(-3,1.5,200,10)
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-9.0,min=-15,max=-8)
+params.add('logD',value=-9.0,min=-14,max=-8)
 params.add('D',expr='(10.0**logD)')
 params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
@@ -104,6 +104,7 @@ omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
 for filename in sef:
+	print 'filename: '+filename
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
 	for i in range(0,4): sefdata.pop(0)
@@ -116,15 +117,16 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		omega.append(float(liste[0])*1.e6*2.*np.pi)
-		sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
-		r1.append(float(liste[2]))
-		percerr.append(float(liste[3]))
-		zone.append(int(liste[5]))
-		relativefile.append(liste[6])
+		if liste[0]=='#' or float(liste[3])>200: pass
+		else:
+			omega.append(float(liste[0])*1.e6*2.*np.pi)
+			sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
+			r1.append(float(liste[2]))
+			percerr.append(float(liste[3]))
+			zone.append(int(liste[5]))
+			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
-	print 'filename: '+filename
 	#wenn einzelne files fehlerhaft sind kann man es einfach durch auskommentieren der folgenden zeilen sehen
 	#print 'zone: '+str(zone)
 #print 'relativefile: '+relativefile[1]
@@ -172,7 +174,6 @@ for filename in sef:
 		for (ome, r) in zip(omega,r1):
 			omtaures.append((ome*taures)**0.5)
 			r1norm.append(r/params['r0'].value)
-		print r1norm
 		ax.plot(omtaures,r1norm,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
 	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
 	omegas.append(omega)
@@ -183,6 +184,6 @@ for filename in sef:
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
 omtau=np.linspace(0.01,0.99,5)
-ax.plot(omtau**0.5,R_1(omtau**0.5,1,calc_B()),linestyle='--',color='k',label='fit')
+ax.plot(omtau**0.5,1.-omtau**0.5,linestyle='--',color='k',label='Modell')
 plt.draw()
 oksdfj=raw_input('ente')

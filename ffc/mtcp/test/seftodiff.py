@@ -173,7 +173,7 @@ for filename in sef:
 		diffs.append(params['logD'].value)
 		r0s.append(params['r0'].value)
 		fit=residuals(params,np.array(sorted(sqrtom)))
-		print minni
+		print sqrtom.__len__()-minni
 		
 		#print repr(temp)
 		plt.figure(1)

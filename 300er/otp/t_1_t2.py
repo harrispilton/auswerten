@@ -23,11 +23,11 @@ def Lorentz(x,f0,hwhm,a0,y0=0):
 	return (y0+a0/(1.+((x-f0)/hwhm)**2))
 	#return (a0 * (0.5 * fwhm)/((x * f0)**2.0 + 0.25 * fwhm**2))
 params = Parameters()
-params.add('loghwhm',value=2.0,min=-20.0,max=20.0)
+params.add('loghwhm',value=2.0,min=-3.0,max=8.0)
 pi=np.pi
-params.add('t_2',expr='(2/(pi*10**(loghwhm)))')
+params.add('t_2',expr='(1/(pi*10**(loghwhm)))')
 params.add('a0', value=1, min=0.95,max=1.1,vary=False)
-params.add('f0', value=0,min=-1e4,max=1e4)
+params.add('f0', value=0,min=-1e1,max=1e1)
 params.add('y0',value=0.05,min=0,max=0.2)
 plt.ion()
 plt.figure(1)
@@ -60,6 +60,47 @@ for data in files:
 		liste=line.split()
 		freq.append(np.float(liste[0]))
 		betrag.append(((np.float(liste[1]))**2+(np.float(liste[2])**2))**0.5)
+	maxbetrag=max(betrag)
+	betrag=[b/maxbetrag for b in betrag]
+	freqs.append(freq)
+	betrags.append(betrag)
+	temps.append(float(data[7:-6]))
+	print temps
+	ax.plot(freq,betrag,label=str(data),marker=markers.next(),linestyle='None')	
+	plt.autoscale()
+	plt.draw()
+	#plt.plot(fr,Lorentz(fr,f0,fwhm,a0))
+	fitten='y'
+	if str(fitten)=='y':
+		params['loghwhm'].value=2
+		#for i in range(freq.__len__()-1,-1,-1):
+		#	if abs(freq[i])>1.5e4:
+		#		freq.pop(i)
+		#		betrag.pop(i)
+		freq=np.array(freq)
+		betrag=np.array(betrag)
+		out = minimize(residual, params,args=(freq,betrag))
+		result=freq+out.residual
+		fit = residual(params, np.array(freq))
+		print report_errors(params)
+		ax.plot(freq,fit,label=str(temps[-1])+' Fit')
+		plt.legend()
+		t2s.append(params['t_2'].value)
+		fittemps.append(temps[-1])
+freqs=[]
+betrags=[]
+temps=[]
+for data in files:
+	f=open(data,'r')
+	lines=f.readlines()
+	for i in range(0,2): lines.pop(0)
+	freq=[]
+	betrag=[]
+	for line in lines:
+		liste=line.split()
+		freq.append(np.float(liste[0]))
+		betrag.append(((np.float(liste[1]))))
+		#betrag.append(((np.float(liste[1]))**2+(np.float(liste[2])**2))**0.5)
 	maxbetrag=max(betrag)
 	betrag=[b/maxbetrag for b in betrag]
 	freqs.append(freq)
