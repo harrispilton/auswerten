@@ -16,9 +16,9 @@ def calc_B():
 	h_quer = 6.626e-34/(2.*np.pi)
 	gamma_H=2.675e8#/2/np.pi
 	N_a=6.022e23
-	n_H=21.0
-	rho=rho_mTCP=1.15*1e6
-	M=M_mTCP=368.4
+	n_H=17.0
+	rho=rho_dhiq=0.936*1e6
+	M=M_dhiq=139.24#data von http://www.chemblink.com/products/6329-61-9.htm
 	N=n_H*N_a*rho/M
 	return np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2.)**2. * N
 
@@ -122,12 +122,15 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		brlx.append(float(liste[0])*1.e6*2.*np.pi)
-		sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
-		r1.append(float(liste[2]))
-		percerr.append(float(liste[3]))
-		zone.append(int(liste[5]))
-		relativefile.append(liste[6])
+		if liste[0]=='#' or float(liste[3])>100:
+			pass
+		else:
+			brlx.append(float(liste[0])*1.e6*2.*np.pi)
+			sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
+			r1.append(float(liste[2]))
+			percerr.append(float(liste[3]))
+			zone.append(int(liste[5]))
+			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
 	print 'filename: '+filename
@@ -175,7 +178,7 @@ for filename in sef:
 		plt.figure(1)
 	
 		ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
-		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor,label='fit')
+		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
 		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
 		brlxs.append(brlx)
 	r1s.append(r1)
@@ -187,8 +190,10 @@ ax.legend()
 
 colors=get_colors()
 markers=get_markers()
-for temp,d in zip(temps,diffs):
-	insetax.plot(temp,d,marker=markers.next(),color=colors.next())
+with open('D.dat','w') as fout:
+	for temp,d in zip(temps,diffs):
+		insetax.plot(temp,d,marker=markers.next(),color=colors.next())
+		fout.write(str(temp)+' '+str(d)+'\n')
 plt.draw()
 oksdfj=raw_input('ente')
 ##while True:
