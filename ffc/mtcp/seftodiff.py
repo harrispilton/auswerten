@@ -109,6 +109,7 @@ chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
+differrs=[]
 for filename in sef:
 	#print 'filename: '+filename
 	fin=open(filename,'r')
@@ -172,6 +173,7 @@ for filename in sef:
 		minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
 		diffs.append(params['logD'].value)
 		r0s.append(params['r0'].value)
+		differrs.append(params['logD'].stderr)
 		fit=residuals(params,np.array(sorted(sqrtom)))
 		print minni
 		
@@ -194,6 +196,9 @@ markers=get_markers()
 for temp,d in zip(temps,diffs):
 	insetax.plot(temp,d,marker=markers.next(),color=colors.next())
 plt.draw()
+with open('D.dat','w') as dout:
+	for temp,d,err in zip(temps,diffs,differrs):
+		dout.write(str(temp)+' '+str(d)+' '+str(err)+'\n')
 oksdfj=raw_input('ente')
 ##while True:
 ##	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")

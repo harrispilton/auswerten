@@ -49,7 +49,7 @@ omega=np.logspace(-3,1.5,200,10)
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-9.0,min=-15,max=-8)
+params.add('logD',value=-9.0,min=-13.8,max=-8.5)
 params.add('D',expr='(10.0**logD)')
 params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
@@ -122,12 +122,15 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		brlx.append(float(liste[0])*1.e6*2.*np.pi)
-		sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
-		r1.append(float(liste[2]))
-		percerr.append(float(liste[3]))
-		zone.append(int(liste[5]))
-		relativefile.append(liste[6])
+		if liste[0]=='#' or float(liste[3])>100:
+			pass
+		else:
+			brlx.append(float(liste[0])*1.e6*2.*np.pi)
+			sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
+			r1.append(float(liste[2]))
+			percerr.append(float(liste[3]))
+			zone.append(int(liste[5]))
+			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
 	print 'filename: '+filename
@@ -175,7 +178,7 @@ for filename in sef:
 		plt.figure(1)
 	
 		ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
-		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor,label='fit')
+		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
 		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
 		brlxs.append(brlx)
 	r1s.append(r1)
@@ -187,8 +190,10 @@ ax.legend()
 
 colors=get_colors()
 markers=get_markers()
-for temp,d in zip(temps,diffs):
-	insetax.plot(temp,d,marker=markers.next(),color=colors.next())
+with open('D.dat','w') as fout:
+	for temp,d in zip(temps,diffs):
+		insetax.plot(1000./(np.array(temp)),d,marker=markers.next(),color=colors.next())
+		fout.write(str(temp)+' '+str(d)+'\n')
 plt.draw()
 oksdfj=raw_input('ente')
 ##while True:
