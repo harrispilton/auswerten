@@ -16,7 +16,7 @@ def calc_B():
 	h_quer = 6.626e-34/(2.*np.pi)
 	gamma_H=2.675e8#/2/np.pi
 	N_a=6.022e23
-	n_H=8.0
+	n_H=5.0
 	rho=rho_Glyzerin=1.26*1e6
 	M=M_Glyzerin=92.09
 	N=n_H*N_a*rho/M
@@ -42,16 +42,25 @@ def residuals(params,xdata,ydata=None):
 def get_colors():
 	return itertools.cycle(['g','b','k','c','r','m','0.6'])
 def get_markers():
-	return itertools.cycle(['o','s','v','x'])
+	markers=[]
+	for m in plt.Line2D.markers:
+		try:
+			if len(m)==1 and m !=' ' and m !='|' and m!='_' and m!='x' and m!='.' and m!=',':
+				markers.append(m)
+		except TypeError:
+				pass
+	return itertools.cycle(markers)
 
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-9.0,min=-13.8,max=-8.5)
+params.add('logD',value=-14.0,min=-14.8,max=-8.5)
 params.add('D',expr='(10.0**logD)')
-params.add('logr0',value=2.,min=-2.5,max=4.)
+#params.add('steigung',expr='(calc_B()/((10.0**logD)**1.5))')
+#params.add('steigung',expr='(r0/((10.0**logD)**(2.0/3.0)))')
+params.add('logr0',value=2.,min=-1.0,max=4.)
 params.add('r0',expr='(10.0**logr0)')
 #params.add('logK_dd',value=8.0,min=7,max=10)
 #params.add('K_dd',expr='(10.0**logK_dd)')
@@ -91,13 +100,15 @@ colors=get_colors()#itertools.cycle(['g','b','k','c','r','m','0.6'])
 
 insetax=plt.axes([0.4,0.7,0.2,0.2])
 plt.ylabel(r"$lg(D)$")
-plt.xlabel(r"$T$ $[K]$")
+plt.xlabel(r"$\frac{1000}{T}$ $[\frac{1}{K}]$")
 plt.xscale('linear')
 plt.yscale('linear')
 
 
 plt.figure(2)
-errax=plt.axes([0.1,0.1,0.8,0.8])
+errax=plt.axes([0.1,0.1,0.8,0.4])
+dmax=plt.axes([0.1,0.5,0.4,0.4])
+
 
 sefdata=[]
 temps=[]
@@ -109,6 +120,7 @@ chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
+ms=[]
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
@@ -148,14 +160,24 @@ for filename in sef:
 	temps.append(float(temp))
 	ds=[]
 	derrs=[]
+	steigungs=[]
 	iis=[]
 	for i in range(r1.__len__()-3,-1,-1):
 		minimize(residuals,params,args=(np.array(sqrtom[i:r1.__len__()]),np.array(r1[i:r1.__len__()])))
 		iis.append(i)
 		ds.append(params['logD'].value)
 		derrs.append(params['logD'].stderr)
+		steigungs.append(calc_B()/(params['D'].value**1.5))
 	minni=1
 	minnval=1.e90
+	plt.figure(2)
+	dmax.plot(iis,steigungs)
+	dmax.autoscale()
+	plt.xscale('log')
+	plt.yscale('log')
+	plt.draw()
+	raw_input('next')
+	dmax.cla()
 	for i in range(1,derrs.__len__()):
 		if derrs[i]<minnval:
 			minni=iis[i]
