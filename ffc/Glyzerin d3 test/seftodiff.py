@@ -48,7 +48,7 @@ def get_markers():
 			if len(m)==1 and m !=' ' and m !='|' and m!='_' and m!='x' and m!='.' and m!=',':
 				markers.append(m)
 		except TypeError:
-				pass
+			pass
 	return itertools.cycle(markers)
 
 omega=np.logspace(-3,1.5,200,10)
@@ -125,6 +125,8 @@ for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
 	for i in range(0,4): sefdata.pop(0)
+	acolor=colors.next()
+	amarker=markers.next()
 	brlx=[]
 	sqrtom=[]
 	r1=[]
@@ -171,7 +173,7 @@ for filename in sef:
 	minni=1
 	minnval=1.e90
 	plt.figure(2)
-	dmax.plot(iis,steigungs)
+	dmax.plot(iis,params['r0'].value/(np.array(steigungs)**(2./3.)),color=acolor,marker=amarker)
 	dmax.autoscale()
 	plt.xscale('log')
 	plt.yscale('log')
@@ -183,8 +185,6 @@ for filename in sef:
 			minni=iis[i]
 			minnval=derrs[i]
 	plt.figure(2)
-	acolor=colors.next()
-	amarker=markers.next()
 	errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
 	plt.ylim([0,1])
 	plt.legend()
@@ -201,6 +201,7 @@ for filename in sef:
 	
 		ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
 		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
+		insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
 		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
 		brlxs.append(brlx)
 	r1s.append(r1)
@@ -210,11 +211,8 @@ for filename in sef:
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
 
-colors=get_colors()
-markers=get_markers()
 with open('D.dat','w') as fout:
 	for temp,d in zip(temps,diffs):
-		insetax.plot(1000./(np.array(temp)),d,marker=markers.next(),color=colors.next())
 		fout.write(str(temp)+' '+str(d)+'\n')
 plt.draw()
 oksdfj=raw_input('ente')

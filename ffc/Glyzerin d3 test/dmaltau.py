@@ -37,7 +37,7 @@ temp=[]
 for (t1,t2) in zip(dtemp,tautemp):
 	print str(t1)+'    '+str(t2)
 for (ta, taut, d) in zip(tau,tautemp,ds):
-	dmaltau.append(10**ta*10**d/taut)
+		dmaltau.append(10**ta*10**d/taut)
 	temp.append(taut)
 ax.plot(tautemp,dmaltau,marker='o',ls='None')
 i=raw_input('ente')
