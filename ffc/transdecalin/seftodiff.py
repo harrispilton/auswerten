@@ -49,7 +49,6 @@ def get_markers():
 				markers.append(m)
 		except TypeError:
 			pass
-	print markers
 	return itertools.cycle(markers)
 
 omega=np.logspace(-3,1.5,200,10)
@@ -174,7 +173,7 @@ for filename in sef:
 	minni=1
 	minnval=1.e90
 	plt.figure(2)
-	dmax.plot(iis,calc_B()/(np.array(steigungs)**(2./3.)),color=acolor,marker=amarker)
+	dmax.plot(iis,params['r0'].value/(np.array(steigungs)**(2./3.)),color=acolor,marker=amarker)
 	dmax.autoscale()
 	plt.xscale('log')
 	plt.yscale('log')

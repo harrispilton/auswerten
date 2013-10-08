@@ -42,7 +42,15 @@ def residuals(params,xdata,ydata=None):
 def get_colors():
 	return itertools.cycle(['g','b','k','c','r','m','0.6'])
 def get_markers():
-	return itertools.cycle(['o','s','v','x'])
+	markers=[]
+	for m in plt.Line2D.markers:
+		try:
+			if len(m)==1 and m !=' ' and m !='|' and m!='_' and m!='x' and m!='.' and m!=',':
+				markers.append(m)
+		except TypeError:
+			pass
+	return itertools.cycle(markers)
+
 
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
@@ -91,13 +99,15 @@ colors=get_colors()#itertools.cycle(['g','b','k','c','r','m','0.6'])
 
 insetax=plt.axes([0.4,0.7,0.2,0.2])
 plt.ylabel(r"$lg(D)$")
-plt.xlabel(r"$T$ $[K]$")
+plt.xlabel(r"$\frac{1000}{T}$ $[\frac{1}{K}]$")
 plt.xscale('linear')
 plt.yscale('linear')
 
 
 plt.figure(2)
-errax=plt.axes([0.1,0.1,0.8,0.8])
+errax=plt.axes([0.1,0.1,0.8,0.4])
+dmax=plt.axes([0.1,0.5,0.4,0.4])
+
 
 sefdata=[]
 temps=[]
@@ -109,10 +119,15 @@ chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
+steigungs=[]
+konsts=[]
+sef.reverse()
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
 	for i in range(0,4): sefdata.pop(0)
+	acolor=colors.next()
+	amarker=markers.next()
 	brlx=[]
 	sqrtom=[]
 	r1=[]
@@ -154,45 +169,44 @@ for filename in sef:
 		iis.append(i)
 		ds.append(params['logD'].value)
 		derrs.append(params['logD'].stderr)
-	minni=1
+		steigungs.append(calc_B()/(params['D'].value**1.5))
+	minni=-1
 	minnval=1.e90
 	for i in range(1,derrs.__len__()):
 		if derrs[i]<minnval:
 			minni=iis[i]
 			minnval=derrs[i]
 	plt.figure(2)
-	acolor=colors.next()
-	amarker=markers.next()
 	errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
 	plt.ylim([0,1])
-	plt.legend()
-	if i == 1:
-		pass
-	else:
-		minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
-		diffs.append(params['logD'].value)
-		r0s.append(params['r0'].value)
-		fit=residuals(params,np.array(sorted(sqrtom)))
-		
-		#print repr(temp)
-		plt.figure(1)
+	plt.autoscale()
+	minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
+	diffs.append(params['logD'].value)
+	r0s.append(params['r0'].value)
+	steigung=calc_B()*(params['D'].value**(-1.5))
+	konsts.append(params['r0']/(steigung**(2./3.)))
+	fit=residuals(params,np.array(sorted(sqrtom)))
+	dmax.plot(float(temp),steigungs[-1],color=acolor,marker=amarker)
+	plt.yscale('log')
+	plt.autoscale()
+	#print repr(temp)
+	plt.figure(1)
 	
-		ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
-		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
-		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
-		brlxs.append(brlx)
+	ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
+	ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
+	insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
+	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
+	brlxs.append(brlx)
 	r1s.append(r1)
 	sqrtoms.append(sqrtom)
 	taus.append(0.0)
+	raw_input('next')
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
 
-colors=get_colors()
-markers=get_markers()
 with open('D.dat','w') as fout:
 	for temp,d in zip(temps,diffs):
-		insetax.plot(temp,d,marker=markers.next(),color=colors.next())
 		fout.write(str(temp)+' '+str(d)+'\n')
 plt.draw()
 oksdfj=raw_input('ente')

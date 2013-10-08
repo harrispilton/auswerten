@@ -58,8 +58,6 @@ omega=np.logspace(-3,1.5,200,10)
 params= Parameters()
 params.add('logD',value=-14.0,min=-14.8,max=-8.5)
 params.add('D',expr='(10.0**logD)')
-#params.add('steigung',expr='(calc_B()/((10.0**logD)**1.5))')
-#params.add('steigung',expr='(r0/((10.0**logD)**(2.0/3.0)))')
 params.add('logr0',value=2.,min=-1.0,max=4.)
 params.add('r0',expr='(10.0**logr0)')
 #params.add('logK_dd',value=8.0,min=7,max=10)
@@ -120,7 +118,9 @@ chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
-ms=[]
+steigungs=[]
+konsts=[]
+sef.reverse()
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
@@ -162,7 +162,6 @@ for filename in sef:
 	temps.append(float(temp))
 	ds=[]
 	derrs=[]
-	steigungs=[]
 	iis=[]
 	for i in range(r1.__len__()-3,-1,-1):
 		minimize(residuals,params,args=(np.array(sqrtom[i:r1.__len__()]),np.array(r1[i:r1.__len__()])))
@@ -170,43 +169,53 @@ for filename in sef:
 		ds.append(params['logD'].value)
 		derrs.append(params['logD'].stderr)
 		steigungs.append(calc_B()/(params['D'].value**1.5))
-	minni=1
+	minni=-1
 	minnval=1.e90
-	plt.figure(2)
-	dmax.plot(iis,params['r0'].value/(np.array(steigungs)**(2./3.)),color=acolor,marker=amarker)
-	dmax.autoscale()
-	plt.xscale('log')
-	plt.yscale('log')
-	plt.draw()
-	raw_input('next')
-	dmax.cla()
+	
 	for i in range(1,derrs.__len__()):
 		if derrs[i]<minnval:
 			minni=iis[i]
 			minnval=derrs[i]
+#	cminni=minni
+#	minni=-1
+#	delta=1.
+#	for i in range(2,konsts.__len__()):
+#		deltaold=delta
+#		delta=(konsts[i-1]-konsts[i])/konsts[0]
+#		if deltaold/abs(deltaold)!=delta/abs(delta) or deltaold/delta>10.:
+#			minni=i-1
+	
+#	print '(methode max)cminni ='
+#	print cminni
+#	print '(methode roman)minni ='
+#	print minni
+
+	
 	plt.figure(2)
 	errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
 	plt.ylim([0,1])
-	plt.legend()
-	if i == 1:
-		pass
-	else:
-		minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
-		diffs.append(params['logD'].value)
-		r0s.append(params['r0'].value)
-		fit=residuals(params,np.array(sorted(sqrtom)))
-		
-		#print repr(temp)
-		plt.figure(1)
+	plt.autoscale()
+	minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
+	diffs.append(params['logD'].value)
+	r0s.append(params['r0'].value)
+	steigung=calc_B()*(params['D'].value**(-1.5))
+	konsts.append(params['r0']/(steigung**(2./3.)))
+	fit=residuals(params,np.array(sorted(sqrtom)))
+	dmax.plot(float(temp),steigungs[-1],color=acolor,marker=amarker)
+	plt.yscale('log')
+	plt.autoscale()
+	#print repr(temp)
+	plt.figure(1)
 	
-		ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
-		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
-		insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
-		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
-		brlxs.append(brlx)
+	ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
+	ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
+	insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
+	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
+	brlxs.append(brlx)
 	r1s.append(r1)
 	sqrtoms.append(sqrtom)
 	taus.append(0.0)
+	raw_input('next')
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()

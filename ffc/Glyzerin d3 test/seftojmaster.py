@@ -116,8 +116,8 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
-	#	liste = re.findall(r"[\w.][\f]+",data)
-		if liste[0]=='#' or float(liste[3])>200: pass
+		if liste[0]=='#' or float(liste[3])>100:
+			pass
 		else:
 			omega.append(float(liste[0])*1.e6*2.*np.pi)
 			sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
@@ -165,7 +165,6 @@ for filename in sef:
 		diffs.append(params['logD'].value)
 		r0s.append(params['r0'].value)
 		fit=residuals(params,np.array(sorted(sqrtom)))
-		
 		#print repr(temp)
 		omtaures=[]
 		r1norm=[]
