@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 #from matplotlib.widgets import Slider, Button, CheckButtons
 
 def residual(params,xdata,ydata=None):
-	'''residual(params,xdata,ydata=None), return residual of a lorentz'''
 	f0=params['f0'].value
 	hwhm=10**params['loghwhm'].value
 	a0=params['a0'].value
@@ -21,33 +20,22 @@ def residual(params,xdata,ydata=None):
 		return Lorentz(xdata,f0,hwhm,a0,y0)
 	return (ydata-Lorentz(xdata,f0,hwhm,a0,y0))
 def Lorentz(x,f0,hwhm,a0,y0=0):
-	'''Lorentz(x,f0,hwhm,a0,y0=0), return yvalue of a point of a lorentzian with corresponding properties'''
 	return (y0+a0/(1.+((x-f0)/hwhm)**2))
 	#return (a0 * (0.5 * fwhm)/((x * f0)**2.0 + 0.25 * fwhm**2))
 params = Parameters()
 params.add('loghwhm',value=2.0,min=-3.0,max=8.0)
 pi=np.pi
 params.add('t_2',expr='(1/(pi*10**(loghwhm)))')
-params.add('a0', value=1, min=0.95,max=1.1,vary=True)
+params.add('a0', value=1, min=0.95,max=1.1,vary=False)
 params.add('f0', value=0,min=-1e1,max=1e1)
-params.add('y0',value=0.005,min=0,max=0.2,vary=False)
+params.add('y0',value=0.05,min=0,max=0.2)
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.8,0.8])
 x=np.linspace(-10,10,1e3)
 markers = itertools.cycle(['o','s','v'])
-files=glob.glob('otp/solidecho/'+'*K.dat')
+files=glob.glob('otp/1d/'+'*K.dat')
 files.sort()
-### in fitgrenzen.dat stehen nur grenzen fuer temperaturen groesser 260K, unter dieser temperatur gibt es keine lorentzlinie mehr. daher ist darauf zu achten dass diese auch nicht eingelesen werden (2zeilen drueber. man kann die  files auskommentieren durch anhaengen 2er rauten im entsprechenden ordner.
-with open('otp/solidecho/fitgrenzen.dat','r') as grin:
-	freqmins=[]
-	freqmaxs=[]
-	lines=grin.readlines()
-	for line in lines:
-		liste=line.split()
-		freqmins.append(float(liste[1]))
-		freqmaxs.append(float(liste[2]))
-
 print type(x)
 p0=[2,1.0e4,1.0]
 #a0_a=[]
@@ -62,7 +50,7 @@ betrags=[]
 temps=[]
 fittemps=[]
 t2s=[]
-for (data,frmin,frmax) in zip(files,freqmins,freqmaxs):
+for data in files:
 	ax.cla()
 	f=open(data,'r')
 	lines=f.readlines()
@@ -77,12 +65,11 @@ for (data,frmin,frmax) in zip(files,freqmins,freqmaxs):
 	betrag=[b/maxbetrag for b in betrag]
 	freqs.append(freq)
 	betrags.append(betrag)
-	temps.append(float(data[14:-6]))
+	temps.append(float(data[7:-6]))
 	print temps
 	ax.plot(freq,betrag,label=str(data),marker=markers.next(),linestyle='None')	
 	plt.autoscale()
 	plt.draw()
-	plt.show()
 	#plt.plot(fr,Lorentz(fr,f0,fwhm,a0))
 	fitten='y'
 	if str(fitten)=='y':
@@ -91,28 +78,58 @@ for (data,frmin,frmax) in zip(files,freqmins,freqmaxs):
 		#	if abs(freq[i])>1.5e4:
 		#		freq.pop(i)
 		#		betrag.pop(i)
-		for i in range(1,2,1):
-			l=len(freq)
-			freq2=[]
-			betrag2=[]
-			#unteregrenze=int(l/2.-(i/50.*l))
-			#oberegrenze=int(l/2.+(i/50.*l))
-			#print unteregrenze-oberegrenze
-			for fr, b in zip(freq,betrag):
-				if fr>frmin and fr<frmax:
-					freq2.append(fr)
-					betrag2.append(b)
-			#freq2=np.array(freq[unteregrenze:oberegrenze])
-			#betrag2=np.array(betrag[unteregrenze:oberegrenze])
-			out = minimize(residual, params,args=(freq2,betrag2))
-			result=freq2+out.residual
-			fit = residual(params, np.array(freq))
-			print report_errors(params)
-			ax.plot(freq,fit,label=str(temps[-1])+' Fit')
-			plt.legend()
-			t2s.append(params['t_2'].value)
-			fittemps.append(temps[-1])
-	sdfo=raw_input('next')
+		freq=np.array(freq)
+		betrag=np.array(betrag)
+		out = minimize(residual, params,args=(freq,betrag))
+		result=freq+out.residual
+		fit = residual(params, np.array(freq))
+		print report_errors(params)
+		ax.plot(freq,fit,label=str(temps[-1])+' Fit')
+		plt.legend()
+		t2s.append(params['t_2'].value)
+		sdofisj=raw_input('next')
+		fittemps.append(temps[-1])
+freqs=[]
+betrags=[]
+temps=[]
+for data in files:
+	f=open(data,'r')
+	lines=f.readlines()
+	for i in range(0,2): lines.pop(0)
+	freq=[]
+	betrag=[]
+	for line in lines:
+		liste=line.split()
+		freq.append(np.float(liste[0]))
+		betrag.append(((np.float(liste[1]))))
+		#betrag.append(((np.float(liste[1]))**2+(np.float(liste[2])**2))**0.5)
+	maxbetrag=max(betrag)
+	betrag=[b/maxbetrag for b in betrag]
+	freqs.append(freq)
+	betrags.append(betrag)
+	temps.append(float(data[7:-6]))
+	print temps
+	ax.plot(freq,betrag,label=str(data),marker=markers.next(),linestyle='None')	
+	plt.autoscale()
+	plt.draw()
+	#plt.plot(fr,Lorentz(fr,f0,fwhm,a0))
+	fitten='y'
+	if str(fitten)=='y':
+		params['loghwhm'].value=2
+		#for i in range(freq.__len__()-1,-1,-1):
+		#	if abs(freq[i])>1.5e4:
+		#		freq.pop(i)
+		#		betrag.pop(i)
+		freq=np.array(freq)
+		betrag=np.array(betrag)
+		out = minimize(residual, params,args=(freq,betrag))
+		result=freq+out.residual
+		fit = residual(params, np.array(freq))
+		print report_errors(params)
+		ax.plot(freq,fit,label=str(temps[-1])+' Fit')
+		plt.legend()
+		t2s.append(params['t_2'].value)
+		fittemps.append(temps[-1])
 
 with open('otp_T2.dat','w') as fout: 
 	for i in range(0,t2s.__len__()):
