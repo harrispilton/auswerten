@@ -210,9 +210,9 @@ for filename in sef:
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
-
 with open('D.dat','w') as fout:
 	for temp,d in zip(temps,diffs):
+		print (str(temp)+' '+str(10**d)+'\n')
 		fout.write(str(temp)+' '+str(d)+'\n')
 plt.draw()
 oksdfj=raw_input('ente')

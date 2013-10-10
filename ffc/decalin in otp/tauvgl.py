@@ -64,11 +64,11 @@ params.add('p4',value=0.04,min=0.000001,max=1)
 
 mytau=[]
 mytemp=[]
-mytauin=open('tau.dat','r')
+mytauin=open('externe_daten/tau.dat','r')
 tau=mytauin.readlines()
 for i in range(0,tau.__len__()):
 	liste=tau[i].split()
-	mytemp.append(float(liste[0]))
+	mytemp.append(1000/float(liste[0]))
 	mytau.append(float(liste[1]))
 ax.plot(mytemp,mytau,label='FFC, Decalin in 85%otp',marker='o',linestyle='None')
 ax.plot(schmidtketemp,schmidtketau,label='LS 85%otp',marker='^',linestyle='None')
