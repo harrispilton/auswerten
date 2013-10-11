@@ -88,7 +88,7 @@ sdf.sort()
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
-title='Diffusion und so'#raw_input("enter plot title: ")
+title='Decalin in OTP'
 plt.title(title)
 plt.xlabel(r"$\sqrt{\omega}$")
 plt.ylabel(r"$R_1$ $[s^{-1}]$")
