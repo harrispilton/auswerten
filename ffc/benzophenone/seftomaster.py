@@ -73,7 +73,9 @@ brlxs=[]
 chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation)
+#sef=reversed(sef)
 for filename in sef:
+	print 'filename: '+filename
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
 	for i in range(0,4): sefdata.pop(0)
@@ -83,11 +85,10 @@ for filename in sef:
 	zone=[]
 	relativefile=[]
 	for data in sefdata: 
-		if data[0]=='#':
-			a=0
+		liste=data.split()
+		if liste[0]=='#' or float(liste[3])>100:
+			pass
 		else:
-			liste=data.split()
-		#	liste = re.findall(r"[\w.][\f]+",data)
 			brlx.append(float(liste[0])*1e6)
 			chi.append(float(liste[2])*brlx[-1])
 			percerr.append(float(liste[3]))
@@ -95,7 +96,6 @@ for filename in sef:
 			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
-	print 'filename: '+filename
 	#wenn einzelne files fehlerhaft sind kann man es einfach durch auskommentieren der folgenden zeilen sehen
 	#print 'zone: '+str(zone)
 	#print 'relativefile: '+relativefile[1]

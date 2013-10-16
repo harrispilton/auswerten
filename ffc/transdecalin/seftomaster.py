@@ -88,11 +88,14 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		brlx.append(float(liste[0])*1e6)
-		chi.append(float(liste[2])*brlx[-1])
-		percerr.append(float(liste[3]))
-		zone.append(int(liste[5]))
-		relativefile.append(liste[6])
+		if liste[0]=='#':
+			pass
+		else:
+			brlx.append(float(liste[0])*1e6)
+			chi.append(float(liste[2])*brlx[-1])
+			percerr.append(float(liste[3]))
+			zone.append(int(liste[5]))
+			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
 	print 'filename: '+filename
