@@ -72,9 +72,9 @@ ax.plot(mytemp,mytau,label='FFC',marker='o',linestyle='None')
 ###die eigenen taus sind gemalt, jetzt fuehre alle taus und temps zusammen und fitte diese liste
 #mytau=[]
 #mytemp=[]
-#for i in range(0,dstau.__len__()):
-#	mytau.append(dstau[i])
-#	mytemp.append(dstemp[i])
+for i in range(0,dstau.__len__()):
+	mytau.append(dstau[i])
+	mytemp.append(dstemp[i])
 #for i in range(0,ls1temp.__len__()):
 #	mytau.append(ls1tau[i])
 #	mytemp.append(ls1temp[i])
@@ -88,7 +88,8 @@ for i in range(0,mytemp.__len__()-1):
 abstand.append(abstand[-1])
 #print abstand
 
-minimize(residuals,params,args=(np.array(mytemp),np.array(mytau),np.array(abstand)))
+#minimize(residuals,params,args=(np.array(mytemp),np.array(mytau),np.array(abstand)))
+minimize(residuals,params,args=(np.array(mytemp),np.array(mytau)))
 fit=residuals(params,np.array(sorted(mytemp)))
 print report_errors(params)
 ax.plot(sorted(mytemp),fit,label='fit')
