@@ -26,8 +26,9 @@ plt.figure(1)
 rateax=plt.axes([0.1,0.1,0.8,0.8])
 plt.xscale('log')
 plt.yscale('log')
-
-tau=np.logspace(-11,-7,120)
+rateax.set_xlabel(r'$\tau [s]$')
+rateax.set_ylabel(r'$T_1 [s]$')
+tau=np.logspace(-12,-7,120)
 nu=121.49e6
 delta_sigma_ppm=220*1e-6
 

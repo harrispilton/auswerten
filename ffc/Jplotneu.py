@@ -29,14 +29,33 @@ plt.figure(1)
 rateax=plt.axes([0.1,0.1,0.8,0.8])
 plt.xscale('log')
 plt.yscale('log')
+plt.title('Einfluss von CSA bei verschiedenen Temperaturen')
+rateax.set_xlabel(r'$\nu  [MHz]$')
+rateax.set_ylabel(r'$T_1$')
+plt.ylim([1e-2,1e2])
+plt.xlim([1e3,1e11])
 
-tau=np.logspace(-11,-7,120)
-nu=121.49e6
+tau=1e-7#np.logspace(-11,-7,120)
+nu=np.logspace(3,12,120)#121.49e6
 delta_sigma_ppm=220*1e-6
 
-rateax.plot(tau,1./R1_ges(nu*2*np.pi,tau/0.3,1.2e9,delta_sigma_ppm,0.3),label='beta=0.3',color=c[0])
-rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau/0.3,delta_sigma_ppm,0.3),label='CSA',color=c[1])
-rateax.plot(tau,1./R1_DD(nu*2*np.pi,tau/0.3,1.2e9,0.3),label='DD',color=c[2])
+tau=1e-11
+rateax.plot(nu,1./R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5),label=r'$\tau = 10^{-11}$',lw=2.0,color=c[0])
+rateax.plot(nu,1./R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5),label='CSA',color=c[0],ls='-')
+rateax.plot(nu,1./R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[0],ls='-.')
+#rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
+
+tau=1e-9
+rateax.plot(nu,1./R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5),label=r'$\tau = 10^{-9}$',lw=2.0,color=c[2])
+rateax.plot(nu,1./R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5),label='CSA',color=c[2],ls='-')
+rateax.plot(nu,1./R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[2],ls='-.')
+#rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
+
+
+tau=1e-8
+rateax.plot(nu,1./R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5),label=r'$\tau = 10^{-8}$',lw=2.0,color=c[8])
+rateax.plot(nu,1./R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5),label='CSA',color=c[8],ls='-')
+rateax.plot(nu,1./R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[8],ls='-.')
 #rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
 
 plt.legend()
