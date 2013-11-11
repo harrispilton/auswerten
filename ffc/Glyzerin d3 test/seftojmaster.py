@@ -41,14 +41,21 @@ def residuals(params,xdata,ydata=None):
 def get_colors():
 	return itertools.cycle(['g','b','k','c','r','m','0.6'])
 def get_markers():
-	return itertools.cycle(['o','s','v','x'])
+	markers=[]
+	for m in plt.Line2D.markers:
+		try:
+			if len(m)==1 and m !=' ' and m !='|' and m!='_' and m!='x' and m!='.' and m!=',':
+				markers.append(m)
+		except TypeError:
+			pass
+	return itertools.cycle(markers)
 
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-9.0,min=-14,max=-8)
+params.add('logD',value=-14.0,min=-14.8,max=-8.5)
 params.add('D',expr='(10.0**logD)')
 params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
@@ -79,8 +86,8 @@ plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
 title='Diffusion und so'#raw_input("enter plot title: ")
 plt.title(title)
-plt.xlabel(r"$\sqrt{\omega\tau_{res}}$")
-plt.ylabel(r"$R_1/R_0$")
+plt.xlabel(r"$\sqrt{\omega}$")
+plt.ylabel(r"$R_1$ $[s^{-1}]$")
 #plt.xscale('log')
 plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
@@ -109,6 +116,8 @@ for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
 	for i in range(0,4): sefdata.pop(0)
+	acolor=colors.next()
+	amarker=markers.next()
 	omega=[]
 	sqrtom=[]
 	r1=[]
@@ -118,7 +127,6 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 		if liste[0]=='#' or float(liste[2])<0.003:
-			print liste
 			pass
 		else:
 			omega.append(float(liste[0])*1.e6*2.*np.pi)
@@ -134,10 +142,7 @@ for filename in sef:
 #print 'relativefile: '+relativefile[1]
 #print 'zone[sef.index(filename)]' + str(zone[1])
 #print 'ZONE=\t'+str(zone[1])+'\n\n'
-	temp=sdfdata[
-		sdfdata.index(
-			'ZONE=\t'+str(zone[
-				1])+'\r\n')+7]
+	temp=sdfdata[sdfdata.index('ZONE=\t'+str(zone[1])+'\r\n')+7]
 	temp=temp[6:]
 	temp=temp.rstrip()
 	temps.append(float(temp))
@@ -149,14 +154,13 @@ for filename in sef:
 		iis.append(i)
 		ds.append(params['logD'].value)
 		derrs.append(params['logD'].stderr)
-	minni=1
+	
+	minni=-1
 	minnval=1.e90
 	for i in range(1,derrs.__len__()):
 		if derrs[i]<minnval:
 			minni=iis[i]
 			minnval=derrs[i]
-	acolor=colors.next()
-	amarker=markers.next()
 	#errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
 	plt.ylim([0,1.2])
 	plt.legend()
@@ -182,6 +186,10 @@ for filename in sef:
 	sqrtoms.append(omtaures)
 	r1norms.append(r1norm)
 	taus.append(0.0)
+
+with open('D.dat','w') as fout:
+	for temp,d in zip(temps,diffs):
+		fout.write(str(temp)+' '+str(d)+'\n')
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
@@ -249,7 +257,7 @@ while True:
 		pass
 for (ome,r1,temp) in zip(sqrtoms,r1norms,temps):
 	with open(str(temp)+'jmaster.dat','w') as fout:
-		fout.write('ome r1\n'+str(temp)+' '+str(temp)+'\n\n')
+		fout.write(str(temp)+' '+str(temp)+'\n\n')
 		for (o,r) in zip(ome,r1):
 			fout.write(str(o)+' '+str(r)+'\n')
 

@@ -90,7 +90,7 @@ plt.title(title)
 plt.xlabel(r"$\sqrt{\omega}$")
 plt.ylabel(r"$R_1$ $[s^{-1}]$")
 #plt.xscale('log')
-#plt.yscale('log')
+plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
 markers=get_markers()#itertools.cycle(['o','s','v','x'])
@@ -118,16 +118,20 @@ chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
+r1norms=[]
+fitxs=[]
+fitys=[]
 steigungs=[]
 konsts=[]
 sef.reverse()
 for filename in sef:
+	print 'filename: '+filename
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
 	for i in range(0,4): sefdata.pop(0)
 	acolor=colors.next()
 	amarker=markers.next()
-	brlx=[]
+	omega=[]
 	sqrtom=[]
 	r1=[]
 	percerr=[]
@@ -137,78 +141,80 @@ for filename in sef:
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
 		if liste[0]=='#' or float(liste[2])<0.003:
-			print aha
 			pass
 		else:
-			brlx.append(float(liste[0])*1.e6*2.*np.pi)
+			omega.append(float(liste[0])*1.e6*2.*np.pi)
 			sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
 			r1.append(float(liste[2]))
 			percerr.append(float(liste[3]))
 			zone.append(int(liste[5]))
 			relativefile.append(liste[6])
-		print 'filename: '+filename
-		print relativefile
-		fin2=open(relativefile[1],'r')
-		sdfdata=fin2.readlines()
-#wenn einzelne files fehlerhaft sind kann man es einfach durch auskommentieren der folgenden zeilen sehen
-#print 'zone: '+str(zone)
-#relativefile: '+relativefile[1]
-#zone[sef.index(filename)]' + str(zone[1])
-#ZONE=\t'+str(zone[1])+'\n\n'
-		temp=sdfdata[sdfdata.index('ZONE=\t'+str(zone[1])+'\r\n')+7]
-		temp=temp[6:]
-		temp=temp.rstrip()
-		temps.append(float(temp))
-		ds=[]
-		derrs=[]
-		iis=[]
-		for i in range(r1.__len__()-3,-1,-1):
-			minimize(residuals,params,args=(np.array(sqrtom[i:r1.__len__()]),np.array(r1[i:r1.__len__()])))
-			iis.append(i)
-			ds.append(params['logD'].value)
-			derrs.append(params['logD'].stderr)
-			steigungs.append(calc_B()/(params['D'].value**1.5))
-		minni=-1
-		minnval=1.e90
+	fin2=open(relativefile[1],'r')
+	sdfdata=fin2.readlines()
+	#wenn einzelne files fehlerhaft sind kann man es einfach durch auskommentieren der folgenden zeilen sehen
+	#print 'zone: '+str(zone)
+	#relativefile: '+relativefile[1]
+	
+	#zone[sef.index(filename)]' + str(zone[1])
+	#ZONE=\t'+str(zone[1])+'\n\n'
+	temp=sdfdata[sdfdata.index('ZONE=\t'+str(zone[1])+'\r\n')+7]
+	temp=temp[6:]
+	temp=temp.rstrip()
+	temps.append(float(temp))
+	ds=[]
+	derrs=[]
+	iis=[]
+	for i in range(r1.__len__()-3,-1,-1):
+		minimize(residuals,params,args=(np.array(sqrtom[i:r1.__len__()]),np.array(r1[i:r1.__len__()])))
+		iis.append(i)
+		ds.append(params['logD'].value)
+		derrs.append(params['logD'].stderr)
+		steigungs.append(calc_B()/(params['D'].value**1.5))
+	minni=-1
+	minnval=1.e90
+	for i in range(1,derrs.__len__()):
+		if derrs[i]<minnval:
+			minni=iis[i]
+			minnval=derrs[i]
+	#	cminni=minni
+	#	minni=-1
+	#	delta=1.
+	#	for i in range(2,konsts.__len__()):
+	#		deltaold=delta
+	#		delta=(konsts[i-1]-konsts[i])/konsts[0]
+	#		if deltaold/abs(deltaold)!=delta/abs(delta) or deltaold/delta>10.:
+				#minni=i-1
 		
-		for i in range(1,derrs.__len__()):
-			if derrs[i]<minnval:
-				minni=iis[i]
-				minnval=derrs[i]
-		cminni=minni
-		minni=-1
-		delta=1.
-		for i in range(2,konsts.__len__()):
-			deltaold=delta
-			delta=(konsts[i-1]-konsts[i])/konsts[0]
-			if deltaold/abs(deltaold)!=delta/abs(delta) or deltaold/delta>10.:
-				minni=i-1
-		
-		plt.figure(2)
-		errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
-		plt.ylim([0,1])
-		plt.autoscale()
-		minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
-		diffs.append(params['logD'].value)
-		r0s.append(params['r0'].value)
-		steigung=calc_B()*(params['D'].value**(-1.5))
-		konsts.append(params['r0']/(steigung**(2./3.)))
-		fit=residuals(params,np.array(sorted(sqrtom)))
-		dmax.plot(float(temp),steigungs[-1],color=acolor,marker=amarker)
-		plt.yscale('log')
-		plt.autoscale()
-		#print repr(temp)
-		plt.figure(1)
-		
-		ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
-		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
-		insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
-		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
-		brlxs.append(brlx)
-		r1s.append(r1)
-		sqrtoms.append(sqrtom)
-		taus.append(0.0)
-		raw_input('next')
+	plt.figure(2)
+	errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
+	plt.ylim([0,1])
+	plt.autoscale()
+	minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
+	diffs.append(params['logD'].value)
+	r0s.append(params['r0'].value)
+	steigung=calc_B()*(params['D'].value**(-1.5))
+	konsts.append(params['r0']/(steigung**(2./3.)))
+	fit=residuals(params,np.array(sorted(sqrtom)))
+	dmax.plot(float(temp),steigungs[-1],color=acolor,marker=amarker)
+	plt.yscale('log')
+	plt.autoscale()
+	#print repr(temp)
+	plt.figure(1)
+	
+	ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
+	ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
+	insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
+	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
+	omegas.append(omega)
+	
+
+
+	fitxs.append(sorted(sqrtom))
+	fitys.append(fit)
+	r1s.append(r1)
+	sqrtoms.append(sqrtom)
+
+	taus.append(0.0)
 		
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
@@ -216,7 +222,16 @@ ax.legend()
 with open('D.dat','w') as fout:
 	for temp,d in zip(temps,diffs):
 		fout.write(str(temp)+' '+str(d)+'\n')
+
 plt.draw()
+
+for (ome,r1,temp,xs,ys) in zip(sqrtoms,r1s,temps,fitxs,fitys):
+	with open(str(temp)+'diff.dat','w') as fout:
+		fout.write('messung '+str(temp)+' fit '+str(temp)+'\n\n')
+		for (o,r,x,y) in zip(ome,r1,xs,ys):
+			fout.write(str(o)+' '+str(r)+' '+str(x)+' '+str(y)+'\n')
+
+
 oksdfj=raw_input('ente')
 ##while True:
 ##	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
