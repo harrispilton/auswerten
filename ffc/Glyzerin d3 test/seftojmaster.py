@@ -79,10 +79,10 @@ plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
 title='Diffusion und so'#raw_input("enter plot title: ")
 plt.title(title)
-plt.xlabel(r"$\sqrt{\omega}$")
-plt.ylabel(r"$R_1$ $[s^{-1}]$")
+plt.xlabel(r"$\sqrt{\omega\tau_{res}}$")
+plt.ylabel(r"$R_1/R_0$")
 #plt.xscale('log')
-#plt.yscale('log')
+plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
 markers=get_markers()#itertools.cycle(['o','s','v','x'])
@@ -103,6 +103,7 @@ chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
+r1norms=[]
 for filename in sef:
 	print 'filename: '+filename
 	fin=open(filename,'r')
@@ -116,7 +117,8 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
-		if liste[0]=='#' or float(liste[3])>100:
+		if liste[0]=='#' or float(liste[2])<0.003:
+			print liste
 			pass
 		else:
 			omega.append(float(liste[0])*1.e6*2.*np.pi)
@@ -156,7 +158,7 @@ for filename in sef:
 	acolor=colors.next()
 	amarker=markers.next()
 	#errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
-	plt.ylim([0,1])
+	plt.ylim([0,1.2])
 	plt.legend()
 	if i == 1:
 		pass
@@ -177,12 +179,83 @@ for filename in sef:
 	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
 	omegas.append(omega)
 	r1s.append(r1)
-	sqrtoms.append(sqrtom)
+	sqrtoms.append(omtaures)
+	r1norms.append(r1norm)
 	taus.append(0.0)
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
-omtau=np.linspace(0.01,0.99,5)
+omtau=np.linspace(0.0001,0.9999,105)
 ax.plot(omtau**0.5,1.-omtau**0.5,linestyle='--',color='k',label='Modell')
 plt.draw()
+i=raw_input('next level')
+with open('Jmaster_parameter.dat','r') as fin:
+	lines=fin.readlines()
+	diffs=[]
+	r0s=[]
+	for line in lines:
+		liste=line.split()
+		diffs.append(float(liste[1]))
+		r0s.append(float(liste[2]))
+	for i in range(0,diffs.__len__()):
+		omtaures=[]
+		r1norm=[]
+		b=calc_B()
+		taures=(b/((10**diffs[i])**1.5*r0s[i]))**2.
+		for (ome, r) in zip(omegas[i],r1s[i]):
+			omtaures.append((ome*taures)**0.5)
+			r1norm.append(r/r0s[i])
+		ax.lines[i].set_xdata(omtaures)
+		ax.lines[i].set_ydata(r1norm)
+		plt.draw()
+		sqrtoms[i]=omtaures
+		r1norms[i]=r1norm
+
+while True:
+	sel=raw_input('waehle set:  ')
+	if sel=='n':break
+	sel=int(sel)
+	print 'aktuelles r1: '+str(r0s[sel])+'\naktuelles d:  '+str(diffs[sel])
+	rod=raw_input('r oder d')
+	if rod =='r':
+		r0neu=float(raw_input('neues r0: '))
+		omtaures=[]
+		r1norm=[]
+		b=calc_B()
+		taures=(b/((10**diffs[sel])**1.5*r0neu))**2.
+		for (ome, r) in zip(omegas[sel],r1s[sel]):
+			omtaures.append((ome*taures)**0.5)
+			r1norm.append(r/r0neu)
+		ax.lines[sel].set_xdata(omtaures)
+		ax.lines[sel].set_ydata(r1norm)
+		plt.draw()
+		r0s[sel]=r0neu
+		sqrtoms[sel]=omtaures
+		r1norms[sel]=r1norm
+	elif rod =='d':
+		dneu=float(raw_input('neues d: '))
+		omtaures=[]
+		r1norm=[]
+		b=calc_B()
+		taures=(b/((10**dneu)**1.5*r0s[sel]))**2.
+		for (ome, r) in zip(omegas[sel],r1s[sel]):
+			omtaures.append((ome*taures)**0.5)
+			r1norm.append(r/r0s[sel])
+		ax.lines[sel].set_xdata(omtaures)
+		ax.lines[sel].set_ydata(r1norm)
+		plt.draw()
+		diffs[sel]=dneu
+	else:
+		pass
+for (ome,r1,temp) in zip(sqrtoms,r1norms,temps):
+	with open(str(temp)+'jmaster.dat','w') as fout:
+		fout.write('ome r1\n'+str(temp)+' '+str(temp)+'\n\n')
+		for (o,r) in zip(ome,r1):
+			fout.write(str(o)+' '+str(r)+'\n')
+
+with open('Jmaster_parameter.dat','w') as fout:
+	for (t,d,r) in zip(temps,diffs,r0s):
+		fout.write(str(t)+' '+str(d)+' '+str(r)+' '+str(calc_B())+'\n')
+
+
 oksdfj=raw_input('ente')
