@@ -91,12 +91,14 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
+		if liste[0]=='#' or float(liste[4])>30 or float(liste[2])<0.003:pass
+		else:
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		brlx.append(float(liste[0])*1e6)
-		chi.append(float(liste[2])*brlx[-1])
-		percerr.append(float(liste[3]))
-		zone.append(int(liste[5]))
-		relativefile.append(liste[6])
+			brlx.append(float(liste[0])*1e6)
+			chi.append(float(liste[2])*brlx[-1])
+			percerr.append(float(liste[3]))
+			zone.append(int(liste[5]))
+			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
 	print 'filename: '+filename
@@ -122,7 +124,7 @@ for filename in sef:
 			marker=markers.next(),linestyle='None')
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
-ax.legend()
+ax.legend(prop={'size':8})
 plt.draw()
 #while True:
 #	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")

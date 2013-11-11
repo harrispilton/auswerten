@@ -17,8 +17,8 @@ def calc_B():
 	gamma_H=2.675e8#/2/np.pi
 	N_a=6.022e23
 	n_H=13.0
-	rho=rho_4TBP=1.0#15*1e6
-	M=M_mTCP=135.21
+	rho=rho_4TBP=0.923*1e6#sigma aldrich
+	M=M_mTCP=135.21#sigma aldrich
 	N=n_H*N_a*rho/M
 	return np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2.)**2. * N
 
@@ -49,7 +49,7 @@ omega=np.logspace(-3,1.5,200,10)
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-14.0,min=-17.9,max=-11.5)
+params.add('logD',value=-14.0,min=-14.8,max=-8.5)
 params.add('D',expr='(10.0**logD)')
 params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
@@ -83,7 +83,7 @@ plt.title(title)
 plt.xlabel(r"$\sqrt{\omega}$")
 plt.ylabel(r"$R_1$ $[s^{-1}]$")
 #plt.xscale('log')
-#plt.yscale('log')
+plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
 markers=get_markers()#itertools.cycle(['o','s','v','x'])

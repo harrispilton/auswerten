@@ -86,7 +86,7 @@ plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
 title='Diffusion und so'#raw_input("enter plot title: ")
 plt.title(title)
-plt.xlabel(r"$\sqrt{\omega}$")
+plt.xlabel(r"$\sqrt{\omega \tau_{res}}$")
 plt.ylabel(r"$R_1$ $[s^{-1}]$")
 #plt.xscale('log')
 plt.yscale('log')
@@ -110,6 +110,7 @@ chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
+konsts=[]
 r1norms=[]
 for filename in sef:
 	print 'filename: '+filename
@@ -175,6 +176,8 @@ for filename in sef:
 		omtaures=[]
 		r1norm=[]
 		b=calc_B()
+		steigung=calc_B()*(params['D'].value**(-1.5))
+		konsts.append(params['r0']/(steigung**(2./3.)))
 		taures=(b/(params['D']**1.5*params['r0'].value))**2.
 		for (ome, r) in zip(omega,r1):
 			omtaures.append((ome*taures)**0.5)
@@ -197,10 +200,14 @@ omtau=np.linspace(0.0001,0.9999,105)
 ax.plot(omtau**0.5,1.-omtau**0.5,linestyle='--',color='k',label='Modell')
 plt.draw()
 i=raw_input('next level')
+plt.figure(2)
+kax=plt.axes([0.1,0.1,0.8,0.8])
+plt.figure(1)
 with open('Jmaster_parameter.dat','r') as fin:
 	lines=fin.readlines()
 	diffs=[]
 	r0s=[]
+	konsts=[]
 	for line in lines:
 		liste=line.split()
 		diffs.append(float(liste[1]))
@@ -215,10 +222,14 @@ with open('Jmaster_parameter.dat','r') as fin:
 			r1norm.append(r/r0s[i])
 		ax.lines[i].set_xdata(omtaures)
 		ax.lines[i].set_ydata(r1norm)
+		steigung=calc_B()*((10**diffs[i])**(-1.5))
+		konsts.append(r0s[i]/(steigung**(2./3.)))
 		plt.draw()
 		sqrtoms[i]=omtaures
 		r1norms[i]=r1norm
-
+plt.figure(2)
+kax.plot(1000./np.array(temps),konsts)
+plt.draw()
 while True:
 	sel=raw_input('waehle set:  ')
 	if sel=='n':break
@@ -236,6 +247,13 @@ while True:
 			r1norm.append(r/r0neu)
 		ax.lines[sel].set_xdata(omtaures)
 		ax.lines[sel].set_ydata(r1norm)
+		steigung=calc_B()*((10**diffs[sel])**(-1.5))
+		konsts[sel]=(r0neu/(steigung**(2./3.)))
+		plt.figure(2)
+		plt.cla()
+		kax.plot(1000./np.array(temps),konsts)
+		plt.draw()
+		plt.figure(1)
 		plt.draw()
 		r0s[sel]=r0neu
 		sqrtoms[sel]=omtaures
@@ -245,12 +263,19 @@ while True:
 		omtaures=[]
 		r1norm=[]
 		b=calc_B()
+		steigung=calc_B()*((10**dneu)**(-1.5))
+		konsts[sel]=(r0s[sel]/(steigung**(2./3.)))
 		taures=(b/((10**dneu)**1.5*r0s[sel]))**2.
 		for (ome, r) in zip(omegas[sel],r1s[sel]):
 			omtaures.append((ome*taures)**0.5)
 			r1norm.append(r/r0s[sel])
 		ax.lines[sel].set_xdata(omtaures)
 		ax.lines[sel].set_ydata(r1norm)
+		plt.figure(2)
+		plt.cla()
+		kax.plot(1000./np.array(temps),konsts)
+		plt.draw()
+		plt.figure(1)
 		plt.draw()
 		diffs[sel]=dneu
 	else:
@@ -262,8 +287,8 @@ for (ome,r1,temp) in zip(sqrtoms,r1norms,temps):
 			fout.write(str(o)+' '+str(r)+'\n')
 
 with open('Jmaster_parameter.dat','w') as fout:
-	for (t,d,r) in zip(temps,diffs,r0s):
-		fout.write(str(t)+' '+str(d)+' '+str(r)+' '+str(calc_B())+'\n')
+		for (t,d,r,k) in zip(temps,diffs,r0s,konsts):
+		fout.write(str(t)+' '+str(d)+' '+str(r)+' '+str(calc_B())+' '+str(k)+'\n')
 
 
 oksdfj=raw_input('ente')

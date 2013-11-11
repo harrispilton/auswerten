@@ -16,7 +16,7 @@ def calc_B():
 	h_quer = 6.626e-34/(2.*np.pi)
 	gamma_H=2.675e8#/2/np.pi
 	N_a=6.022e23
-	n_H=5.0
+	n_H=8.0
 	rho=rho_Glyzerin=1.26*1e6
 	M=M_Glyzerin=92.09
 	N=n_H*N_a*rho/M

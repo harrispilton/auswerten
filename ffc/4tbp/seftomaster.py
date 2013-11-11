@@ -84,12 +84,14 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
+		if liste[0]=='#' or float(liste[3])>100: pass
+		else:
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		brlx.append(float(liste[0])*1e6)
-		chi.append(float(liste[2])*brlx[-1])
-		percerr.append(float(liste[3]))
-		zone.append(int(liste[5]))
-		relativefile.append(liste[6])
+			brlx.append(float(liste[0])*1e6)
+			chi.append(float(liste[2])*brlx[-1])
+			percerr.append(float(liste[3]))
+			zone.append(int(liste[5]))
+			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
 	print 'filename: '+filename
