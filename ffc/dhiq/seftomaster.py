@@ -31,11 +31,11 @@ omega=np.logspace(-3,1.5,200,10)
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logK_dd',value=8.0,min=7,max=10)
+params.add('logK_dd',value=9.0,min=8,max=10)
 params.add('K_dd',expr='(10.0**logK_dd)')
 params.add('logtau',value=-6.0,min=-12,max=3)
 params.add('tau',expr='(10.0**logtau)')
-params.add('beta',value=0.5,vary=False,min=0.1,max=1.0)
+params.add('beta',value=0.12,vary=False,min=0.1,max=1.0)
 
 
 #plt.figure(2)
@@ -84,11 +84,14 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		brlx.append(float(liste[0])*1e6*2.*np.pi)
-		chi.append(float(liste[2])*brlx[-1])
-		percerr.append(float(liste[3]))
-		zone.append(int(liste[5]))
-		relativefile.append(liste[6])
+		if liste[0]=='#' or float(liste[2])<0.003:
+			pass
+		else:
+			brlx.append(float(liste[0])*1e6*2.*np.pi)
+			chi.append(float(liste[2])*brlx[-1])
+			percerr.append(float(liste[3]))
+			zone.append(int(liste[5]))
+			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
 	print 'filename: '+filename
@@ -136,7 +139,7 @@ while True:
 ks=[]
 for i in seti:
 	brlxs[i]=np.array(brlxs[i])
-	k,tau,beta=1e-5,2e-6,0.5
+	k,tau,beta=1e-5,2e-6,0.12
 	out = minimize(residual, params,args=(brlxs[i],chis[i]),method=('leastsq'))
 	result=brlxs[i]+out.residual
 	fit = residual(params,brlxs[i])

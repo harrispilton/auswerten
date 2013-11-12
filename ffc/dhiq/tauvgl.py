@@ -16,10 +16,10 @@ plt.figure(1)
 ax=plt.axes([0.1,0.1,0.8,0.8])
 
 params=Parameters()
-params.add('tau0',value=-12,min=-14,max=-11)
-params.add('a',value=-7.0,min=-8.5,max=-6)
-params.add('einf',value=1850,min=1500,max=5000)
-def vft():
+params.add('tau0',value=-13.2,min=-14,max=-12)
+params.add('a',value=-7.1,min=-8.5,max=-6.0)
+params.add('einf',value=1900,min=1500,max=5000)
+def vft(temp,tau0,einf,a):
 	return -tau0+(a*(1.+np.exp(-6.2*(-1.+0.004269*temp))))/temp
 def schmidtkeformel(temp,tau0,einf,a):
 	return (tau0+((1.+np.exp(a*(-1.+(np.pi**2.*temp)/einf)))*einf)/(temp*np.log(10)))
@@ -56,7 +56,7 @@ with open('externe_daten/ds_tau.dat','r') as extauin:
 	dstemp=[]
 	for i in range(0,zk.__len__()):
 		liste=zk[i].split()
-		dstemp.append(float(liste[0])+11.1)
+		dstemp.append(float(liste[0]))
 		dstau.append(float(liste[1]))
 
 
@@ -78,9 +78,9 @@ for i in range(0,dstau.__len__()):
 #for i in range(0,ls1temp.__len__()):
 #	mytau.append(ls1tau[i])
 #	mytemp.append(ls1temp[i])
-for i in range(0,ls2temp.__len__()):
-	mytau.append(ls2tau[i])
-	mytemp.append(ls2temp[i])
+#for i in range(0,ls2temp.__len__()):
+#	mytau.append(ls2tau[i])
+#	mytemp.append(ls2temp[i])
 abstand=[]
 mytemp2=sorted(mytemp)
 for i in range(0,mytemp.__len__()-1):
@@ -89,7 +89,7 @@ abstand.append(abstand[-1])
 #print abstand
 
 #minimize(residuals,params,args=(np.array(mytemp),np.array(mytau),np.array(abstand)))
-minimize(residuals,params,args=(np.array(mytemp),np.array(mytau)))
+minimize(residuals,params,args=(np.array(mytemp),np.array(mytau),0.2))
 fit=residuals(params,np.array(sorted(mytemp)))
 print report_errors(params)
 ax.plot(sorted(mytemp),fit,label='fit')
