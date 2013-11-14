@@ -56,7 +56,7 @@ with open('externe_daten/ds_tau.dat','r') as extauin:
 	dstemp=[]
 	for i in range(0,zk.__len__()):
 		liste=zk[i].split()
-		dstemp.append(float(liste[0]))
+		dstemp.append(float(liste[0])+12.6)
 		dstau.append(float(liste[1]))
 
 

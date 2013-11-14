@@ -1,0 +1,15 @@
+##TITLE= Parameter file, XWIN-NMR		Version 3.6
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##ORIGIN= UXNMR, Bruker Analytische Messtechnik GmbH
+##OWNER= roessler
+$$ Fri Aug  9 13:54:51 2013 CEST (UT+2h)  max@btprxf
+$$ /opt/xwinnmr/data/max/nmr/otp/62/pdata/1//outd
+##$CURPLOT= <hp7550a>
+##$CURPRIN= <qwerty>
+##$DFORMAT= <normdp>
+##$LAYOUT= <~/Stacked2HPMMA.xwp>
+##$LFORMAT= <normlp>
+##$PFORMAT= <normpl>
+##$SURQMSG= 0 
+##END=

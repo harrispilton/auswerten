@@ -1,0 +1,16 @@
+##TITLE= Audit trail, XWIN-NMR		Version 3.6
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= max
+$$ /opt/xwinnmr/data/max/nmr/otp/68/audita.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, WHAT)
+(   1,<2013-08-18 22:07:38.67 +0200>,<max>,<btprxf>,
+      <continue with go, POWCHK disabled, PULCHK disabled
+       configuration hash MD5:
+       04 6C 92 DA 30 69 17 1B 70 4B 1E A7 F8 AD E0 25
+       data hash MD5: 256 * 3
+       4B 48 DC 61 9C E2 F9 B5 2D EE 6B 31 88 1C 43 D8>)
+##END=
+
+$$ hash MD5
+$$ CC 33 5C 20 4D 68 E0 EF 9A 26 36 AD A4 B2 C1 1A

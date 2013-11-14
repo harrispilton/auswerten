@@ -1,0 +1,402 @@
+1/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 16384
+	pulse in mus 0 6.2 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+10/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 16384
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+11/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+12/acqus
+	number of scans ##$NS= 32
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+13/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 1024
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.0002 1.5e-05 5e-07 0.001 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 
+
+14/acqus
+	number of scans ##$NS= 32
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+15/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 1024
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.0002 1.5e-05 5e-07 0.001 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 
+
+16/acqus
+	number of scans ##$NS= 8192
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+17/acqus
+	number of scans ##$NS= 32
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+18/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 1024
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.0002 1.5e-05 5e-07 0.001 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 
+
+19/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.0001 1.5e-05 5e-07 0.001 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 
+
+2/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+20/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+21/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.003 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+22/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 20 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+23/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.003 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+24/acqus
+	number of scans ##$NS= 16
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+25/acqus
+	number of scans ##$NS= 8192
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+26/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+27/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+28/acqus
+	number of scans ##$NS= 8192
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+29/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+3/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 16384
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+30/acqus
+	number of scans ##$NS= 15360
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+32/acqus
+	number of scans ##$NS= 4096
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+33/acqus
+	number of scans ##$NS= 16
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.15 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+34/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+35/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 16384
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+36/acqus
+	number of scans ##$NS= 1024
+	time ##$TD= 4096
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+37/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 1024
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.15 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+38/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+39/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 1024
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+4/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 16384
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+40/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 1e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+41/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 1024
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+42/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 1024
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+43/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+44/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 16384
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+45/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+46/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 16384
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+47/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 11.7 
+	delays in s 1e-07 1 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+48/acqus
+	number of scans ##$NS= 32
+	time ##$TD= 16384
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+49/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 32768
+	pulse in mus 0 5 5 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+5/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+50/acqus
+	number of scans ##$NS= 256
+	time ##$TD= 65536
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 11.7 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+51/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 16384
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+52/acqus
+	number of scans ##$NS= 256
+	time ##$TD= 65536
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 11.7 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+53/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 16384
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+54/acqus
+	number of scans ##$NS= 256
+	time ##$TD= 65536
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 11.7 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+55/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 16384
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+56/acqus
+	number of scans ##$NS= 256
+	time ##$TD= 65536
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 11.7 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+57/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 16384
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+58/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 1024
+	pulse in mus 0 5 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 4e-05 5e-07 0.001 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+59/acqus
+	number of scans ##$NS= 256
+	time ##$TD= 65536
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 11.7 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+6/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 16384
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+60/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 16384
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+61/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 1024
+	pulse in mus 0 5 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 4e-05 5e-07 0.001 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+62/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 16384
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+63/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 16384
+	pulse in mus 0 5 10 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 4e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+64/acqus
+	number of scans ##$NS= 32
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+65/acqus
+	number of scans ##$NS= 32
+	time ##$TD= 256
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+66/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 256
+	pulse in mus 0 2.8 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+67/acqus
+	number of scans ##$NS= 64
+	time ##$TD= 256
+	pulse in mus 0 2.8 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+68/acqus
+	number of scans ##$NS= 224
+	time ##$TD= 256
+	pulse in mus 0 2.8 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.2 1.5e-05 5e-07 0.01 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 
+
+7/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+
+8/acqus
+	number of scans ##$NS= 8
+	time ##$TD= 16384
+	pulse in mus 0 2.9 5.6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 1 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 0 
+
+9/acqus
+	number of scans ##$NS= 128
+	time ##$TD= 65536
+	pulse in mus 0 2.9 6 3 0 0 0 0 0 0 0 0 0 0 0 1500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+	delays in s 1e-07 0.5 3e-05 5e-07 2e-05 1.5e-05 0 0 0 0 0 0.03 0 0 0 0 0 0 0 0 0 0 
+

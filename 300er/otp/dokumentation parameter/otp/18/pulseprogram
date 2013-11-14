@@ -1,0 +1,67 @@
+# 1 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/t1_satrec.max"
+; t1_satrec.micko
+; T1 saturation recovery sequence
+; 
+; 2009 B. Micko
+
+# 1 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/preamp.incl" 1
+;preamp.incl
+;preamp protection in HFs instrument
+
+
+
+# 6 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/t1_satrec.max" 2
+
+# 1 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/observe.incl" 1
+;observe.incl
+;sets SE451 receiver to appropriate reference frequency
+
+
+
+# 7 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/t1_satrec.max" 2
+
+# 1 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/trigg.incl" 1
+
+                1u setnmr5^13
+# 8 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/t1_satrec.max" 2
+
+# 1 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/powswi.incl" 1
+;powswi.incl
+
+
+
+
+
+
+
+
+
+# 9 "/opt/xwinnmr/exp/bjoern/nmr/lists/pp/t1_satrec.max" 2
+
+
+
+
+
+  10u pl1:f1		
+1 20m ze         
+2 d1
+3 d4
+   (p1 ph3):f1     		; saturation
+  lo to 3 times l0
+  vd				; T1 delay
+   (p1 ph1):f1    		; first echo pulse
+  d2   
+   (p1 ph2):f1     		; second echo pulse
+
+  go=2 ph31			; start ADC and repeat 
+ 
+  300m wr #0 if #0 ivd ze 	; save data in current data set
+  lo to 2 times td1 		; repeat td1 times
+exit
+
+ph0= 0				; Referenzphase fuer Acquisition (nur dig.)
+ph3= 0				; Puls in der Saettigungsfolge 
+
+ph1 = 1 1 2 2 3 3 0 0		; Erster Echopuls 
+ph2 = 0 2 1 3 2 0 3 1		; Zweiter Echopuls
+ph31= 0 0 1 1 2 2 3 3 		; Receiverphase

@@ -1,0 +1,36 @@
+##TITLE= Parameter file, XWIN-NMR		Version 3.6
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= max
+$$ Mon Sep 23 10:58:19 2013 CEST (UT+2h)  max@btprxf
+$$ /opt/xwinnmr/data/max/nmr/otp/5/pdata/992/t1par
+##$BIGDEL= 100
+##$CALCDN= yes
+##$COMPNO= 2
+##$CONV= 1e-05
+##$CURSOR= 1
+##$DRIFT= 5
+##$EDGUESS= 0
+##$EDPARM= 0
+##$FCTTYPE= 4
+##$FITTYPE= 0
+##$GAMM= 10000
+##$GRADIEN= 1
+##$GUESSES= (0..23)
+0.75 10 0.25 100 1 1 1 1 1 1 1 1 0.1 1 0.1 10 1 1 1 1 1 1 1 1 
+##$INC= 1
+##$LISTINC= 0.001
+##$LISTTYP= <vdlist>
+##$LITDEL= 10
+##$NUMPNTS= 30
+##$NUMTERM= 2
+##$PARM= (0..11)
+1.08828353160389 9.77090277472505 0.0385139671814942 213002799785681 0 
+0 0 0 0 0 0 0 
+##$START= 1
+##$X_END= 30
+##$X_START= 1
+##$Y_END= 2.786823e+08
+##$Y_START= 0
+##END=

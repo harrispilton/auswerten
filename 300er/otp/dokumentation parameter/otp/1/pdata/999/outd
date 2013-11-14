@@ -1,0 +1,15 @@
+##TITLE= Parameter file, XWIN-NMR		Version 3.6
+##JCAMPDX= 5.0
+##DATATYPE= Parameter Values
+##ORIGIN= UXNMR, Bruker Analytische Messtechnik GmbH
+##OWNER= roessler
+$$ Mon Jan 14 15:28:54 2013 CET (UT+1h)  poetzschner@btprxf
+$$ /opt/xwinnmr/data/poetzschner/nmr/dendrimerG3/1/pdata/1//outd
+##$CURPLOT= <hp7550a>
+##$CURPRIN= <qwerty>
+##$DFORMAT= <normdp>
+##$LAYOUT= <~/Stacked2HPMMA.xwp>
+##$LFORMAT= <normlp>
+##$PFORMAT= <normpl>
+##$SURQMSG= 0 
+##END=

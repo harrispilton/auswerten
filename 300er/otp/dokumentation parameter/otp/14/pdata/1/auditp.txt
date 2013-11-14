@@ -1,0 +1,61 @@
+##TITLE= Audit trail, XWIN-NMR		Version 3.6
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= max
+$$ /opt/xwinnmr/data/max/nmr/otp/14/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, WHAT)
+(   1,<2013-05-28 14:51:25.18 +0200>,<max>,<btprxf>,
+      <created by zg, POWCHK disabled, PULCHK disabled
+       configuration hash MD5:
+       FA 6D 1C 40 D1 FD 04 EB A8 2B 47 5E 85 8B 35 68
+       data hash MD5: 64K
+       9E 2F 6E 39 B1 E7 CC C3 11 34 19 87 BF A6 92 B2>)
+(   2,<2013-05-28 15:07:11.36 +0200>,<max>,<btprxf>,
+      <Start of raw data processing
+       ft BC_mod = 2 FT_mod = 6 PKNL = 1 SI = 2K 
+       data hash MD5: 2K
+       06 B3 C1 4B A8 F7 79 33 1E A7 0F 5C BF A8 CE FE>)
+(   3,<2013-05-28 15:08:01.06 +0200>,<max>,<btprxf>,
+      <pk PHC0 = -66.79996 PHC1 = 0 
+       data hash MD5: 2K
+       3F B1 41 80 C4 7F 13 7E A4 A4 ED 98 E0 FC 39 62>)
+(   4,<2013-05-29 17:42:20.60 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       57 78 01 95 AB 82 F7 5F 0A B5 9F B3 F9 A1 D6 55>)
+(   5,<2013-05-29 17:42:26.58 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       5E 92 9B 04 BF 4C 64 C1 F2 2C F8 71 61 D6 17 CA>)
+(   6,<2013-05-29 17:42:27.00 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       2F FF 8B D1 B3 18 53 65 E2 0F 18 E3 59 C2 E5 08>)
+(   7,<2013-05-29 17:42:27.29 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       CC 4B 77 34 2A 83 A0 48 82 8C AB AA FE F1 C9 01>)
+(   8,<2013-05-29 17:42:27.49 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       B4 ED 7A A3 1E CE F8 4A 3C EE 25 78 1F 33 93 87>)
+(   9,<2013-05-29 17:42:27.69 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       28 15 E9 7A 78 87 EC 37 0E 57 7A 76 15 75 C9 87>)
+(  10,<2013-05-29 17:42:27.84 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       53 49 75 1C 17 EE 75 92 07 AD 9B 68 06 CA 66 98>)
+(  11,<2013-05-29 17:42:28.00 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       8F 1D 75 FA 9A 55 EB 4D 48 4D A8 CE 06 73 AA CF>)
+(  12,<2013-05-29 17:42:28.22 +0200>,<max>,<btprxf>,
+      <abs ABSG = 1 
+       data hash MD5: 2K
+       31 D4 07 7B 61 4B 0A C4 58 8C 52 C4 E2 2B 5C C4>)
+##END=
+
+$$ hash MD5
+$$ 74 CF 1A 10 74 C4 D9 1C 81 D3 6F 1A 33 C5 F9 64

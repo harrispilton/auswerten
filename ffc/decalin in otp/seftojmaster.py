@@ -41,14 +41,21 @@ def residuals(params,xdata,ydata=None):
 def get_colors():
 	return itertools.cycle(['g','b','k','c','r','m','0.6'])
 def get_markers():
-	return itertools.cycle(['o','s','v','x'])
+	markers=[]
+	for m in plt.Line2D.markers:
+		try:
+			if len(m)==1 and m !=' ' and m !='|' and m!='_' and m!='x' and m!='.' and m!=',':
+				markers.append(m)
+		except TypeError:
+			pass
+	return itertools.cycle(markers)
 
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-11.2,min=-12.05,max=-7.85)
+params.add('logD',value=-14.0,min=-14.8,max=-8.5)
 params.add('D',expr='(10.0**logD)')
 params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
@@ -82,7 +89,7 @@ plt.title(title)
 plt.xlabel(r"$\sqrt{\omega\tau_{res}}$")
 plt.ylabel(r"$R_1/R_0$")
 #plt.xscale('log')
-#plt.yscale('log')
+plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
 markers=get_markers()#itertools.cycle(['o','s','v','x'])
@@ -103,11 +110,15 @@ chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 diffs=[]
+konsts=[]
+r1norms=[]
 for filename in sef:
 	print 'filename: '+filename
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
 	for i in range(0,4): sefdata.pop(0)
+	acolor=colors.next()
+	amarker=markers.next()
 	omega=[]
 	sqrtom=[]
 	r1=[]
@@ -116,7 +127,7 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
-		if liste[0]=='#' or float(liste[3])>100:
+		if liste[0]=='#' or float(liste[2])<0.003:
 			pass
 		else:
 			omega.append(float(liste[0])*1.e6*2.*np.pi)
@@ -132,10 +143,7 @@ for filename in sef:
 #print 'relativefile: '+relativefile[1]
 #print 'zone[sef.index(filename)]' + str(zone[1])
 #print 'ZONE=\t'+str(zone[1])+'\n\n'
-	temp=sdfdata[
-		sdfdata.index(
-			'ZONE=\t'+str(zone[
-				1])+'\r\n')+7]
+	temp=sdfdata[sdfdata.index('ZONE=\t'+str(zone[1])+'\r\n')+7]
 	temp=temp[6:]
 	temp=temp.rstrip()
 	temps.append(float(temp))
@@ -147,16 +155,15 @@ for filename in sef:
 		iis.append(i)
 		ds.append(params['logD'].value)
 		derrs.append(params['logD'].stderr)
-	minni=1
+	
+	minni=-1
 	minnval=1.e90
 	for i in range(1,derrs.__len__()):
 		if derrs[i]<minnval:
 			minni=iis[i]
 			minnval=derrs[i]
-	acolor=colors.next()
-	amarker=markers.next()
 	#errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
-	plt.ylim([0,1])
+	plt.ylim([0,1.2])
 	plt.legend()
 	if i == 1:
 		pass
@@ -169,20 +176,119 @@ for filename in sef:
 		omtaures=[]
 		r1norm=[]
 		b=calc_B()
+		steigung=calc_B()*(params['D'].value**(-1.5))
+		konsts.append(params['r0']/(steigung**(2./3.)))
 		taures=(b/(params['D']**1.5*params['r0'].value))**2.
 		for (ome, r) in zip(omega,r1):
 			omtaures.append((ome*taures)**0.5)
 			r1norm.append(r/params['r0'].value)
-		ax.plot(omtaures,r1norm,label=temp+' K',marker=amarker,ms=6.0,color=acolor,linestyle='None')
+		ax.plot(omtaures,r1norm,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
 	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
 	omegas.append(omega)
 	r1s.append(r1)
-	sqrtoms.append(sqrtom)
+	sqrtoms.append(omtaures)
+	r1norms.append(r1norm)
 	taus.append(0.0)
+
+with open('D.dat','w') as fout:
+	for temp,d in zip(temps,diffs):
+		fout.write(str(temp)+' '+str(d)+'\n')
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 ax.legend()
-omtau=np.linspace(0.01,0.99,5)
+omtau=np.linspace(0.0001,0.9999,105)
 ax.plot(omtau**0.5,1.-omtau**0.5,linestyle='--',color='k',label='Modell')
 plt.draw()
+i=raw_input('next level')
+plt.figure(2)
+kax=plt.axes([0.1,0.1,0.8,0.8])
+plt.figure(1)
+with open('jmasterout/Jmaster_parameter.dat','r') as fin:
+	lines=fin.readlines()
+	diffs=[]
+	r0s=[]
+	konsts=[]
+	for line in lines:
+		liste=line.split()
+		diffs.append(float(liste[1]))
+		r0s.append(float(liste[2]))
+	for i in range(0,diffs.__len__()):
+		omtaures=[]
+		r1norm=[]
+		b=calc_B()
+		taures=(b/((10**diffs[i])**1.5*r0s[i]))**2.
+		for (ome, r) in zip(omegas[i],r1s[i]):
+			omtaures.append((ome*taures)**0.5)
+			r1norm.append(r/r0s[i])
+		ax.lines[i].set_xdata(omtaures)
+		ax.lines[i].set_ydata(r1norm)
+		steigung=calc_B()*((10**diffs[i])**(-1.5))
+		konsts.append(r0s[i]/(steigung**(2./3.)))
+		plt.draw()
+		sqrtoms[i]=omtaures
+		r1norms[i]=r1norm
+plt.figure(2)
+kax.plot(1000./np.array(temps),konsts)
+plt.draw()
+while True:
+	sel=raw_input('waehle set:  ')
+	if sel=='n':break
+	sel=int(sel)
+	print 'aktuelles r1: '+str(r0s[sel])+'\naktuelles d:  '+str(diffs[sel])
+	rod=raw_input('r oder d')
+	if rod =='r':
+		r0neu=float(raw_input('neues r0: '))
+		omtaures=[]
+		r1norm=[]
+		b=calc_B()
+		taures=(b/((10**diffs[sel])**1.5*r0neu))**2.
+		for (ome, r) in zip(omegas[sel],r1s[sel]):
+			omtaures.append((ome*taures)**0.5)
+			r1norm.append(r/r0neu)
+		ax.lines[sel].set_xdata(omtaures)
+		ax.lines[sel].set_ydata(r1norm)
+		steigung=calc_B()*((10**diffs[sel])**(-1.5))
+		konsts[sel]=(r0neu/(steigung**(2./3.)))
+		plt.figure(2)
+		plt.cla()
+		kax.plot(1000./np.array(temps),konsts)
+		plt.draw()
+		plt.figure(1)
+		plt.draw()
+		r0s[sel]=r0neu
+		sqrtoms[sel]=omtaures
+		r1norms[sel]=r1norm
+	elif rod =='d':
+		dneu=float(raw_input('neues d: '))
+		omtaures=[]
+		r1norm=[]
+		b=calc_B()
+		steigung=calc_B()*((10**dneu)**(-1.5))
+		konsts[sel]=(r0s[sel]/(steigung**(2./3.)))
+		taures=(b/((10**dneu)**1.5*r0s[sel]))**2.
+		for (ome, r) in zip(omegas[sel],r1s[sel]):
+			omtaures.append((ome*taures)**0.5)
+			r1norm.append(r/r0s[sel])
+		ax.lines[sel].set_xdata(omtaures)
+		ax.lines[sel].set_ydata(r1norm)
+		plt.figure(2)
+		plt.cla()
+		kax.plot(1000./np.array(temps),konsts)
+		plt.draw()
+		plt.figure(1)
+		plt.draw()
+		diffs[sel]=dneu
+	else:
+		pass
+for (ome,r1,temp) in zip(sqrtoms,r1norms,temps):
+	with open('jmasterout/'+str(temp)+'jmaster.dat','w') as fout:
+		fout.write(str(temp)+' '+str(temp)+'\n\n')
+		for (o,r) in zip(ome,r1):
+			fout.write(str(o)+' '+str(r)+'\n')
+
+with open('jmasterout/Jmaster_parameter.dat','w') as fout:
+		for (t,d,r,k) in zip(temps,diffs,r0s,konsts):
+			fout.write(str(t)+' '+str(d)+' '+str(r)+' '+str(calc_B())+' '+str(k)+'\n')
+
+
 oksdfj=raw_input('ente')

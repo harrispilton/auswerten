@@ -89,6 +89,7 @@ for filename in sef:
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
 		if liste[0]=='#' or float(liste[3])>50:
+			print liste
 			pass
 		else:
 			brlx.append(float(liste[0])*1e6)

@@ -1,0 +1,37 @@
+##TITLE= Audit trail, XWIN-NMR		Version 3.6
+##JCAMPDX= 5.01
+##ORIGIN= Bruker BioSpin GmbH
+##OWNER= max
+$$ /opt/xwinnmr/data/max/nmr/otp/52/pdata/1/auditp.txt
+##AUDIT TRAIL=  $$ (NUMBER, WHEN, WHO, WHERE, WHAT)
+(   1,<2013-08-07 18:02:39.86 +0200>,<max>,<btprxf>,
+      <created by zg, POWCHK disabled, PULCHK disabled
+       configuration hash MD5:
+       04 6C 92 DA 30 69 17 1B 70 4B 1E A7 F8 AD E0 25
+       data hash MD5: 64K
+       A4 CD E3 F3 74 8D 5D 15 BE 9E EC 9C 7B 6E AF F0>)
+(   2,<2013-08-08 08:30:59.25 +0200>,<max>,<btprxf>,
+      <Start of raw data processing
+       bc BC_mod = 2 SI = 16K 
+       data hash MD5: 16K
+       BB 1C 5B 6B 10 E6 68 F0 7C 1B 24 78 E5 57 D2 22>)
+(   3,<2013-08-08 08:30:59.25 +0200>,<max>,<btprxf>,
+      <ls NSP = 4 
+       data hash MD5: 16K
+       E9 AA E4 4C 59 89 6D 69 00 D3 65 0F 44 C6 8B E8>)
+(   4,<2013-08-08 08:30:59.26 +0200>,<max>,<btprxf>,
+      <em LB = 10 
+       data hash MD5: 16K
+       B5 BF D5 BE 6C A2 9C EE 1F 2F 1B C7 FA 75 E5 F8>)
+(   5,<2013-08-08 08:30:59.26 +0200>,<max>,<btprxf>,
+      <ft FT_mod = 6 PKNL = 1 SI = 16K 
+       data hash MD5: 16K
+       0F 46 1F D8 8E DF 44 D0 69 FF 41 13 E5 80 12 C2>)
+(   6,<2013-08-08 08:31:46.86 +0200>,<max>,<btprxf>,
+      <pk PHC0 = 9.999995 PHC1 = 0 
+       data hash MD5: 16K
+       99 C1 0F 16 31 58 01 B8 9F FE 8E 4F 5B 9B DB D6>)
+##END=
+
+$$ hash MD5
+$$ 8A 6D DE D5 F4 37 3B E8 54 16 E7 65 B8 CE 90 A1
