@@ -56,7 +56,7 @@ with open('externe_daten/ds_tau.dat','r') as extauin:
 	dstemp=[]
 	for i in range(0,zk.__len__()):
 		liste=zk[i].split()
-		dstemp.append(float(liste[0])+12.6)
+		dstemp.append(float(liste[0]))#+12.6)
 		dstau.append(float(liste[1]))
 
 
@@ -75,21 +75,20 @@ ax.plot(mytemp,mytau,label='FFC',marker='o',linestyle='None')
 for i in range(0,dstau.__len__()):
 	mytau.append(dstau[i])
 	mytemp.append(dstemp[i])
-#for i in range(0,ls1temp.__len__()):
-#	mytau.append(ls1tau[i])
-#	mytemp.append(ls1temp[i])
-#for i in range(0,ls2temp.__len__()):
-#	mytau.append(ls2tau[i])
-#	mytemp.append(ls2temp[i])
+for i in range(0,ls1temp.__len__()):
+	mytau.append(ls1tau[i])
+	mytemp.append(ls1temp[i])
+for i in range(0,ls2temp.__len__()):
+	mytau.append(ls2tau[i])
+	mytemp.append(ls2temp[i])
 abstand=[]
 mytemp2=sorted(mytemp)
 for i in range(0,mytemp.__len__()-1):
 	abstand.append(mytemp2[i+1]-mytemp2[i])
 abstand.append(abstand[-1])
-#print abstand
 
 #minimize(residuals,params,args=(np.array(mytemp),np.array(mytau),np.array(abstand)))
-minimize(residuals,params,args=(np.array(mytemp),np.array(mytau),0.2))
+minimize(residuals,params,args=(np.array(mytemp),np.array(mytau),.22))
 fit=residuals(params,np.array(sorted(mytemp)))
 print report_errors(params)
 ax.plot(sorted(mytemp),fit,label='fit')
@@ -104,3 +103,16 @@ ax.plot(dstemp,dstau,label='DS',marker='x',linestyle='None')
 plt.legend()
 plt.show()
 laber=raw_input('ende')
+with open('tau.dat','r') as mytauin:
+	tau=mytauin.readlines()
+	mytau=[]
+	mytemp=[]
+	for i in range(0,tau.__len__()):
+		liste=tau[i].split()
+		mytemp.append(float(liste[0]))
+		mytau.append(float(liste[1]))
+mytau=residuals(params,np.array(mytemp))
+with open('tau.dat','w') as fout:
+	for (tau,temp) in zip(mytau,mytemp):
+		print tau
+		fout.write(str(temp)+' '+str(tau)+'\n')

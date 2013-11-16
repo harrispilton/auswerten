@@ -75,6 +75,7 @@ markers=itertools.cycle(['o','s','v','x'])
 
 sefdata=[]
 temps=[]
+r1s=[]
 brlxs=[]
 chis=[]
 omegas=[]
@@ -86,6 +87,7 @@ for filename in sef:
 	for i in range(0,4): sefdata.pop(0)
 	brlx=[]
 	chi=[]
+	r1=[]
 	percerr=[]
 	zone=[]
 	relativefile=[]
@@ -95,6 +97,7 @@ for filename in sef:
 		else:
 	#	liste = re.findall(r"[\w.][\f]+",data)
 			brlx.append(float(liste[0])*1e6)
+			r1.append(float(liste[2]))
 			chi.append(float(liste[2])*brlx[-1])
 			percerr.append(float(liste[3]))
 			zone.append(int(liste[5]))
@@ -118,6 +121,7 @@ for filename in sef:
 	chis.append(chi)
 	taus.append(0.0)
 	percerrs.append(percerr)
+	r1s.append(r1)
 	#print repr(temp)
 	ax.plot(brlx,chi,
 			label=temp+' K',

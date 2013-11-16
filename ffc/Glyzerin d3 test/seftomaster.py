@@ -29,6 +29,19 @@ def J_cd(omega,tau,beta):
 	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2.)**(beta/2.)))
 def Chi_dd(omega,K_dd=1.,tau=1.,beta=0.5):
 	return omega*K_dd*(J_cd(omega,tau,beta)+4.*J_cd(2.*omega,tau,beta))
+def get_colors():
+	return itertools.cycle(['g','b','k','c','r','m','0.6'])
+def get_markers():
+	markers=[]
+	for m in plt.Line2D.markers:
+		try:
+			if len(m)==1 and m !=' ' and m !='|' and m!='_' and m!='x' and m!='.' and m!=',':
+				markers.append(m)
+		except TypeError:
+			pass
+	return itertools.cycle(markers)
+
+
 params= Parameters()
 params.add('logK_dd',value=9.0,min=8,max=10)
 params.add('K_dd',expr='(10.0**logK_dd)')
@@ -37,16 +50,6 @@ params.add('tau',expr='(10.0**logtau)')
 
 params.add('beta',value=0.9,vary=False,min=0.3,max=1.0)
 
-#K_dd=1e-9
-#beta=0.4
-#tau_alpha=1
-#omega=np.logspace(-3,1.5,200,10)
-#plt.figure(2)
-#ax=plt.axes([0.1,0.15,0.8,0.8])
-#ax.set_xscale('log')
-#ax.set_yscale('log')
-#plt.plot(omega,Chi_dd(omega))
-#plt.draw()
 #text.usetex: True
 ###
 ### variablen zuweisen ordner durchfilzen
@@ -56,8 +59,8 @@ sef=glob.glob('*K.sef')
 sef.sort()
 sdf=glob.glob('*K.sdf')
 sdf.sort()
-c=[]
-for i in np.arange(40):c.append(cm.jet(i/40.))
+#c=[]
+#for i in np.arange(40):c.append(cm.jet(i/40.))
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
@@ -69,7 +72,8 @@ plt.xscale('log')
 plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
-markers=itertools.cycle(['o','s','v','x'])
+markers=get_markers()
+colors=get_colors()
 
 sefdata=[]
 temps=[]
@@ -129,9 +133,7 @@ for filename in sef:
 	r1s.append(r1)
 	percerrs.append(percerr)
 	#print repr(temp)
-	ax.plot(brlx,chi,
-			label=temp+' K',
-			marker=markers.next(),linestyle='None')
+	ax.plot(brlx,chi,label=temp+' K',marker=markers.next(),linestyle='None',color=colors.next())
 
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 for (temp,r1,brlx) in zip(temps,r1s,brlxs):
@@ -245,7 +247,7 @@ with open('tau.dat','w') as tauout:
 for i in range(0,taus.__len__()):
 	with open('master/ma'+str(temps[i])+' K.dat','w') as fout:
 		fout.write('omegatau '+str(temps[i])+'\n\n')
-		for (om,ch) in zip(omegataus,chinorms):
+		for (om,ch) in zip(omegataus[i],chinorms[i]):
 			fout.write(str(om)+' '+str(ch)+'\n')
 
 
