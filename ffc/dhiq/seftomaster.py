@@ -48,7 +48,7 @@ params.add('K_dd',expr='(10.0**logK_dd)')
 params.add('logtau',value=-6.0,min=-12,max=3)
 params.add('tau',expr='(10.0**logtau)')
 
-params.add('beta',value=0.9,vary=False,min=0.3,max=1.0)
+params.add('beta',value=0.9,vary=True,min=0.03,max=1.0)
 
 #text.usetex: True
 ###
@@ -140,12 +140,12 @@ for filename in sef:
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 for (temp,r1,brlx) in zip(temps,r1s,brlxs):
 	with open('r1/ra'+str(temp)+'.dat','w') as fout:
-		fout.write('nu in mhz '+str(temp)+' K\n\n')
+		fout.write('nu(mhz) '+str(temp)+'K\n\n')
 		for (r,b) in zip(r1,brlx):
 			fout.write(str(b/1.e6)+' '+str(r)+'\n')
 for (temp,chi,brlx) in zip(temps,chis,brlxs):
 	with open('chi/chi'+str(temp)+'.dat','w') as fout:
-		fout.write('nu in mhz '+str(temp)+' K\n\n')
+		fout.write('nu(mhz) '+str(temp)+'K\n\n')
 		for (c,b) in zip(chi,brlx):
 			fout.write(str(b/1.e6)+' '+str(c)+'\n')
 ax.legend()
@@ -184,7 +184,7 @@ with open('tau.dat','r') as tauin:
 		for i in range(0,lines.__len__()):
 			liste=lines[i].split()
 			taus[i]=float(liste[1])
-			ax.lines[i].set_xdata([brlx*10**taus[i]/beta for brlx in brlxs[i]])
+			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
 		plt.autoscale()
 		plt.draw()
 	else: a=raw_input('laenge der tau stimmt nicht...')
@@ -204,7 +204,7 @@ while True:
 			beta=params['beta'].value
 			kdds[int(sel)]=float(kdd)
 			chinorms[int(sel)]=[c/float(kdd) for c in chis[int(sel)]]
-			tau=(10**float(taus[int(sel)]))/beta
+			tau=(10**float(taus[int(sel)]))
 			ax.lines[int(sel)].set_ydata(chinorms[int(sel)])
 			plt.draw()
 	except ValueError: print 'n zum beenden'
@@ -213,9 +213,6 @@ while True:
 	if sel=='b':
 		beta=float(raw_input('neues beta: '))
 		params['beta'].value=beta
-		for i in range(0,taus.__len__()):
-			omegataus[i]=[om*10**taus[i]/beta for om in omegas[i]]
-			ax.lines[i].set_xdata(omegataus[i])
 		ax.lines[taus.__len__()].set_ydata(Chi_dd(omegatau,1.,1./beta,beta))
 		plt.draw()
 	if sel=='k':
@@ -224,7 +221,7 @@ while True:
 		beta=params['beta'].value
 		for i in range(0,taus.__len__()):
 			chinorms[i]=[c/k for c in chis[i]]
-			omegataus[i]=[om*10**taus[i]/beta for om in omegas[i]]
+			omegataus[i]=[om*10**taus[i] for om in omegas[i]]
 			ax.lines[i].set_xdata(omegataus[i])
 			ax.lines[i].set_ydata(chinorms[i])
 		fit=Chi_dd(omegatau,1.,1./beta,beta)
@@ -239,7 +236,7 @@ while True:
 		beta=params['beta'].value
 		for i in range(int(minsel),int(maxsel)):
 			taus[i]=taus[i]+float(logtau)
-			ax.lines[i].set_xdata([om*10**taus[i]/beta for om in omegas[i]])
+			ax.lines[i].set_xdata([om*10**taus[i] for om in omegas[i]])
 		ax.autoscale()
 		plt.draw()
 with open('kdd.dat','w') as fout:

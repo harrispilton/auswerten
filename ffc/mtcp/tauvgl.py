@@ -33,7 +33,8 @@ for i in range(0,zk.__len__()):
 
 mytau=[]
 mytemp=[]
-mytauin=open('externe_daten/tau.txt','r')
+#mytauin=open('externe_daten/tau.txt','r')
+mytauin=open('tau.dat','r')
 tau=mytauin.readlines()
 for i in range(0,tau.__len__()):
 	liste=tau[i].split()
