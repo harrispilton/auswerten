@@ -33,12 +33,14 @@ def J_cd(omega,tau,beta):
 	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2.)**(beta/2.)))
 #def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
 #	return omega*3*K_dd*J_cd(omega,tau,beta)
-def residuals(params,xdata,ydata=None):
+def residuals(params,xdata,ydata=None,releps=None):
 	D=params['D'].value
 	r0=params['r0'].value
 	if ydata==None:
 		return R_1(xdata,r0,D)
-	return (ydata-R_1(xdata,r0,D))
+	if releps==None:
+		return (ydata-R_1(xdata,r0,D))
+	return (ydata-R_1(xdata,r0,D))*releps
 def get_colors():
 	return itertools.cycle(['g','b','k','c','r','m','0.6'])
 def get_markers():
@@ -57,7 +59,7 @@ omega=np.logspace(-3,1.5,200,10)
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-10.0,min=-14.9,max=-8.44)
+params.add('logD',value=-9.0,min=-15,max=-7.44)
 params.add('D',expr='(10.0**logD)')
 params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
@@ -91,7 +93,7 @@ plt.title(title)
 plt.xlabel(r"$\sqrt{\omega}$")
 plt.ylabel(r"$R_1$ $[s^{-1}]$")
 #plt.xscale('log')
-#plt.yscale('log')
+plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
 markers=get_markers()#itertools.cycle(['o','s','v','x'])
@@ -118,6 +120,7 @@ r0s=[]
 chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
+fits=[]
 diffs=[]
 steigungs=[]
 konsts=[]
@@ -200,15 +203,31 @@ for filename in sef:
 	brlxs.append(brlx)
 	r1s.append(r1)
 	sqrtoms.append(sqrtom)
+	fits.append(fit)
 	taus.append(0.0)
-	raw_input('next')
+	plt.draw()
 
-for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
+for i in range(0, temps.__len__()):
+	print str(i)+':   ', str(temps[i])
+	with open('diff/fitd'+str(temps[i])+'K.dat','w') as fout:
+		fout.write('sqrtom '+str(temps[i])+'K\n\n')
+		for (om,fit) in zip(sorted(sqrtoms[i]),fits[i]):
+			fout.write(str(om)+' '+str(fit)+'\n')
+	with open('diff/diff'+str(temps[i])+'K.dat','w') as fout:
+		fout.write('sqrtom '+str(temps[i])+'K\n\n')
+		for (om,r) in zip(sqrtoms[i],r1s[i]):
+			fout.write(str(om)+' '+str(r)+'\n')
+	
 ax.legend()
 
-with open('D.dat','w') as fout:
+with open('Dfit.dat','w') as fout:
 	for temp,d in zip(temps,diffs):
 		fout.write(str(temp)+' '+str(d)+'\n')
+with open('difkonsts.dat','w') as fout:
+	fout.write('T(K) D*R0\n\n')
+	for temp,k in zip(temps,konsts):
+		fout.write(str(temp)+' '+str(k)+'\n')
+		
 plt.draw()
 oksdfj=raw_input('ente')
 ##while True:
