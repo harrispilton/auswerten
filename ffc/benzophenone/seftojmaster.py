@@ -1,4 +1,4 @@
-	#!/usr/bin/python
+#!/usr/bin/python
 import glob
 import re
 import itertools
@@ -32,6 +32,15 @@ def J_cd(omega,tau,beta):
 	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2)**(beta/2.)))
 #def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
 #	return omega*3*K_dd*J_cd(omega,tau,beta)
+def difvft(T,D0,T0,B):
+	return D0*np.exp(B/(T-T0))
+def vftres(params,xdata,ydata=None):
+	B=vftparams['B'].value
+	T0=vftparams['T0'].value
+	d=vftparams['D0'].value
+	if ydata==None: 
+		return difvft(xdata,d,T0,B)
+	return (ydata-difvft(xdata,d,T0,B))
 def residuals(params,xdata,ydata=None):
 	D=params['D'].value
 	r0=params['r0'].value
@@ -54,6 +63,10 @@ omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
 #beta=0.4
 #tau_alpha=1
+vftparams=Parameters()
+vftparams.add('B',value=50,min=10,max=50)
+vftparams.add('D0',value=-18,min=-20,max=-15)#expr='10**logD0')
+vftparams.add('T0',value=50,min=-80,max=150)
 params= Parameters()
 params.add('logD',value=-14.0,min=-14.8,max=-8.5)
 params.add('D',expr='(10.0**logD)')
@@ -229,6 +242,13 @@ with open('Jmaster_parameter.dat','r') as fin:
 		r1norms[i]=r1norm
 plt.figure(2)
 kax.plot(1000./np.array(temps),konsts)
+plt.figure(3)
+dax=plt.axes([0.1,0.1,0.8,0.8])
+dax.scatter(temps,diffs)
+minimize(vftres,vftparams,args=(np.array(temps),np.array(diffs)))
+fit=vftres(vftparams,np.array(temps))
+print report_errors(vftparams)
+dax.plot(temps,fit)
 plt.draw()
 while True:
 	sel=raw_input('waehle set:  ')

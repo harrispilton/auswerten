@@ -30,15 +30,17 @@ def J_p(omega,tau):
 	return (tau/(1.+(omega*tau)**2.))
 def J_cd(omega,tau,beta):
 	a=omega*tau
-	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2)**(beta/2.)))
+	return (np.sin(beta*np.arctan(a))/(omega*(1.+a**2.)**(beta/2.)))
 #def Chi_dd(omega,K_dd=1,tau=1,beta=0.5):
 #	return omega*3*K_dd*J_cd(omega,tau,beta)
-def residuals(params,xdata,ydata=None):
+def residuals(params,xdata,ydata=None,releps=None):
 	D=params['D'].value
 	r0=params['r0'].value
 	if ydata==None:
 		return R_1(xdata,r0,D)
-	return (ydata-R_1(xdata,r0,D))
+	if releps==None:
+		return (ydata-R_1(xdata,r0,D))
+	return (ydata-R_1(xdata,r0,D))*releps
 def get_colors():
 	return itertools.cycle(['g','b','k','c','r','m','0.6'])
 def get_markers():
@@ -51,14 +53,15 @@ def get_markers():
 			pass
 	return itertools.cycle(markers)
 
+
 omega=np.logspace(-3,1.5,200,10)
 #K_dd=1e-9
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-14.0,min=-14.8,max=-8.5)
+params.add('logD',value=-9.0,min=-15,max=-8.44)
 params.add('D',expr='(10.0**logD)')
-params.add('logr0',value=2.,min=-1.0,max=4.)
+params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
 #params.add('logK_dd',value=8.0,min=7,max=10)
 #params.add('K_dd',expr='(10.0**logK_dd)')
@@ -117,6 +120,7 @@ r0s=[]
 chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
+fits=[]
 diffs=[]
 r1norms=[]
 fitxs=[]
@@ -176,15 +180,6 @@ for filename in sef:
 		if derrs[i]<minnval:
 			minni=iis[i]
 			minnval=derrs[i]
-	#	cminni=minni
-	#	minni=-1
-	#	delta=1.
-	#	for i in range(2,konsts.__len__()):
-	#		deltaold=delta
-	#		delta=(konsts[i-1]-konsts[i])/konsts[0]
-	#		if deltaold/abs(deltaold)!=delta/abs(delta) or deltaold/delta>10.:
-				#minni=i-1
-		
 	plt.figure(2)
 	errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
 	plt.ylim([0,1])
@@ -213,16 +208,31 @@ for filename in sef:
 	fitys.append(fit)
 	r1s.append(r1)
 	sqrtoms.append(sqrtom)
-
+	fits.append(fit)
 	taus.append(0.0)
-		
-for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
+	plt.draw()
+
+for i in range(0, temps.__len__()):
+	print str(i)+':   ', str(temps[i])
+	with open('diff/fitd'+str(temps[i])+'K.dat','w') as fout:
+		fout.write('sqrtom '+str(temps[i])+'K\n\n')
+		for (om,fit) in zip(sorted(sqrtoms[i]),fits[i]):
+			fout.write(str(om)+' '+str(fit)+'\n')
+	with open('diff/diff'+str(temps[i])+'K.dat','w') as fout:
+		fout.write('sqrtom '+str(temps[i])+'K\n\n')
+		for (om,r) in zip(sqrtoms[i],r1s[i]):
+			fout.write(str(om)+' '+str(r)+'\n')
+	
 ax.legend()
 
-with open('D.dat','w') as fout:
+with open('Dfit.dat','w') as fout:
 	for temp,d in zip(temps,diffs):
 		fout.write(str(temp)+' '+str(d)+'\n')
-
+with open('difkonsts.dat','w') as fout:
+	fout.write('T(K) D*R0\n\n')
+	for temp,k in zip(temps,konsts):
+		fout.write(str(temp)+' '+str(k)+'\n')
+		
 plt.draw()
 
 for (ome,r1,temp,xs,ys) in zip(sqrtoms,r1s,temps,fitxs,fitys):

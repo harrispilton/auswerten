@@ -122,17 +122,20 @@ omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
 fits=[]
 diffs=[]
+r1norms=[]
+fitxs=[]
+fitys=[]
 steigungs=[]
 konsts=[]
 sef.reverse()
 for filename in sef:
-	#print 'filename: '+filename
+	print 'filename: '+filename
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
 	for i in range(0,4): sefdata.pop(0)
 	acolor=colors.next()
 	amarker=markers.next()
-	brlx=[]
+	omega=[]
 	sqrtom=[]
 	r1=[]
 	percerr=[]
@@ -141,10 +144,10 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		if liste[0]=='#' or float(liste[3])>100:
+		if liste[0]=='#' or float(liste[2])<0.003:
 			pass
 		else:
-			brlx.append(float(liste[0])*1.e6*2.*np.pi)
+			omega.append(float(liste[0])*1.e6*2.*np.pi)
 			sqrtom.append((float(liste[0])*1.e6*2.*np.pi)**0.5)
 			r1.append(float(liste[2]))
 			percerr.append(float(liste[3]))
@@ -152,16 +155,13 @@ for filename in sef:
 			relativefile.append(liste[6])
 	fin2=open(relativefile[1],'r')
 	sdfdata=fin2.readlines()
-	print 'filename: '+filename
 	#wenn einzelne files fehlerhaft sind kann man es einfach durch auskommentieren der folgenden zeilen sehen
 	#print 'zone: '+str(zone)
-#print 'relativefile: '+relativefile[1]
-#print 'zone[sef.index(filename)]' + str(zone[1])
-#print 'ZONE=\t'+str(zone[1])+'\n\n'
-	temp=sdfdata[
-		sdfdata.index(
-			'ZONE=\t'+str(zone[
-				1])+'\r\n')+7]
+	#relativefile: '+relativefile[1]
+	
+	#zone[sef.index(filename)]' + str(zone[1])
+	#ZONE=\t'+str(zone[1])+'\n\n'
+	temp=sdfdata[sdfdata.index('ZONE=\t'+str(zone[1])+'\r\n')+7]
 	temp=temp[6:]
 	temp=temp.rstrip()
 	temps.append(float(temp))
@@ -200,7 +200,12 @@ for filename in sef:
 	ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
 	insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
 	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
-	brlxs.append(brlx)
+	omegas.append(omega)
+	
+
+
+	fitxs.append(sorted(sqrtom))
+	fitys.append(fit)
 	r1s.append(r1)
 	sqrtoms.append(sqrtom)
 	fits.append(fit)
@@ -229,6 +234,14 @@ with open('difkonsts.dat','w') as fout:
 		fout.write(str(temp)+' '+str(k)+'\n')
 		
 plt.draw()
+
+for (ome,r1,temp,xs,ys) in zip(sqrtoms,r1s,temps,fitxs,fitys):
+	with open(str(temp)+'diff.dat','w') as fout:
+		fout.write('messung '+str(temp)+' fit '+str(temp)+'\n\n')
+		for (o,r,x,y) in zip(ome,r1,xs,ys):
+			fout.write(str(o)+' '+str(r)+' '+str(x)+' '+str(y)+'\n')
+
+
 oksdfj=raw_input('ente')
 ##while True:
 ##	selecttofit=raw_input("waehle die datensets mit alphapeak (0-"+str(temps.__len__())+") abbrechen mit n:  ")
