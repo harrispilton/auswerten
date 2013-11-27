@@ -17,8 +17,8 @@ def calc_B():
 	gamma_H=2.675e8#/2/np.pi
 	N_a=6.022e23
 	n_H=17.0
-	rho=rho_dhiq=0.936*1e6
-	M=M_dhiq=139.24#data von http://www.chemblink.com/products/6329-61-9.htm
+	rho=rho_DHQ=0.933*1e6#quelle acros organics 
+	M=M_dhiq=139.24#quelle acros organics
 	N=n_H*N_a*rho/M
 	return np.pi/30.*(1.+4.*(2.**0.5))*(mu_0/4./np.pi * h_quer * gamma_H **2.)**2. * N
 
@@ -57,7 +57,7 @@ omega=np.logspace(-3,1.5,200,10)
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-9.0,min=-15,max=-8)
+params.add('logD',value=-9.0,min=-14.8,max=-8)
 params.add('D',expr='(10.0**logD)')
 params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
@@ -99,7 +99,7 @@ colors=get_colors()#itertools.cycle(['g','b','k','c','r','m','0.6'])
 
 insetax=plt.axes([0.4,0.7,0.2,0.2])
 plt.ylabel(r"$lg(D)$")
-plt.xlabel(r"$\frac{1000}{T}$ $[\frac{1}{K}]$")
+plt.xlabel(r"$T$ $[K]$")
 plt.xscale('linear')
 plt.yscale('linear')
 
@@ -118,6 +118,7 @@ r0s=[]
 chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
+fits=[]
 diffs=[]
 steigungs=[]
 konsts=[]
@@ -199,15 +200,31 @@ for filename in sef:
 	brlxs.append(brlx)
 	r1s.append(r1)
 	sqrtoms.append(sqrtom)
+	fits.append(fit)
 	taus.append(0.0)
-	raw_input('next')
+	plt.draw()
 
-for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
+for i in range(0, temps.__len__()):
+	print str(i)+':   ', str(temps[i])
+	with open('diff/fitd'+str(temps[i])+'K.dat','w') as fout:
+		fout.write('sqrtom '+str(temps[i])+'K\n\n')
+		for (om,fit) in zip(sorted(sqrtoms[i]),fits[i]):
+			fout.write(str(om)+' '+str(fit)+'\n')
+	with open('diff/diff'+str(temps[i])+'K.dat','w') as fout:
+		fout.write('sqrtom '+str(temps[i])+'K\n\n')
+		for (om,r) in zip(sqrtoms[i],r1s[i]):
+			fout.write(str(om)+' '+str(r)+'\n')
+	
 ax.legend()
 
-with open('D.dat','w') as fout:
+with open('Dfit.dat','w') as fout:
 	for temp,d in zip(temps,diffs):
 		fout.write(str(temp)+' '+str(d)+'\n')
+with open('difkonsts.dat','w') as fout:
+	fout.write('T(K) D*R0\n\n')
+	for temp,k in zip(temps,konsts):
+		fout.write(str(temp)+' '+str(k)+'\n')
+		
 plt.draw()
 oksdfj=raw_input('ente')
 ##while True:

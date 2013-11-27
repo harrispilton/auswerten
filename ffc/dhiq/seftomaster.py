@@ -86,7 +86,6 @@ percerrs=[]
 chinorms=[]
 omegataus=[]
 taus=[]##liste mit log10(tau_strukturrelaxation)
-kdds=[]
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
@@ -132,7 +131,6 @@ for filename in sef:
 	omegataus.append(omega)
 	taus.append(0.0)
 	r1s.append(r1)
-	kdds.append(1e9)
 	percerrs.append(percerr)
 	#print repr(temp)
 	ax.plot(brlx,chi,label=temp+' K',marker=markers.next(),linestyle='None',color=colors.next())
@@ -140,7 +138,7 @@ for filename in sef:
 for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
 for (temp,r1,brlx) in zip(temps,r1s,brlxs):
 	with open('r1/ra'+str(temp)+'.dat','w') as fout:
-		fout.write('nu(mhz) '+str(temp)+'K\n\n')
+		fout.write('nu(Mhz) '+str(temp)+'K\n\n')
 		for (r,b) in zip(r1,brlx):
 			fout.write(str(b/1.e6)+' '+str(r)+'\n')
 for (temp,chi,brlx) in zip(temps,chis,brlxs):
@@ -197,15 +195,14 @@ while True:
 	sel=raw_input("Waehle den datenset: ")
 	try: 
 		int(sel)
-		print "aktuelles kdd: "+str(kdds[int(sel)])
+		print "aktuelles log tau: "+str(taus[int(sel)])
 		while True:
-			kdd=raw_input("neues kdd: ")
-			if kdd=='n':break
+			logtau=raw_input("neues tau: ")
+			if logtau=='n':break
 			beta=params['beta'].value
-			kdds[int(sel)]=float(kdd)
-			chinorms[int(sel)]=[c/float(kdd) for c in chis[int(sel)]]
-			tau=(10**float(taus[int(sel)]))
-			ax.lines[int(sel)].set_ydata(chinorms[int(sel)])
+			tau=(10**float(logtau))
+			taus[int(sel)]=float(logtau)
+			ax.lines[int(sel)].set_xdata([om*tau for om in omegas[int(sel)]])
 			plt.draw()
 	except ValueError: print 'n zum beenden'
 	if sel=='n':
@@ -217,7 +214,6 @@ while True:
 		plt.draw()
 	if sel=='k':
 		k=float(raw_input('neues k: '))
-		params['K_dd'].value=k
 		beta=params['beta'].value
 		for i in range(0,taus.__len__()):
 			chinorms[i]=[c/k for c in chis[i]]
@@ -239,17 +235,17 @@ while True:
 			ax.lines[i].set_xdata([om*10**taus[i] for om in omegas[i]])
 		ax.autoscale()
 		plt.draw()
-with open('kdd.dat','w') as fout:
+with open('tau.dat','w') as tauout:
 	for i  in range(0,taus.__len__()):
-		fout.write(str(temps[i])+' '+str(kdds[i])+'\n')
+		tauout.write(str(temps[i])+' '+str(taus[i])+'\n')
 
 for i in range(0,taus.__len__()):
 	with open('master/ma'+str(temps[i])+' K.dat','w') as fout:
-		fout.write('omegatau '+str(temps[i])+'\n\n')
+		fout.write('omegatau '+str(temps[i])+'K\n\n')
 		for (om,ch) in zip(omegataus[i],chinorms[i]):
 			fout.write(str(om)+' '+str(ch)+'\n')
 with open('master/fit.dat','w') as fout:
-	fout.write('beta('+str(params['beta'].value)+') K_dd('+str(params['K_dd'].value)+'\n\n')
+	fout.write('beta('+str(params['beta'].value)+') K_dd('+str(chis[0][0]/chinorms[0][0])+'\n\n')
 	for (om,ch) in zip(omegatau,fit):
 		fout.write(str(om)+' '+str(ch)+'\n')
 

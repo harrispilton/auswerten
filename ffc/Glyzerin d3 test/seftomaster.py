@@ -244,6 +244,10 @@ for i in range(0,taus.__len__()):
 		fout.write('omegatau '+str(temps[i])+'K\n\n')
 		for (om,ch) in zip(omegataus[i],chinorms[i]):
 			fout.write(str(om)+' '+str(ch)+'\n')
+with open('master/fit.dat','w') as fout:
+	fout.write('beta('+str(params['beta'].value)+') K_dd('+str(chis[0][0]/chinorms[0][0])+'\n\n')
+	for (om,ch) in zip(omegatau,fit):
+		fout.write(str(om)+' '+str(ch)+'\n')
 
 
 ax.xlabel=(r'$\omega \tau$')
