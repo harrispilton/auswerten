@@ -44,18 +44,46 @@ rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5),label='CSA',co
 rateax.plot(tau,1./R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[0],ls='-.')
 #rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
 
+with open('jplot2/nu121.49ges.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
+with open('jplot2/nu121.49csa.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
+with open('jplot2/nu121.49dd.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
 nu=121.49e5
 rateax.plot(tau,1./R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5),label=r'$\nu = 12.149 MHz$',lw=2.0,color=c[2])
 rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5),label='CSA',color=c[2],ls='-')
 rateax.plot(tau,1./R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[2],ls='-.')
 #rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
 
+with open('jplot2/nu12.149ges.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
+with open('jplot2/nu12.149csa.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
+with open('jplot2/nu12.149dd.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
 
 nu=121.49e7
 rateax.plot(tau,1./R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5),label=r'$\nu = 1.2149 GHz$',lw=2.0,color=c[8])
 rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5),label='CSA',color=c[8],ls='-')
 rateax.plot(tau,1./R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[8],ls='-.')
 #rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
+
+with open('jplot2/nu1214.9ges.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
+with open('jplot2/nu1214.9csa.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
+with open('jplot2/nu1214.9dd.dat','w') as fout:
+	for t in tau:
+		fout.write(str(t)+' '+str(R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
 
 plt.legend()
 
