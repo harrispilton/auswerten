@@ -45,13 +45,13 @@ rateax.plot(nu,R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5),label='CSA',color=
 rateax.plot(nu,R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[0],ls='-.')
 with open('jplot/tau-11-r1ges.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_ges(n*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
 with open('jplot/tau-11-r1csa.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_CSA(n*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
 with open('jplot/tau-11-r1dd.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_DD(n*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
 
 
 
@@ -64,13 +64,13 @@ rateax.plot(nu,R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[2],ls='-.'
 #rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
 with open('jplot/tau-9-r1ges.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_ges(n*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
 with open('jplot/tau-9-r1csa.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_CSA(n*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
 with open('jplot/tau-9-r1dd.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_DD(n*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
 
 
 
@@ -81,13 +81,13 @@ rateax.plot(nu,R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5),label='DD',color=c[8],ls='-.'
 #rateax.plot(tau,1./R1_CSA(nu*2*np.pi,tau,delta_sigma_ppm),label='beta=1',color=c[3])
 with open('jplot/tau-8-r1ges.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_ges(nu*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_ges(n*2*np.pi,tau/0.5,1.2e9,delta_sigma_ppm,0.5))+'\n')
 with open('jplot/tau-8-r1csa.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_CSA(nu*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_CSA(n*2*np.pi,tau/0.5,delta_sigma_ppm,0.5))+'\n')
 with open('jplot/tau-8-r1dd.dat','w') as fout:
 	for n in nu:
-		fout.write(str(n)+' '+str(R1_DD(nu*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
+		fout.write(str(n)+' '+str(R1_DD(n*2*np.pi,tau/0.5,1.2e9,0.5))+'\n')
 
 
 
