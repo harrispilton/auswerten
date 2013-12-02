@@ -39,10 +39,10 @@ markers = itertools.cycle(['o','s','v'])
 files=glob.glob('otp/solidecho/'+'*K.dat')
 files.sort()
 ### in fitgrenzen.dat stehen nur grenzen fuer temperaturen groesser 260K, unter dieser temperatur gibt es keine lorentzlinie mehr. daher ist darauf zu achten dass diese auch nicht eingelesen werden (2zeilen drueber. man kann die  files auskommentieren durch anhaengen 2er rauten im entsprechenden ordner.
-with open('otp/solidecho/fitgrenzen.dat','r') as grin:
+with open('otp/solidecho/fitgrenzen.dat','r') as fin:
 	freqmins=[]
 	freqmaxs=[]
-	lines=grin.readlines()
+	lines=fin.readlines()
 	for line in lines:
 		liste=line.split()
 		freqmins.append(float(liste[1]))
@@ -61,6 +61,8 @@ freqs=[]
 betrags=[]
 temps=[]
 fittemps=[]
+fitxs=[]
+fitys=[]
 t2s=[]
 areas=[]
 for (data,frmin,frmax) in zip(files,freqmins,freqmaxs):
@@ -112,6 +114,8 @@ for (data,frmin,frmax) in zip(files,freqmins,freqmaxs):
 		out = minimize(residual, params,args=(freq2,betrag2))
 		result=freq2+out.residual
 		fit = residual(params, np.array(freq))
+		fitxs.append(freq)
+		fitys.append(fit)
 		print report_errors(params)
 		ax.plot(freq,fit,label=str(temps[-1])+' Fit')
 		plt.legend()
@@ -129,7 +133,7 @@ for (data,frmin,frmax) in zip(files,freqmins,freqmaxs):
 
 	
 	
-	sdfo=raw_input('next')
+	#sdfo=raw_input('next')
 plt.figure(3)
 arax=plt.axes([0.1,0.1,0.8,0.8])
 plt.xlabel('T [K]')
@@ -138,6 +142,15 @@ arax.plot(temps,areas)
 with open('otp_T2.dat','w') as fout: 
 	for i in range(0,t2s.__len__()):
 		fout.write(str(fittemps[i])+' '+str(t2s[i])+'\n')
+for i in range(0,fittemps.__len__()):
+	with open('auswsolidecho/sedat'+str(fittemps[i])+'.dat','w') as fout:
+		for (f,b) in zip(freqs[i],betrags[i]):
+			fout.write(str(f)+' '+str(b)+'\n')
+	with open('auswsolidecho/sefit'+str(fittemps[i])+'.dat','w') as fout:
+		for (f,b) in zip(fitxs[i],fitys[i]):
+			fout.write(str(f)+' '+str(b)+'\n')
+		
+		
 #	print type(freq), type(betrag), type(p0), type(p0[0])
 #	fitpars, covmat = curve_fit(
 #			Lorentz,
