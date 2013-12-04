@@ -99,7 +99,7 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
-		if liste[0]=='#' or float(liste[2])<0.003:
+		if liste[0]=='#' or float(liste[1])<0.003:
 			pass
 		else:
 			brlx.append(float(liste[0])*1.e6)
@@ -162,27 +162,27 @@ while True:
 		seti.pop()
 		break
 ks=[]
-for i in seti:
-	brlxs[i]=np.array(brlxs[i])
-	k,tau,beta=1e-5,2e-6,0.9
-	out = minimize(residual, params,args=(brlxs[i],chis[i],percerrs[i]),method=('leastsq'))
-	result=brlxs[i]+out.residual
-	fit = residual(params,brlxs[i])
-	ks.append(params['K_dd'].value)
-	print params['beta'].value
-	print params['tau'].value
+#for i in seti:
+#	brlxs[i]=np.array(brlxs[i])
+#	k,tau,beta=1e-5,2e-6,0.9
+#	out = minimize(residual, params,args=(brlxs[i],chis[i],percerrs[i]),method=('leastsq'))
+#	result=brlxs[i]+out.residual
+#	fit = residual(params,brlxs[i])
+#	ks.append(params['K_dd'].value)
+#	print params['beta'].value
+#	print params['tau'].value
 ####Uebereinanderschieben der Daten:
 ####die taus koennen von Hand eingegben werden,
 ####die Strukturrelaxationszeiten werden logarithmisiert in
 ####einer Liste abgelegt
 with open('tau.dat','r') as tauin:
 	lines=tauin.readlines()
+	k=1.e9
 	if lines.__len__()==taus.__len__():
-		beta=params['beta'].value
 		for i in range(0,lines.__len__()):
 			liste=lines[i].split()
 			taus[i]=float(liste[1])
-			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
+			ax.lines[i].set_xdata([om*10**taus[i] for om in omegas[i]])
 		plt.autoscale()
 		plt.draw()
 	else: a=raw_input('laenge der tau stimmt nicht...')
@@ -200,9 +200,10 @@ while True:
 			logtau=raw_input("neues tau: ")
 			if logtau=='n':break
 			beta=params['beta'].value
-			tau=(10**float(logtau))
 			taus[int(sel)]=float(logtau)
-			ax.lines[int(sel)].set_xdata([om*tau for om in omegas[int(sel)]])
+			chinorms[int(sel)]=[c/k for c in chis[int(sel)]]
+			omegataus[int(sel)]=[om*10**taus[int(sel)] for om in omegas[int(sel)]]
+			ax.lines[int(sel)].set_xdata(omegataus[int(sel)])
 			plt.draw()
 	except ValueError: print 'n zum beenden'
 	if sel=='n':
@@ -214,13 +215,12 @@ while True:
 		plt.draw()
 	if sel=='k':
 		k=float(raw_input('neues k: '))
-		beta=params['beta'].value
 		for i in range(0,taus.__len__()):
 			chinorms[i]=[c/k for c in chis[i]]
 			omegataus[i]=[om*10**taus[i] for om in omegas[i]]
 			ax.lines[i].set_xdata(omegataus[i])
 			ax.lines[i].set_ydata(chinorms[i])
-		fit=Chi_dd(omegatau,1.,1./beta,beta)
+		fit=Chi_dd(omegatau,1.,1./params['beta'].value,params['beta'].value)
 		ax.lines[taus.__len__()].set_ydata(fit)
 		plt.autoscale()
 		plt.draw()
@@ -244,6 +244,10 @@ for i in range(0,taus.__len__()):
 		fout.write('omegatau '+str(temps[i])+'K\n\n')
 		for (om,ch) in zip(omegataus[i],chinorms[i]):
 			fout.write(str(om)+' '+str(ch)+'\n')
+with open('master/fit.dat','w') as fout:
+	fout.write('beta('+str(params['beta'].value)+') K_dd('+str(chis[0][0]/chinorms[0][0])+'\n\n')
+	for (om,ch) in zip(omegatau,fit):
+		fout.write(str(om)+' '+str(ch)+'\n')
 
 
 ax.xlabel=(r'$\omega \tau$')

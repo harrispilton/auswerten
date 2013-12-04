@@ -240,7 +240,7 @@ with open('tau.dat','w') as tauout:
 		tauout.write(str(temps[i])+' '+str(taus[i])+'\n')
 
 for i in range(0,taus.__len__()):
-	with open('master/ma'+str(temps[i])+' K.dat','w') as fout:
+	with open('master/internma'+str(temps[i])+' K.dat','w') as fout:
 		fout.write('omegatau '+str(temps[i])+'K\n\n')
 		for (om,ch) in zip(omegataus[i],chinorms[i]):
 			fout.write(str(om)+' '+str(ch)+'\n')

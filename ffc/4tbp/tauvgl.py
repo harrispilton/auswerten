@@ -68,16 +68,16 @@ with open('tau.dat','r') as mytauin:
 		liste=tau[i].split()
 		mytemp.append(float(liste[0]))
 		mytau.append(float(liste[1]))
-with open('D.dat','r') as din:
-	lines=din.readlines()
-	myd=[]
-	dtemp=[]
-	for line in lines:
-		liste = line.split()
-		dtemp.append(float(liste[0]))
-		myd.append(np.log10(1./(10.**float(liste[1]))*dtemp[-1]*1.5e-26))
+#with open('D.dat','r') as din:
+#	lines=din.readlines()
+#	myd=[]
+#	dtemp=[]
+#	for line in lines:
+#		liste = line.split()
+#		dtemp.append(float(liste[0]))
+#		myd.append(np.log10(1./(10.**float(liste[1]))*dtemp[-1]*1.5e-26))
 ax.plot(mytemp,mytau,label='FFC',marker='o',linestyle='None')
-ax.plot(dtemp,myd,marker='v',ls='None',label='d')
+#ax.plot(dtemp,myd,marker='v',ls='None',label='d')
 ###die eigenen taus sind gemalt, jetzt fuehre alle taus und temps zusammen und fitte diese liste
 #mytau=[]
 #mytemp=[]
@@ -87,9 +87,9 @@ ax.plot(dtemp,myd,marker='v',ls='None',label='d')
 for i in range(0,ls1temp.__len__()):
 	mytau.append(ls1tau[i])
 	mytemp.append(ls1temp[i])
-for (d,t) in zip(myd,dtemp):
-	mytau.append(d)
-	mytemp.append(t)
+#for (d,t) in zip(myd,dtemp):
+	#mytau.append(d)
+	#mytemp.append(t)
 #for i in range(0,ls2temp.__len__()):
 #	mytau.append(ls2tau[i])
 #	mytemp.append(ls2temp[i])
@@ -105,7 +105,7 @@ fit=residuals(params,np.array(sorted(mytemp)))
 print report_errors(params)
 ax.plot(sorted(mytemp),fit,label='fit')
 #ax.plot(sorted(mytemp),schmidtkeformel(np.array(sorted(mytemp)),-13,1850,-7),label='schmidtkeformel')
-ax.plot(ls1temp,ls1tau,label='LS1',marker='^',linestyle='None')
+ax.plot(ls1temp,ls1tau,label='DS',marker='^',linestyle='None')
 #ax.plot(ls2temp,ls2tau,label='LS2',marker='v',ls='None')
 #ax.plot(dstemp,dstau,label='DS',marker='x',linestyle='None')
 ##temp=np.linspace(200,400,100)

@@ -99,7 +99,7 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
-		if liste[0]=='#' or float(liste[2])<0.003:
+		if liste[0]=='#' or float(liste[1])<0.003:
 			pass
 		else:
 			brlx.append(float(liste[0])*1.e6)
@@ -244,6 +244,10 @@ for i in range(0,taus.__len__()):
 		fout.write('omegatau '+str(temps[i])+'K\n\n')
 		for (om,ch) in zip(omegataus[i],chinorms[i]):
 			fout.write(str(om)+' '+str(ch)+'\n')
+with open('master/fit.dat','w') as fout:
+	fout.write('beta('+str(params['beta'].value)+') K_dd('+str(chis[0][0]/chinorms[0][0])+'\n\n')
+	for (om,ch) in zip(omegatau,fit):
+		fout.write(str(om)+' '+str(ch)+'\n')
 
 
 ax.xlabel=(r'$\omega \tau$')

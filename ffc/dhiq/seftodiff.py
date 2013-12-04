@@ -91,7 +91,7 @@ plt.title(title)
 plt.xlabel(r"$\sqrt{\omega}$")
 plt.ylabel(r"$R_1$ $[s^{-1}]$")
 #plt.xscale('log')
-#plt.yscale('log')
+plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
 markers=get_markers()#itertools.cycle(['o','s','v','x'])

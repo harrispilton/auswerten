@@ -49,7 +49,6 @@ def get_markers():
 				markers.append(m)
 		except TypeError:
 			pass
-	print markers
 	return itertools.cycle(markers)
 
 omega=np.logspace(-3,1.5,200,10)
@@ -57,9 +56,9 @@ omega=np.logspace(-3,1.5,200,10)
 #beta=0.4
 #tau_alpha=1
 params= Parameters()
-params.add('logD',value=-11.2,min=-12.07,max=-8.58)
+params.add('logD',value=-10.0,min=-13.8,max=-9.1)
 params.add('D',expr='(10.0**logD)')
-params.add('logr0',value=2.,min=-1.0,max=4.)
+params.add('logr0',value=2.,min=-2.5,max=4.)
 params.add('r0',expr='(10.0**logr0)')
 #params.add('logK_dd',value=8.0,min=7,max=10)
 #params.add('K_dd',expr='(10.0**logK_dd)')
@@ -86,12 +85,12 @@ sdf.sort()
 plt.ion()
 plt.figure(1)
 ax=plt.axes([0.1,0.1,0.85,0.85])
-title='cis/transdecalin'#raw_input("enter plot title: ")
+title='Diffusion und so'#raw_input("enter plot title: ")
 plt.title(title)
 plt.xlabel(r"$\sqrt{\omega}$")
 plt.ylabel(r"$R_1$ $[s^{-1}]$")
 #plt.xscale('log')
-#plt.yscale('log')
+plt.yscale('log')
 axcolor = 'lightgoldenrodyellow'
 
 markers=get_markers()#itertools.cycle(['o','s','v','x'])
@@ -99,7 +98,7 @@ colors=get_colors()#itertools.cycle(['g','b','k','c','r','m','0.6'])
 
 insetax=plt.axes([0.4,0.7,0.2,0.2])
 plt.ylabel(r"$lg(D)$")
-plt.xlabel(r"$\frac{1000}{T}$ $[\frac{1}{K}]$")
+plt.xlabel(r"$T$ $[K]$")
 plt.xscale('linear')
 plt.yscale('linear')
 
@@ -118,8 +117,11 @@ r0s=[]
 chis=[]
 omegas=[]
 taus=[]##liste mit log10(tau_strukturrelaxation
+fits=[]
 diffs=[]
-ms=[]
+steigungs=[]
+konsts=[]
+sef.reverse()
 for filename in sef:
 	fin=open(filename,'r')
 	sefdata=fin.readlines()
@@ -135,7 +137,7 @@ for filename in sef:
 	for data in sefdata: 
 		liste=data.split()
 	#	liste = re.findall(r"[\w.][\f]+",data)
-		if liste[0]=='#' or float(liste[3])>15:
+		if liste[0]=='#' or float(liste[1])<0.003:
 			pass
 		else:
 			brlx.append(float(liste[0])*1.e6*2.*np.pi)
@@ -161,7 +163,6 @@ for filename in sef:
 	temps.append(float(temp))
 	ds=[]
 	derrs=[]
-	steigungs=[]
 	iis=[]
 	for i in range(r1.__len__()-3,-1,-1):
 		minimize(residuals,params,args=(np.array(sqrtom[i:r1.__len__()]),np.array(r1[i:r1.__len__()])))
@@ -169,16 +170,8 @@ for filename in sef:
 		ds.append(params['logD'].value)
 		derrs.append(params['logD'].stderr)
 		steigungs.append(calc_B()/(params['D'].value**1.5))
-	minni=1
+	minni=-1
 	minnval=1.e90
-	plt.figure(2)
-	dmax.plot(iis,calc_B()/(np.array(steigungs)**(2./3.)),color=acolor,marker=amarker)
-	dmax.autoscale()
-	plt.xscale('log')
-	plt.yscale('log')
-	#plt.draw()
-	#raw_input('next')
-	#dmax.cla()
 	for i in range(1,derrs.__len__()):
 		if derrs[i]<minnval:
 			minni=iis[i]
@@ -186,33 +179,51 @@ for filename in sef:
 	plt.figure(2)
 	errax.plot(iis,derrs,label=temp,marker=amarker,color=acolor)
 	plt.ylim([0,1])
-	plt.legend()
-	if i == 1:
-		pass
-	else:
-		minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
-		diffs.append(params['logD'].value)
-		r0s.append(params['r0'].value)
-		fit=residuals(params,np.array(sorted(sqrtom)))
-		
-		#print repr(temp)
-		plt.figure(1)
+	plt.autoscale()
+	minimize(residuals,params,args=(np.array(sqrtom[minni:sqrtom.__len__()]),np.array(r1[minni:sqrtom.__len__()])))
+	diffs.append(params['logD'].value)
+	r0s.append(params['r0'].value)
+	steigung=calc_B()*(params['D'].value**(-1.5))
+	konsts.append(params['r0']/(steigung**(2./3.)))
+	fit=residuals(params,np.array(sorted(sqrtom)))
+	dmax.plot(float(temp),steigungs[-1],color=acolor,marker=amarker)
+	plt.yscale('log')
+	plt.autoscale()
+	#print repr(temp)
+	plt.figure(1)
 	
-		ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
-		ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
-		insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
-		#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
-		brlxs.append(brlx)
+	ax.plot(sqrtom,r1,label=temp+' K',marker=amarker,ms=4.0,color=acolor,linestyle='None')
+	ax.plot(sorted(sqrtom),fit,linestyle='--',color=acolor)
+	insetax.plot(1000./(float(temp)),params['logD'].value,marker=amarker,color=acolor)
+	#out=minimize(residuals, params,args=(np.array(sqrtom),np.array(r1)))
+	brlxs.append(brlx)
 	r1s.append(r1)
 	sqrtoms.append(sqrtom)
+	fits.append(fit)
 	taus.append(0.0)
+	plt.draw()
 
-for i in range(0, temps.__len__()):print str(i)+':   ', str(temps[i])
+for i in range(0, temps.__len__()):
+	print str(i)+':   ', str(temps[i])
+	with open('diff/fitd'+str(temps[i])+'K.dat','w') as fout:
+		fout.write('sqrtom '+str(temps[i])+'K\n\n')
+		for (om,fit) in zip(sorted(sqrtoms[i]),fits[i]):
+			fout.write(str(om)+' '+str(fit)+'\n')
+	with open('diff/diff'+str(temps[i])+'K.dat','w') as fout:
+		fout.write('sqrtom '+str(temps[i])+'K\n\n')
+		for (om,r) in zip(sqrtoms[i],r1s[i]):
+			fout.write(str(om)+' '+str(r)+'\n')
+	
 ax.legend()
 
-with open('D.dat','w') as fout:
+with open('Dfit.dat','w') as fout:
 	for temp,d in zip(temps,diffs):
 		fout.write(str(temp)+' '+str(d)+'\n')
+with open('difkonsts.dat','w') as fout:
+	fout.write('T(K) D*R0\n\n')
+	for temp,k in zip(temps,konsts):
+		fout.write(str(temp)+' '+str(k)+'\n')
+		
 plt.draw()
 oksdfj=raw_input('ente')
 ##while True:

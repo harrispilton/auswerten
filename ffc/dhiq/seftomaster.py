@@ -99,7 +99,7 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
-		if liste[0]=='#' or float(liste[2])<0.003:
+		if liste[0]=='#' or float(liste[2])>750.:
 			pass
 		else:
 			brlx.append(float(liste[0])*1.e6)
@@ -182,7 +182,7 @@ with open('tau.dat','r') as tauin:
 		for i in range(0,lines.__len__()):
 			liste=lines[i].split()
 			taus[i]=float(liste[1])
-			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in brlxs[i]])
+			ax.lines[i].set_xdata([brlx*10**taus[i] for brlx in omegas[i]])
 		plt.autoscale()
 		plt.draw()
 	else: a=raw_input('laenge der tau stimmt nicht...')

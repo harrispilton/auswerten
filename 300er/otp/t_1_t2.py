@@ -133,7 +133,7 @@ for (data,frmin,frmax) in zip(files,freqmins,freqmaxs):
 
 	
 	
-	#sdfo=raw_input('next')
+	sdfo=raw_input('next')
 plt.figure(3)
 arax=plt.axes([0.1,0.1,0.8,0.8])
 plt.xlabel('T [K]')

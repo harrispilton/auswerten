@@ -307,8 +307,8 @@ for (ome,r1,temp) in zip(sqrtoms,r1norms,temps):
 			fout.write(str(o)+' '+str(r)+'\n')
 
 with open('Jmaster_parameter.dat','w') as fout:
-		for (t,d,r,k) in zip(temps,diffs,r0s,konsts):
-			fout.write(str(t)+' '+str(d)+' '+str(r)+' '+str(calc_B())+' '+str(k)+'\n')
+	for (t,d,r,k) in zip(temps,diffs,r0s,konsts):
+		fout.write(str(t)+' '+str(d)+' '+str(r)+' '+str(calc_B())+' '+str(k)+'\n')
 
 
 oksdfj=raw_input('ente')
