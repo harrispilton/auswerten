@@ -99,7 +99,7 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
-		if liste[0]=='#' or float(liste[2])<0.003:
+		if liste[0]=='#' or float(liste[2])>700:
 			pass
 		else:
 			brlx.append(float(liste[0])*1.e6)
@@ -240,10 +240,12 @@ with open('tau.dat','w') as tauout:
 		tauout.write(str(temps[i])+' '+str(taus[i])+'\n')
 
 for i in range(0,taus.__len__()):
-	with open('master/ma'+str(temps[i])+' K.dat','w') as fout:
-		fout.write('omegatau '+str(temps[i])+'K\n\n')
-		for (om,ch) in zip(omegataus[i],chinorms[i]):
-			fout.write(str(om)+' '+str(ch)+'\n')
+	with open('master/masterjoined.dat','w') as mout:
+		with open('master/ma'+str(temps[i])+' K.dat','w') as fout:
+			fout.write('omegatau '+str(temps[i])+'K\n\n')
+			for (om,ch) in zip(omegataus[i],chinorms[i]):
+				fout.write(str(om)+' '+str(ch)+'\n')
+				fout.write(str(om)+' '+str(ch)+'\n')
 
 
 ax.xlabel=(r'$\omega \tau$')

@@ -170,7 +170,7 @@ for filename in sef:
 	relativefile=[]
 	for data in sefdata: 
 		liste=data.split()
-		if liste[0]=='#' or float(liste[2])<0.003:
+		if liste[0]=='#' or float(liste[2])>700:
 			pass
 		else:
 			omega.append(float(liste[0])*1.e6*2.*np.pi)
